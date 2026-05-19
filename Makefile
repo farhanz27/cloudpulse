@@ -1,7 +1,7 @@
 -include .env
 export
 
-.PHONY: run test build frontend docker-up docker-down
+.PHONY: run test build frontend db-setup docker-up docker-down
 
 run:
 	cd backend && ./mvnw spring-boot:run
@@ -14,6 +14,9 @@ build:
 
 frontend:
 	cd frontend && npm run dev
+
+db-setup:
+	bash scripts/setup_db.sh
 
 docker-up:
 	docker compose up --build
