@@ -83,7 +83,21 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
+
 const year = new Date().getFullYear()
+const router = useRouter()
+
+function handleSection(e: MouseEvent, id: string) {
+  e.preventDefault()
+  if (router.currentRoute.value.path !== '/') {
+    router.push('/').then(() => {
+      setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 100)
+    })
+  } else {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+  }
+}
 </script>
 
 <style scoped>

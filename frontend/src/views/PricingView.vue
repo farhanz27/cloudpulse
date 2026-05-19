@@ -83,7 +83,7 @@
             <div class="comp-group-header">{{ group.title }}</div>
             <div class="comp-row" v-for="row in group.rows" :key="row.feature">
               <div class="comp-cell comp-cell--feature">{{ row.feature }}</div>
-              <div class="comp-cell" v-for="val in row.values" :key="val">
+              <div class="comp-cell" v-for="(val, i) in row.values" :key="i">
                 <span v-if="val === true" class="comp-yes" aria-label="Included">◆</span>
                 <span v-else-if="val === false" class="comp-no" aria-label="Not included">—</span>
                 <span v-else class="comp-val">{{ val }}</span>

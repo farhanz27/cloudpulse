@@ -179,7 +179,7 @@
       :pt="{ root: { style: 'max-width:92vw' } }"
       @hide="deleteTarget = null"
     >
-      <p class="delete-text">Remove <strong>{{ deleteTarget?.type.charAt(0) + deleteTarget?.type.slice(1).toLowerCase() }}</strong>? This cannot be undone.</p>
+      <p class="delete-text">Remove <strong>{{ deleteTarget ? deleteTarget.type.charAt(0) + deleteTarget.type.slice(1).toLowerCase() : '' }}</strong>? This cannot be undone.</p>
       <template #footer>
         <Button label="Cancel" severity="secondary" outlined @click="showDeleteDialog = false; deleteTarget = null" />
         <Button label="Remove" severity="danger" :loading="deleting" @click="doDelete" />
