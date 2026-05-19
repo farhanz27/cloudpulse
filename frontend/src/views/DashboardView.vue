@@ -185,27 +185,12 @@
               </td>
               <td class="cell-time">{{ formatRelative(svc.last_checked_at) }}</td>
               <td class="cell-actions" @click.stop>
-                <div class="menu-wrap" :class="{ open: menuOpenId === svc.id }">
-                  <button class="btn-menu" title="Actions" @click="menuOpenId = menuOpenId === svc.id ? null : svc.id">
+                <div class="menu-wrap" :class="{ open: menuService?.id === svc.id }">
+                  <button class="btn-menu" title="Actions" @click="openMenu($event, svc)">
                     <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true">
                       <circle cx="12" cy="5" r="1.5" /><circle cx="12" cy="12" r="1.5" /><circle cx="12" cy="19" r="1.5" />
                     </svg>
                   </button>
-                  <div v-if="menuOpenId === svc.id" class="action-menu">
-                    <button class="action-item" @click="toggleActive(svc); menuOpenId = null">
-                      <svg v-if="svc.is_active" viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><rect x="6" y="4" width="4" height="16" rx="1" /><rect x="14" y="4" width="4" height="16" rx="1" /></svg>
-                      <svg v-else viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M8 5v14l11-7z" /></svg>
-                      {{ svc.is_active ? 'Pause' : 'Resume' }}
-                    </button>
-                    <button class="action-item" @click="openEdit(svc); menuOpenId = null">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke-linecap="round" stroke-linejoin="round" /><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                      Edit
-                    </button>
-                    <button class="action-item action-item--detail" @click="goDetail(svc.id); menuOpenId = null">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                      View detail
-                    </button>
-                  </div>
                 </div>
               </td>
             </tr>
@@ -286,6 +271,28 @@
       </div>
     </div>
 
+    <Teleport to="body">
+      <div
+        v-if="menuService"
+        class="action-menu"
+        :style="{ top: menuAnchor.top + 'px', right: menuAnchor.right + 'px' }"
+      >
+        <button class="action-item" @click="toggleActive(menuService); menuService = null">
+          <svg v-if="menuService.is_active" viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><rect x="6" y="4" width="4" height="16" rx="1" /><rect x="14" y="4" width="4" height="16" rx="1" /></svg>
+          <svg v-else viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M8 5v14l11-7z" /></svg>
+          {{ menuService.is_active ? 'Pause' : 'Resume' }}
+        </button>
+        <button class="action-item" @click="openEdit(menuService); menuService = null">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke-linecap="round" stroke-linejoin="round" /><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          Edit
+        </button>
+        <button class="action-item action-item--detail" @click="goDetail(menuService.id); menuService = null">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          View detail
+        </button>
+      </div>
+    </Teleport>
+
     <AddServiceModal
       :visible="showAddModal"
       @close="showAddModal = false"
@@ -324,7 +331,8 @@ const servicesStore = useServicesStore()
 const showAddModal = ref(false)
 const showEditModal = ref(false)
 const editingService = ref<ServiceWithStatus | null>(null)
-const menuOpenId = ref<string | null>(null)
+const menuService = ref<ServiceWithStatus | null>(null)
+const menuAnchor = ref({ top: 0, right: 0 })
 const viewMode = ref<'table' | 'grid'>(
   (localStorage.getItem('cp_view') as 'table' | 'grid') ?? 'table'
 )
@@ -397,11 +405,33 @@ watch(selectedDays, (v) => {
   loadUptimeBars()
 })
 
-function onDocClick(e: MouseEvent) {
-  if (!(e.target as Element).closest('.menu-wrap')) menuOpenId.value = null
+function openMenu(event: MouseEvent, svc: ServiceWithStatus) {
+  if (menuService.value?.id === svc.id) {
+    menuService.value = null
+    return
+  }
+  const rect = (event.currentTarget as HTMLElement).getBoundingClientRect()
+  menuAnchor.value = { top: rect.bottom + 4, right: window.innerWidth - rect.right }
+  menuService.value = svc
 }
-onMounted(() => document.addEventListener('click', onDocClick, true))
-onUnmounted(() => document.removeEventListener('click', onDocClick, true))
+
+function onDocClick(e: MouseEvent) {
+  if (!(e.target as Element).closest('.menu-wrap') && !(e.target as Element).closest('.action-menu')) {
+    menuService.value = null
+  }
+}
+
+function onDocScroll() {
+  menuService.value = null
+}
+onMounted(() => {
+  document.addEventListener('click', onDocClick, true)
+  document.addEventListener('scroll', onDocScroll, true)
+})
+onUnmounted(() => {
+  document.removeEventListener('click', onDocClick, true)
+  document.removeEventListener('scroll', onDocScroll, true)
+})
 
 async function loadAll() {
   await Promise.all([servicesStore.fetchAll(), loadUptimeBars(), loadLastIncidents()])
@@ -641,7 +671,7 @@ function onServiceCreated() { servicesStore.fetchAll(); loadLastIncidents() }
 
 /* ⋮ Action menu */
 .cell-actions { width: 40px; padding: 6px 8px !important; }
-.menu-wrap { position: relative; display: flex; justify-content: center; }
+.menu-wrap { display: flex; justify-content: center; }
 
 .btn-menu {
   display: inline-flex; align-items: center; justify-content: center;
@@ -655,16 +685,14 @@ function onServiceCreated() { servicesStore.fetchAll(); loadLastIncidents() }
 }
 
 .action-menu {
-  position: absolute;
-  top: calc(100% + 4px);
-  right: 0;
+  position: fixed;
   min-width: 148px;
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: 10px;
   box-shadow: 0 12px 36px rgba(0,0,0,0.45);
   overflow: hidden;
-  z-index: 50;
+  z-index: 9999;
 }
 
 .action-item {
