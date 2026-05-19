@@ -11,7 +11,6 @@ public class AppProperties {
     private Telegram telegram = new Telegram();
     private Resend resend = new Resend();
     private Alert alert = new Alert();
-    private Webhook webhook = new Webhook();
     private Cors cors = new Cors();
 
     public Jwt getJwt() { return jwt; }
@@ -26,8 +25,6 @@ public class AppProperties {
     public void setResend(Resend resend) { this.resend = resend; }
     public Alert getAlert() { return alert; }
     public void setAlert(Alert alert) { this.alert = alert; }
-    public Webhook getWebhook() { return webhook; }
-    public void setWebhook(Webhook webhook) { this.webhook = webhook; }
     public Cors getCors() { return cors; }
     public void setCors(Cors cors) { this.cors = cors; }
 
@@ -74,12 +71,6 @@ public class AppProperties {
         public void setEmailFrom(String emailFrom) { this.emailFrom = emailFrom; }
         public String getEmailTo() { return emailTo; }
         public void setEmailTo(String emailTo) { this.emailTo = emailTo; }
-    }
-
-    public static class Webhook {
-        private String url = "";
-        public String getUrl() { return url; }
-        public void setUrl(String url) { this.url = url; }
     }
 
     public static class Cors {

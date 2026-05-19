@@ -11,8 +11,6 @@ import com.avantdream.cloudpulse.alert.repository.AlertRepository;
 import com.avantdream.cloudpulse.integration.entity.Integration;
 import com.avantdream.cloudpulse.integration.notify.AlertingDispatcher;
 import com.avantdream.cloudpulse.integration.notify.ResendNotifier;
-import com.avantdream.cloudpulse.integration.notify.EmailNotifier;
-import com.avantdream.cloudpulse.integration.notify.WebhookNotifier;
 import com.avantdream.cloudpulse.monitor.entity.HealthLog;
 import com.avantdream.cloudpulse.monitor.entity.Monitor;
 import com.avantdream.cloudpulse.shared.config.AppProperties;
@@ -29,18 +27,13 @@ public class AlertingService {
     private final AlertRepository alertRepository;
     private final AppProperties props;
     private final AlertingDispatcher dispatcher;
-    private final WebhookNotifier webhookNotifier;
-    private final EmailNotifier emailNotifier;
     private final ResendNotifier resendNotifier;
 
     public AlertingService(AlertRepository alertRepository, AppProperties props,
-                           AlertingDispatcher dispatcher, WebhookNotifier webhookNotifier,
-                           EmailNotifier emailNotifier, ResendNotifier resendNotifier) {
+                           AlertingDispatcher dispatcher, ResendNotifier resendNotifier) {
         this.alertRepository = alertRepository;
         this.props = props;
         this.dispatcher = dispatcher;
-        this.webhookNotifier = webhookNotifier;
-        this.emailNotifier = emailNotifier;
         this.resendNotifier = resendNotifier;
     }
 
@@ -90,7 +83,6 @@ public class AlertingService {
         String cleanBody = message.replace("*", "").replace("`", "");
 
         int sent = 0;
-        if (webhookNotifier.send(props.getWebhook().getUrl(), message)) sent++;
 
         for (String to : emailRecipients(monitor)) {
             if (sendEmail(to, subject, cleanBody)) sent++;
@@ -110,8 +102,6 @@ public class AlertingService {
         boolean notified = false;
         String subject = "[CloudPulse] " + alertType + ": " + monitor.getName();
         String cleanBody = alert.getMessage().replace("*", "").replace("`", "");
-
-        notified |= webhookNotifier.send(props.getWebhook().getUrl(), alert.getMessage());
 
         for (String to : emailRecipients(monitor)) {
             notified |= sendEmail(to, subject, cleanBody);
@@ -138,10 +128,6 @@ public class AlertingService {
 
     private boolean sendEmail(String to, String subject, String body) {
         if (to == null || to.isBlank()) return false;
-        String apiKey = props.getResend().getApiKey();
-        if (apiKey != null && !apiKey.isBlank()) {
-            return resendNotifier.send(to, subject, body);
-        }
-        return emailNotifier.sendTo(to, props.getAlert().getEmailFrom(), subject, body);
+        return resendNotifier.send(to, subject, body);
     }
 }

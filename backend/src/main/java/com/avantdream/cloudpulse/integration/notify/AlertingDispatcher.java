@@ -19,17 +19,15 @@ public class AlertingDispatcher {
     private final WebhookNotifier webhookNotifier;
     private final SlackNotifier slackNotifier;
     private final TeamsNotifier teamsNotifier;
-    private final EmailNotifier emailNotifier;
     private final ResendNotifier resendNotifier;
 
     public AlertingDispatcher(TelegramNotifier telegramNotifier, WebhookNotifier webhookNotifier,
                                SlackNotifier slackNotifier, TeamsNotifier teamsNotifier,
-                               EmailNotifier emailNotifier, ResendNotifier resendNotifier) {
+                               ResendNotifier resendNotifier) {
         this.telegramNotifier = telegramNotifier;
         this.webhookNotifier = webhookNotifier;
         this.slackNotifier = slackNotifier;
         this.teamsNotifier = teamsNotifier;
-        this.emailNotifier = emailNotifier;
         this.resendNotifier = resendNotifier;
     }
 
@@ -60,8 +58,7 @@ public class AlertingDispatcher {
                         (String) cfg.getOrDefault("url", ""), finalMsg);
                 case "EMAIL" -> {
                     String to = (String) cfg.getOrDefault("to", "");
-                    yield emailNotifier.sendTo(to, "CloudPulse <alerts@cloudpulse.dev>",
-                            "[CloudPulse] Alert", finalMsg);
+                    yield resendNotifier.send(to, "[CloudPulse] Alert", finalMsg);
                 }
                 default -> false;
             };
