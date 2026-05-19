@@ -1,4 +1,4 @@
-package com.avantdream.cloudpulse.telegram.entity;
+package com.avantdream.cloudpulse.integration.telegram.entity;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;

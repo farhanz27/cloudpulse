@@ -1,17 +1,18 @@
-package com.avantdream.cloudpulse.telegram.service;
+package com.avantdream.cloudpulse.integration.telegram.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.avantdream.cloudpulse.shared.config.AppProperties;
 import com.avantdream.cloudpulse.shared.exception.ResourceNotFoundException;
-import com.avantdream.cloudpulse.telegram.entity.TelegramPendingLink;
-import com.avantdream.cloudpulse.telegram.repository.TelegramPendingLinkRepository;
+import com.avantdream.cloudpulse.integration.telegram.entity.TelegramPendingLink;
+import com.avantdream.cloudpulse.integration.telegram.repository.TelegramPendingLinkRepository;
 
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -59,9 +60,9 @@ public class TelegramService {
             throw new ResourceNotFoundException("Link code expired");
         }
 
-        return Map.of(
-                "linked", link.getIntegrationId() != null,
-                "integration_id", link.getIntegrationId() != null ? link.getIntegrationId() : (Object) null
-        );
+        Map<String, Object> result = new HashMap<>();
+        result.put("linked", link.getIntegrationId() != null);
+        result.put("integration_id", link.getIntegrationId());
+        return result;
     }
 }

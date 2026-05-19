@@ -8,6 +8,7 @@ import com.avantdream.cloudpulse.integration.entity.Integration;
 import com.avantdream.cloudpulse.integration.notify.*;
 import com.avantdream.cloudpulse.integration.repository.IntegrationRepository;
 import com.avantdream.cloudpulse.shared.exception.ResourceNotFoundException;
+import com.avantdream.cloudpulse.integration.telegram.repository.TelegramPendingLinkRepository;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,26 +21,26 @@ public class IntegrationService {
     private static final String MASK = "••••••••";
 
     private final IntegrationRepository integrationRepository;
+    private final TelegramPendingLinkRepository telegramPendingLinkRepository;
     private final TelegramNotifier telegramNotifier;
     private final WebhookNotifier webhookNotifier;
     private final SlackNotifier slackNotifier;
     private final TeamsNotifier teamsNotifier;
-    private final EmailNotifier emailNotifier;
     private final AlertingDispatcher alertingDispatcher;
 
     public IntegrationService(IntegrationRepository integrationRepository,
+                               TelegramPendingLinkRepository telegramPendingLinkRepository,
                                TelegramNotifier telegramNotifier,
                                WebhookNotifier webhookNotifier,
                                SlackNotifier slackNotifier,
                                TeamsNotifier teamsNotifier,
-                               EmailNotifier emailNotifier,
                                AlertingDispatcher alertingDispatcher) {
         this.integrationRepository = integrationRepository;
+        this.telegramPendingLinkRepository = telegramPendingLinkRepository;
         this.telegramNotifier = telegramNotifier;
         this.webhookNotifier = webhookNotifier;
         this.slackNotifier = slackNotifier;
         this.teamsNotifier = teamsNotifier;
-        this.emailNotifier = emailNotifier;
         this.alertingDispatcher = alertingDispatcher;
     }
 
@@ -78,6 +79,7 @@ public class IntegrationService {
 
     public void delete(int id) {
         Integration intg = requireIntegration(id);
+        telegramPendingLinkRepository.deleteByIntegrationId(id);
         integrationRepository.delete(intg);
     }
 

@@ -1,4 +1,4 @@
-package com.avantdream.cloudpulse.telegram.polling;
+package com.avantdream.cloudpulse.integration.telegram.polling;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,10 +9,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.avantdream.cloudpulse.integration.entity.Integration;
+import com.avantdream.cloudpulse.integration.notify.TelegramNotifier;
 import com.avantdream.cloudpulse.integration.repository.IntegrationRepository;
 import com.avantdream.cloudpulse.shared.config.AppProperties;
-import com.avantdream.cloudpulse.telegram.entity.TelegramPendingLink;
-import com.avantdream.cloudpulse.telegram.repository.TelegramPendingLinkRepository;
+import com.avantdream.cloudpulse.integration.telegram.entity.TelegramPendingLink;
+import com.avantdream.cloudpulse.integration.telegram.repository.TelegramPendingLinkRepository;
+
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -32,6 +35,7 @@ public class TelegramPollingService implements SmartLifecycle {
     private final AppProperties props;
     private final TelegramPendingLinkRepository linkRepository;
     private final IntegrationRepository integrationRepository;
+    private final TelegramNotifier telegramNotifier;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private volatile Thread pollingThread;
@@ -39,10 +43,12 @@ public class TelegramPollingService implements SmartLifecycle {
 
     public TelegramPollingService(AppProperties props,
                                    TelegramPendingLinkRepository linkRepository,
-                                   IntegrationRepository integrationRepository) {
+                                   IntegrationRepository integrationRepository,
+                                   TelegramNotifier telegramNotifier) {
         this.props = props;
         this.linkRepository = linkRepository;
         this.integrationRepository = integrationRepository;
+        this.telegramNotifier = telegramNotifier;
     }
 
     @Override
@@ -81,9 +87,13 @@ public class TelegramPollingService implements SmartLifecycle {
 
         while (running && !Thread.currentThread().isInterrupted()) {
             try {
-                String url = baseUrl + "?offset=" + offset + "&timeout=30&allowed_updates=[\"message\"]";
+                URI uri = UriComponentsBuilder.fromHttpUrl(baseUrl)
+                        .queryParam("offset", offset)
+                        .queryParam("timeout", 30)
+                        .queryParam("allowed_updates", "[\"message\"]")
+                        .build().toUri();
                 HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(url))
+                        .uri(uri)
                         .timeout(Duration.ofSeconds(35))
                         .GET()
                         .build();
@@ -153,5 +163,7 @@ public class TelegramPollingService implements SmartLifecycle {
         linkRepository.save(link);
 
         log.info("Telegram linked: chatId={} integrationId={}", chatId, intg.getId());
+        telegramNotifier.send(String.valueOf(chatId),
+                "*CloudPulse connected!* You'll receive alert notifications here.");
     }
 }

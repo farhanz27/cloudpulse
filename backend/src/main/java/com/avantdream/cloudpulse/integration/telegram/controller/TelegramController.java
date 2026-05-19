@@ -1,11 +1,11 @@
-package com.avantdream.cloudpulse.telegram.controller;
+package com.avantdream.cloudpulse.integration.telegram.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.avantdream.cloudpulse.shared.exception.ResourceNotFoundException;
-import com.avantdream.cloudpulse.telegram.service.TelegramService;
+import com.avantdream.cloudpulse.integration.telegram.service.TelegramService;
 
 import java.util.Map;
 
