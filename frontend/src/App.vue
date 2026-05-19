@@ -466,7 +466,8 @@ onUnmounted(() => {
 .app-main {
   margin-left: 220px;
   flex: 1;
-  min-height: 100vh;
+  height: 100vh;
+  overflow-y: auto;
   padding: 32px;
 }
 
@@ -476,6 +477,6 @@ onUnmounted(() => {
   .sidebar-overlay { display: block; }
   .sidebar { transform: translateX(-100%); top: 0; }
   .sidebar--open { transform: translateX(0); }
-  .app-main { margin-left: 0; padding: 80px 16px 24px; }
+  .app-main { margin-left: 0; height: 100dvh; padding: 80px 16px 24px; }
 }
 </style>

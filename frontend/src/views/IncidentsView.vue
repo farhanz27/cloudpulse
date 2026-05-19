@@ -190,7 +190,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.incidents-view { width: 100%; }
+.incidents-view { width: 100%; height: 100%; display: flex; flex-direction: column; }
 
 .page-header {
   margin-bottom: 24px;
@@ -213,7 +213,9 @@ onMounted(async () => {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 12px;
-  overflow: hidden;
+  overflow: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 .incidents-table {
@@ -292,6 +294,7 @@ onMounted(async () => {
   align-items: center;
   justify-content: space-between;
   margin-top: 10px;
+  flex-shrink: 0;
 }
 .total-count { font-size: 15px; color: var(--text-muted); }
 .event-log-link {
@@ -316,6 +319,8 @@ onMounted(async () => {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 12px;
+  flex: 1;
+  min-height: 0;
 }
 
 /* Skeleton */

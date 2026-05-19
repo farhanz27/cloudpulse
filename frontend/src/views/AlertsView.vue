@@ -43,7 +43,7 @@
           label="Dismiss all"
           severity="secondary"
           outlined
-          size="small"
+          class="toolbar-btn"
           :loading="dismissingAll"
           @click="dismissAll"
         />
@@ -236,6 +236,9 @@ onMounted(async () => {
 <style scoped>
 .alerts-page {
   width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Header */
@@ -264,6 +267,7 @@ onMounted(async () => {
   gap: 12px;
   margin-bottom: 20px;
   flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .toolbar-left { display: flex; align-items: center; gap: 8px; }
@@ -276,17 +280,19 @@ onMounted(async () => {
   border-radius: 10px;
   padding: 3px;
   gap: 2px;
+  height: 2.25rem;
 }
 
 .tab-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 14px;
+  padding: 0 14px;
+  height: 100%;
   border-radius: 8px;
   border: none;
   background: transparent;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-muted);
   cursor: pointer;
@@ -311,12 +317,19 @@ onMounted(async () => {
   border-radius: 999px;
   background: var(--danger);
   color: #fff;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
 }
 
 .filter-select :deep(.p-select) {
   min-width: 130px;
+  height: 2.25rem;
+}
+
+.filter-select :deep(.p-select-label) {
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 2.25rem;
 }
 
 
@@ -330,6 +343,14 @@ onMounted(async () => {
   padding: 96px 0;
   color: var(--text-muted);
   font-size: 14px;
+  flex: 1;
+  min-height: 0;
+}
+
+.toolbar-btn {
+  height: 2.25rem;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }
 
 .empty-icon { opacity: 0.2; }
@@ -352,6 +373,9 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .alert-card {
