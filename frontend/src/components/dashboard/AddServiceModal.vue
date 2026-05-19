@@ -100,6 +100,7 @@ const form = reactive({
   notify_email: auth.user?.email ?? '',
   check_interval_seconds: 60,
   timeout_seconds: 10,
+  is_active: true,
   keep_alive: false,
   latency_threshold_ms: 5000,
   integration_ids: [] as number[],
@@ -139,6 +140,7 @@ function resetForm() {
   intervalIndex.value = 1
   form.check_interval_seconds = 60
   form.timeout_seconds = 10
+  form.is_active = true
   form.keep_alive = false
   form.latency_threshold_ms = 5000
   form.integration_ids = []

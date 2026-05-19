@@ -74,7 +74,7 @@ public class MonitorService {
         if (req.checkIntervalSeconds() != null) monitor.setCheckIntervalSeconds(req.checkIntervalSeconds());
         if (req.timeoutSeconds() != null) monitor.setTimeoutSeconds(req.timeoutSeconds());
         if (req.expectedStatusCode() != null) monitor.setExpectedStatusCode(req.expectedStatusCode());
-        if (req.active() != null) monitor.setActive(req.active());
+        if (req.isActive() != null) monitor.setActive(req.isActive());
         if (req.keepAlive() != null) monitor.setKeepAlive(req.keepAlive());
         if (req.latencyThresholdMs() != null) monitor.setLatencyThresholdMs(req.latencyThresholdMs());
         if (req.notifyEmail() != null) monitor.setNotifyEmail(req.notifyEmail());
@@ -142,7 +142,7 @@ public class MonitorService {
         monitor.setCheckIntervalSeconds(req.checkIntervalSeconds());
         monitor.setTimeoutSeconds(req.timeoutSeconds());
         monitor.setExpectedStatusCode(req.expectedStatusCode());
-        monitor.setActive(req.active());
+        monitor.setActive(req.isActive());
         monitor.setKeepAlive(req.keepAlive());
         monitor.setLatencyThresholdMs(req.latencyThresholdMs());
         monitor.setNotifyEmail(req.notifyEmail());

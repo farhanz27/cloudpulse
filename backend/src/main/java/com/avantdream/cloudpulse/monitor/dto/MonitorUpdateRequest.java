@@ -8,7 +8,7 @@ public record MonitorUpdateRequest(
         Integer checkIntervalSeconds,
         Integer timeoutSeconds,
         Integer expectedStatusCode,
-        Boolean active,
+        Boolean isActive,
         Boolean keepAlive,
         Integer latencyThresholdMs,
         String notifyEmail,

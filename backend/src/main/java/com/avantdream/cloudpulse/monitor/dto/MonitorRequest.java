@@ -12,7 +12,7 @@ public record MonitorRequest(
         @Min(5) int checkIntervalSeconds,
         @Min(1) int timeoutSeconds,
         int expectedStatusCode,
-        boolean active,
+        boolean isActive,
         boolean keepAlive,
         @Min(100) int latencyThresholdMs,
         String notifyEmail,

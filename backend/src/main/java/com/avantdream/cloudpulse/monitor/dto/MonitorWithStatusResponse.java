@@ -13,7 +13,7 @@ public record MonitorWithStatusResponse(
         int checkIntervalSeconds,
         int timeoutSeconds,
         int expectedStatusCode,
-        boolean active,
+        boolean isActive,
         boolean keepAlive,
         int latencyThresholdMs,
         String notifyEmail,
