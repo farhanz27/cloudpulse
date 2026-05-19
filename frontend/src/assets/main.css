@@ -1,0 +1,448 @@
+/* ── Design tokens — landing page black/gold theme ── */
+:root {
+  --bg-primary:    #0A0A0A;
+  --bg-secondary:  #141414;
+  --bg-card:       #141414;
+  --bg-hover:      #1E1E1E;
+  --text-primary:  #F2F0E4;
+  --text-secondary:#C0BEB2;
+  --text-muted:    #888888;
+  --border:        rgba(212, 175, 55, 0.2);
+  --border-strong: rgba(212, 175, 55, 0.5);
+  --accent:        #D4AF37;
+  --accent-hover:  #E8C84A;
+  --success:       #22c55e;
+  --warning:       #f59e0b;
+  --danger:        #ef4444;
+  --radius:        6px;
+  --radius-sm:     4px;
+  --shadow:        0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-lg:     0 4px 24px rgba(0, 0, 0, 0.6);
+  --font-display:  'Marcellus', Georgia, serif;
+  --font-body:     'Josefin Sans', 'Inter', sans-serif;
+  --font-mono:     'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ── PrimeVue CSS variable overrides ── */
+:root {
+  /* Surfaces → dark blacks */
+  --p-surface-0:   #F2F0E4;
+  --p-surface-50:  #dedad0;
+  --p-surface-100: #c4c0b3;
+  --p-surface-200: #9e9a8d;
+  --p-surface-700: #1E1E1E;
+  --p-surface-800: #141414;
+  --p-surface-900: #0f0f0f;
+  --p-surface-950: #0A0A0A;
+
+  /* Content */
+  --p-content-border-color: rgba(212, 175, 55, 0.2);
+  --p-content-hover-background: #1E1E1E;
+  --p-content-background: #141414;
+  --p-content-color: #F2F0E4;
+
+  /* Overlay */
+  --p-overlay-modal-background: #141414;
+  --p-overlay-modal-border-color: rgba(212, 175, 55, 0.3);
+
+  /* Input */
+  --p-inputtext-background: #0f0f0f;
+  --p-inputtext-border-color: rgba(212, 175, 55, 0.25);
+  --p-inputtext-color: #F2F0E4;
+  --p-inputtext-placeholder-color: #888888;
+  --p-inputtext-focus-border-color: #D4AF37;
+  --p-inputtext-hover-border-color: rgba(212, 175, 55, 0.5);
+
+  /* Select / Dropdown */
+  --p-select-background: #0f0f0f;
+  --p-select-border-color: rgba(212, 175, 55, 0.25);
+  --p-select-color: #F2F0E4;
+  --p-select-focus-border-color: #D4AF37;
+  --p-select-overlay-background: #141414;
+  --p-select-overlay-border-color: rgba(212, 175, 55, 0.2);
+  --p-select-option-color: #C0BEB2;
+  --p-select-option-focus-background: #1E1E1E;
+  --p-select-option-focus-color: #F2F0E4;
+  --p-select-option-selected-background: rgba(212, 175, 55, 0.12);
+  --p-select-option-selected-color: #D4AF37;
+
+  /* Dialog */
+  --p-dialog-background: #141414;
+  --p-dialog-border-color: rgba(212, 175, 55, 0.25);
+  --p-dialog-color: #F2F0E4;
+  --p-dialog-header-background: #141414;
+  --p-dialog-header-color: #F2F0E4;
+  --p-dialog-content-background: #141414;
+  --p-dialog-footer-background: #141414;
+
+  /* Slider */
+  --p-slider-background: rgba(212, 175, 55, 0.15);
+  --p-slider-border-color: transparent;
+  --p-slider-track-background: rgba(212, 175, 55, 0.15);
+  --p-slider-range-background: #D4AF37;
+  --p-slider-handle-background: #D4AF37;
+  --p-slider-handle-border-color: #D4AF37;
+
+  /* Checkbox */
+  --p-checkbox-background: #0f0f0f;
+  --p-checkbox-border-color: rgba(212, 175, 55, 0.35);
+  --p-checkbox-checked-background: #D4AF37;
+  --p-checkbox-checked-border-color: #D4AF37;
+  --p-checkbox-checked-color: #0A0A0A;
+
+  /* Toast */
+  --p-toast-border-color: rgba(212, 175, 55, 0.2);
+  --p-toast-background: #141414;
+  --p-toast-color: #F2F0E4;
+}
+
+/* ── PrimeVue Button: gold primary ── */
+.p-button-primary,
+.p-button:not(.p-button-outlined):not(.p-button-text):not(.p-button-secondary):not(.p-button-success):not(.p-button-info):not(.p-button-warning):not(.p-button-danger):not(.p-button-help):not(.p-button-contrast) {
+  background: #D4AF37 !important;
+  border-color: #D4AF37 !important;
+  color: #0A0A0A !important;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  font-family: var(--font-body);
+  border-radius: var(--radius-sm);
+}
+.p-button-primary:hover,
+.p-button:not(.p-button-outlined):not(.p-button-text):not(.p-button-secondary):not(.p-button-success):not(.p-button-info):not(.p-button-warning):not(.p-button-danger):not(.p-button-help):not(.p-button-contrast):hover {
+  background: #E8C84A !important;
+  border-color: #E8C84A !important;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+}
+
+/* Secondary/outlined button: gold border */
+.p-button-secondary,
+.p-button-outlined {
+  border-color: rgba(212, 175, 55, 0.4) !important;
+  color: #C0BEB2 !important;
+  background: transparent !important;
+  border-radius: var(--radius-sm);
+}
+.p-button-secondary:hover,
+.p-button-outlined:hover {
+  border-color: #D4AF37 !important;
+  color: #F2F0E4 !important;
+  background: rgba(212, 175, 55, 0.06) !important;
+}
+
+/* ── PrimeVue Dialog ── */
+.p-dialog {
+  background: #141414 !important;
+  border: 1px solid rgba(212, 175, 55, 0.25) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.8) !important;
+  color: #F2F0E4 !important;
+  overflow: hidden !important;
+}
+.p-dialog-header {
+  background: #141414 !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15) !important;
+  padding: 20px 24px 16px !important;
+  color: #F2F0E4 !important;
+}
+.p-dialog-title {
+  font-family: var(--font-display) !important;
+  font-size: 18px !important;
+  letter-spacing: 0.08em !important;
+  color: #F2F0E4 !important;
+}
+.p-dialog-content {
+  background: #141414 !important;
+  padding: 20px 24px !important;
+  color: #F2F0E4 !important;
+}
+.p-dialog-footer {
+  background: #141414 !important;
+  border-top: 1px solid rgba(212, 175, 55, 0.15) !important;
+  padding: 16px 24px !important;
+}
+.p-dialog-close-button {
+  color: #888 !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.p-dialog-close-button:hover {
+  color: #F2F0E4 !important;
+  background: rgba(212, 175, 55, 0.08) !important;
+}
+.p-dialog-mask {
+  backdrop-filter: blur(4px);
+}
+
+/* ── PrimeVue InputText ── */
+.p-inputtext {
+  background: #0f0f0f !important;
+  border-color: rgba(212, 175, 55, 0.25) !important;
+  color: #F2F0E4 !important;
+  border-radius: var(--radius-sm) !important;
+  font-family: var(--font-body) !important;
+}
+.p-inputtext::placeholder {
+  color: #888 !important;
+}
+.p-inputtext:focus {
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.2) !important;
+}
+.p-inputtext:hover:not(:focus) {
+  border-color: rgba(212, 175, 55, 0.4) !important;
+}
+
+/* ── PrimeVue Select (Dropdown) ── */
+.p-select {
+  background: #0f0f0f !important;
+  border-color: rgba(212, 175, 55, 0.25) !important;
+  border-radius: var(--radius-sm) !important;
+  font-family: var(--font-body) !important;
+}
+.p-select:focus-within,
+.p-select.p-focus {
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.2) !important;
+}
+.p-select-label {
+  color: #F2F0E4 !important;
+}
+.p-select-overlay {
+  background: #141414 !important;
+  border-color: rgba(212, 175, 55, 0.2) !important;
+  border-radius: var(--radius-sm) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
+}
+.p-select-option {
+  color: #C0BEB2 !important;
+  font-family: var(--font-body) !important;
+}
+.p-select-option:hover,
+.p-select-option.p-focus {
+  background: #1E1E1E !important;
+  color: #F2F0E4 !important;
+}
+.p-select-option.p-selected {
+  background: rgba(212, 175, 55, 0.12) !important;
+  color: #D4AF37 !important;
+}
+
+/* ── PrimeVue Slider ── */
+.p-slider {
+  background: rgba(212, 175, 55, 0.15) !important;
+  border-radius: 3px !important;
+}
+.p-slider-range {
+  background: #D4AF37 !important;
+}
+.p-slider-handle {
+  background: #fff !important;
+  border: 3px solid #D4AF37 !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4) !important;
+}
+.p-slider-handle:hover {
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.2) !important;
+}
+
+/* ── PrimeVue Checkbox ── */
+.p-checkbox .p-checkbox-box {
+  background: #0f0f0f !important;
+  border-color: rgba(212, 175, 55, 0.35) !important;
+  border-radius: 3px !important;
+}
+.p-checkbox.p-checkbox-checked .p-checkbox-box {
+  background: #D4AF37 !important;
+  border-color: #D4AF37 !important;
+}
+
+/* ── PrimeVue Toast ── */
+.p-toast .p-toast-message {
+  background: #141414 !important;
+  border: 1px solid rgba(212, 175, 55, 0.2) !important;
+  border-radius: var(--radius) !important;
+  color: #F2F0E4 !important;
+}
+
+/* ── Reset & base ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 16px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--accent-hover);
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ── Utility: card ── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+/* ── Utility: buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  font-family: var(--font-body);
+  transition: all 0.15s ease;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 14px;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #0A0A0A;
+  border: 1px solid var(--accent);
+}
+.btn-primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: white;
+  border: 1px solid var(--danger);
+}
+.btn-danger:hover {
+  background: #dc2626;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
+/* ── Utility: badges ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.badge-up       { background: rgba(34,  197, 94,  0.12); color: var(--success); border: 1px solid rgba(34,  197, 94,  0.2); }
+.badge-down     { background: rgba(239, 68,  68,  0.12); color: var(--danger);  border: 1px solid rgba(239, 68,  68,  0.2); }
+.badge-degraded { background: rgba(245, 158, 11,  0.12); color: var(--warning); border: 1px solid rgba(245, 158, 11,  0.2); }
+.badge-unknown  { background: rgba(136, 136, 136, 0.12); color: var(--text-muted); border: 1px solid rgba(136, 136, 136, 0.15); }
+
+/* ── Utility: inputs ── */
+input,
+select {
+  background: #0f0f0f;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  color: var(--text-primary);
+  font-size: 16px;
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+input:focus,
+select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.2);
+}
+input::placeholder {
+  color: var(--text-muted);
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+/* ── Utility: tables ── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th {
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-body);
+}
+td {
+  padding: 12px 16px;
+  font-size: 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+tr:hover td {
+  background: var(--bg-hover);
+}
+
+/* ── Transitions ── */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
