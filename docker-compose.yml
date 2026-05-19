@@ -13,11 +13,11 @@ services:
       TELEGRAM_BOT_USERNAME: ${TELEGRAM_BOT_USERNAME}
       CORS_ORIGINS: ${CORS_ORIGINS}
     ports:
-      - "8081:8081"
+      - "127.0.0.1:8081:8081"
 
   frontend:
     build: ./frontend
     ports:
-      - "80:80"
+      - "127.0.0.1:3000:80"
     depends_on:
       - backend
