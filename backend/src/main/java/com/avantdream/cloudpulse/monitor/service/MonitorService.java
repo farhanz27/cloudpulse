@@ -1,0 +1,164 @@
+package com.avantdream.cloudpulse.monitor.service;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.avantdream.cloudpulse.alert.service.AlertingService;
+import com.avantdream.cloudpulse.integration.entity.Integration;
+import com.avantdream.cloudpulse.integration.repository.IntegrationRepository;
+import com.avantdream.cloudpulse.monitor.dto.*;
+import com.avantdream.cloudpulse.monitor.entity.HealthLog;
+import com.avantdream.cloudpulse.monitor.entity.Monitor;
+import com.avantdream.cloudpulse.monitor.repository.HealthLogRepository;
+import com.avantdream.cloudpulse.monitor.repository.MonitorRepository;
+import com.avantdream.cloudpulse.shared.exception.ResourceNotFoundException;
+
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@Transactional
+public class MonitorService {
+
+    private final MonitorRepository monitorRepository;
+    private final HealthLogRepository healthLogRepository;
+    private final IntegrationRepository integrationRepository;
+    private final MonitorCheckService checkService;
+    private final AlertingService alertingService;
+    private final GeoService geoService;
+
+    public MonitorService(MonitorRepository monitorRepository,
+                          HealthLogRepository healthLogRepository,
+                          IntegrationRepository integrationRepository,
+                          MonitorCheckService checkService,
+                          AlertingService alertingService,
+                          GeoService geoService) {
+        this.monitorRepository = monitorRepository;
+        this.healthLogRepository = healthLogRepository;
+        this.integrationRepository = integrationRepository;
+        this.checkService = checkService;
+        this.alertingService = alertingService;
+        this.geoService = geoService;
+    }
+
+    @Transactional(readOnly = true)
+    public List<MonitorWithStatusResponse> listAll() {
+        return monitorRepository.findAllByOrderByNameAsc().stream()
+                .map(this::enrich)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public MonitorWithStatusResponse getById(UUID id) {
+        Monitor monitor = requireMonitor(id);
+        return enrich(monitor);
+    }
+
+    public MonitorResponse create(MonitorRequest req) {
+        Monitor monitor = new Monitor();
+        applyRequest(monitor, req);
+        monitor.setRegion(geoService.detectRegion(req.url()));
+        setIntegrations(monitor, req.integrationIds());
+        return MonitorResponse.from(monitorRepository.save(monitor));
+    }
+
+    public MonitorResponse update(UUID id, MonitorUpdateRequest req) {
+        Monitor monitor = requireMonitor(id);
+        if (req.name() != null) monitor.setName(req.name());
+        if (req.url() != null) {
+            monitor.setUrl(req.url());
+            monitor.setRegion(geoService.detectRegion(req.url()));
+        }
+        if (req.checkIntervalSeconds() != null) monitor.setCheckIntervalSeconds(req.checkIntervalSeconds());
+        if (req.timeoutSeconds() != null) monitor.setTimeoutSeconds(req.timeoutSeconds());
+        if (req.expectedStatusCode() != null) monitor.setExpectedStatusCode(req.expectedStatusCode());
+        if (req.active() != null) monitor.setActive(req.active());
+        if (req.keepAlive() != null) monitor.setKeepAlive(req.keepAlive());
+        if (req.latencyThresholdMs() != null) monitor.setLatencyThresholdMs(req.latencyThresholdMs());
+        if (req.notifyEmail() != null) monitor.setNotifyEmail(req.notifyEmail());
+        if (req.integrationIds() != null) setIntegrations(monitor, req.integrationIds());
+        return MonitorResponse.from(monitorRepository.save(monitor));
+    }
+
+    public void delete(UUID id) {
+        Monitor monitor = requireMonitor(id);
+        monitorRepository.delete(monitor);
+    }
+
+    public MonitorWithStatusResponse checkNow(UUID id) {
+        Monitor monitor = monitorRepository.findAllActiveWithIntegrations().stream()
+                .filter(m -> m.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Monitor not found"));
+        HealthLog log = checkService.check(monitor);
+        healthLogRepository.save(log);
+        alertingService.evaluate(monitor, log);
+        monitorRepository.save(monitor);
+        return enrich(monitor);
+    }
+
+    public int sendTestNotification(UUID id) {
+        Monitor monitor = monitorRepository.findAllActiveWithIntegrations().stream()
+                .filter(m -> m.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Monitor not found"));
+        return alertingService.sendTestNotification(monitor);
+    }
+
+    public MonitorWithStatusResponse mute(UUID id, MuteRequest req) {
+        Monitor monitor = requireMonitor(id);
+        if (req.minutes() != null && req.minutes() > 0) {
+            monitor.setMutedUntil(Instant.now().plus(req.minutes(), ChronoUnit.MINUTES));
+        } else {
+            monitor.setMutedUntil(null);
+        }
+        return enrich(monitorRepository.save(monitor));
+    }
+
+    private MonitorWithStatusResponse enrich(Monitor monitor) {
+        HealthLog latest = healthLogRepository
+                .findTopByServiceIdOrderByCheckedAtDesc(monitor.getId())
+                .orElse(null);
+
+        Instant since24h = Instant.now().minus(24, ChronoUnit.HOURS);
+        long total = healthLogRepository.countByServiceIdSince(monitor.getId(), since24h);
+        long upCount = healthLogRepository.countUpByServiceIdSince(monitor.getId(), since24h);
+        Double uptimePct = total > 0 ? Math.round((upCount * 100.0 / total) * 100.0) / 100.0 : null;
+
+        return MonitorWithStatusResponse.from(
+                monitor,
+                latest != null ? latest.getStatus() : null,
+                latest != null ? latest.getResponseTimeMs() : null,
+                uptimePct,
+                latest != null ? latest.getCheckedAt() : null
+        );
+    }
+
+    private void applyRequest(Monitor monitor, MonitorRequest req) {
+        monitor.setName(req.name());
+        monitor.setUrl(req.url());
+        monitor.setCheckIntervalSeconds(req.checkIntervalSeconds());
+        monitor.setTimeoutSeconds(req.timeoutSeconds());
+        monitor.setExpectedStatusCode(req.expectedStatusCode());
+        monitor.setActive(req.active());
+        monitor.setKeepAlive(req.keepAlive());
+        monitor.setLatencyThresholdMs(req.latencyThresholdMs());
+        monitor.setNotifyEmail(req.notifyEmail());
+    }
+
+    private void setIntegrations(Monitor monitor, List<Integer> ids) {
+        if (ids == null || ids.isEmpty()) {
+            monitor.setIntegrations(List.of());
+        } else {
+            List<Integration> integrations = integrationRepository.findAllById(ids);
+            monitor.setIntegrations(integrations);
+        }
+    }
+
+    private Monitor requireMonitor(UUID id) {
+        return monitorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Monitor not found"));
+    }
+}
