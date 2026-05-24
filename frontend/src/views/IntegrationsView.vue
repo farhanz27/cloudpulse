@@ -3,7 +3,6 @@
     <div class="page-header">
       <div>
         <h1 class="page-title">Integrations</h1>
-        <p class="page-subtitle">Notification channels for alerts and incidents</p>
       </div>
     </div>
 
@@ -37,13 +36,19 @@
           />
         </template>
 
-        <Button
-          v-else
-          label="Connect"
-          outlined
-          size="small"
-          @click="openCreate(t.value)"
-        />
+        <template v-else>
+          <Button
+            v-if="isProOnly(t.value)"
+            label="Upgrade Plan"
+            outlined
+            @click="router.push('/settings?tab=subscription')"
+          />
+          <Button
+            v-else
+            label="Connect"
+            @click="openCreate(t.value)"
+          />
+        </template>
       </div>
     </div>
 
@@ -53,6 +58,7 @@
     <Dialog
       v-model:visible="showModal"
       modal
+      :draggable="false"
       :header="editTarget ? 'Edit Integration' : 'Add Integration'"
       :style="{ width: '520px' }"
       :pt="{ root: { style: 'max-width:92vw' } }"
@@ -174,6 +180,7 @@
     <Dialog
       v-model:visible="showDeleteDialog"
       modal
+      :draggable="false"
       header="Remove Integration"
       :style="{ width: '380px' }"
       :pt="{ root: { style: 'max-width:92vw' } }"
@@ -190,8 +197,10 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, defineComponent, h, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useToast } from 'primevue/usetoast'
 import { integrationsApi, telegramApi } from '@/api/integrations'
+import { usageApi } from '@/api/usage'
 import type { Integration } from '@/types'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
@@ -199,6 +208,14 @@ import InputText from 'primevue/inputtext'
 import Menu from 'primevue/menu'
 
 const toast = useToast()
+const router = useRouter()
+
+const FREE_TYPES = ['TELEGRAM', 'DISCORD']
+const plan = ref<string>('free')
+
+function isProOnly(type: string): boolean {
+  return plan.value.toLowerCase() === 'free' && !FREE_TYPES.includes(type)
+}
 
 const integrations = ref<Integration[]>([])
 const loading = ref(true)
@@ -238,9 +255,15 @@ async function startTelegramLink() {
     tgExpiresMin.value = data.expires_in_minutes
     tgStep.value = 'waiting'
     tgPollTimer = setInterval(() => pollTelegramLink(data.code), 3000)
-  } catch {
+  } catch (err: any) {
     tgStep.value = 'error'
-    tgError.value = 'Could not reach the server. Is TELEGRAM_BOT_TOKEN set?'
+    const data = err?.response?.data
+    const serverMsg = typeof data === 'object' && data !== null
+      ? (data.error ?? data.message)
+      : null
+    tgError.value = serverMsg
+      ?? (err?.response?.status === 503 ? 'Telegram is not configured on this server.' : null)
+      ?? 'Could not reach the server.'
   }
 }
 
@@ -356,7 +379,9 @@ function openMenu(event: Event, intg: Integration) {
 async function load() {
   loading.value = true
   try {
-    integrations.value = await integrationsApi.list()
+    const [intgs, usage] = await Promise.all([integrationsApi.list(), usageApi.get()])
+    integrations.value = intgs
+    plan.value = usage.plan
   } finally {
     loading.value = false
   }
@@ -418,11 +443,14 @@ async function save() {
         await integrationsApi.create({ type: form.type, name: typeName, config, enabled: true })
       }
     }
+    toast.add({ severity: 'success', summary: editTarget.value ? 'Integration updated' : 'Integration connected', detail: `${typeName} saved successfully`, life: 4000 })
     closeModal()
     await load()
-  } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : 'Failed to save'
-    alert(msg)
+  } catch (e: any) {
+    const data = e?.response?.data
+    const msg = (typeof data === 'object' && data !== null ? (data.error ?? data.message) : null) ?? (e instanceof Error ? e.message : 'Failed to save')
+    const is402 = e?.response?.status === 402
+    toast.add({ severity: is402 ? 'warn' : 'error', summary: is402 ? 'Plan limit reached' : 'Failed to save', detail: msg, life: 6000 })
   } finally {
     saving.value = false
   }
@@ -474,8 +502,7 @@ onMounted(load)
   margin-bottom: 28px;
   flex-wrap: wrap;
 }
-.page-title { font-size: 28px; font-weight: 700; color: var(--text-primary); margin: 0 0 4px; }
-.page-subtitle { font-size: 14px; color: var(--text-muted); margin: 0; }
+.page-title { font-size: 30px; font-weight: 700; color: var(--text-primary); margin: 0 0 4px; }
 
 /* List */
 .intg-list {
@@ -521,12 +548,12 @@ onMounted(load)
   min-width: 0;
 }
 .row-name {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--text-primary);
 }
 .row-desc {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
@@ -537,7 +564,7 @@ onMounted(load)
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -581,13 +608,13 @@ onMounted(load)
   margin-bottom: 10px;
 }
 .label-optional {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
   text-transform: none;
   letter-spacing: 0;
   color: var(--text-muted);
 }
-.field-hint { font-size: 11px; color: var(--text-muted); margin: 6px 0 0; line-height: 1.4; }
+.field-hint { font-size: 13px; color: var(--text-muted); margin: 6px 0 0; line-height: 1.5; }
 
 .type-selector { display: flex; gap: 8px; flex-wrap: wrap; }
 .type-btn {
@@ -599,7 +626,7 @@ onMounted(load)
   border: 1px solid var(--border);
   background: transparent;
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   font-family: var(--font-body);
   cursor: pointer;
@@ -614,7 +641,7 @@ onMounted(load)
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -638,7 +665,7 @@ onMounted(load)
   margin-top: 32px;
 }
 
-.delete-text { font-size: 14px; color: var(--text-secondary); margin: 0; line-height: 1.5; }
+.delete-text { font-size: 15px; color: var(--text-secondary); margin: 0; line-height: 1.5; }
 
 /* Telegram subscribe flow */
 .tg-status {
@@ -648,7 +675,7 @@ onMounted(load)
   gap: 12px;
   padding: 32px 0;
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: 15px;
 }
 .tg-spinner { font-size: 24px; color: var(--accent); }
 .tg-linked { color: var(--success); }
@@ -656,7 +683,7 @@ onMounted(load)
 .tg-error { color: var(--danger); }
 
 .tg-subscribe { display: flex; flex-direction: column; gap: 16px; margin-bottom: 8px; }
-.tg-instruction { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin: 0; }
+.tg-instruction { font-size: 15px; color: var(--text-secondary); line-height: 1.6; margin: 0; }
 
 .tg-code-box {
   display: flex;
@@ -670,7 +697,7 @@ onMounted(load)
 .tg-code {
   flex: 1;
   font-family: var(--font-mono, monospace);
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text-primary);
   word-break: break-all;
   background: none;

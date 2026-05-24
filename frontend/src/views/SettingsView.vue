@@ -1,10 +1,10 @@
 <template>
-  <div class="account-page">
+  <div class="settings-page">
     <div class="page-header">
-      <h1 class="page-title">Account</h1>
+      <h1 class="page-title">Settings</h1>
     </div>
 
-    <div class="account-tabs">
+    <div class="settings-tabs">
       <button
         v-for="tab in tabs"
         :key="tab.id"
@@ -32,7 +32,6 @@
               <span v-if="pErrors.email" class="field-error">{{ pErrors.email }}</span>
             </div>
           </div>
-
           <div class="form-footer">
             <Button type="submit" label="Save changes" />
           </div>
@@ -108,20 +107,20 @@
     </div>
 
     <!-- Plan -->
-    <div v-else-if="activeTab === 'plan'" class="sections">
+    <div v-else-if="activeTab === 'subscription'" class="sections">
       <div class="plan-cards">
         <div class="plan-card plan-card--active">
           <div class="plan-card-header">
             <span class="plan-name">Free</span>
             <span class="plan-current-badge">Current plan</span>
           </div>
-          <p class="plan-price">$0 <span class="plan-price-period">/ month</span></p>
+          <p class="plan-price">RM0 <span class="plan-price-period">/ month</span></p>
           <p class="plan-desc">Everything you need to get started with uptime monitoring.</p>
           <ul class="plan-features">
             <li>Up to 5 monitors</li>
             <li>1 status page</li>
-            <li>3 integrations</li>
-            <li>60-second checks</li>
+            <li>2 integrations</li>
+            <li>5-minute checks</li>
             <li>30-day history</li>
           </ul>
           <button class="plan-btn plan-btn--current" disabled>Current plan</button>
@@ -132,16 +131,16 @@
             <span class="plan-name plan-name--pro">Pro</span>
             <span class="plan-soon-badge">Coming soon</span>
           </div>
-          <p class="plan-price plan-price--pro">$19 <span class="plan-price-period">/ month</span></p>
+          <p class="plan-price plan-price--pro">RM20 <span class="plan-price-period">/ month</span></p>
           <p class="plan-desc">For teams that need more power and fewer limits.</p>
           <ul class="plan-features">
-            <li>Unlimited monitors</li>
-            <li>Multiple status pages</li>
-            <li>Unlimited integrations</li>
-            <li>30-second checks</li>
-            <li>1-year history</li>
-            <li>Team members</li>
-            <li>Custom status page domains</li>
+            <li>Up to 50 monitors</li>
+            <li>Up to 10 status pages</li>
+            <li>All notification channels</li>
+            <li>1-minute check intervals</li>
+            <li>12-month history</li>
+            <li>SSL certificate monitoring</li>
+            <li>Priority support</li>
           </ul>
           <button class="plan-btn plan-btn--upgrade" disabled>Upgrade to Pro</button>
         </div>
@@ -151,44 +150,86 @@
         <h2 class="section-title">Usage</h2>
 
         <div v-if="usageLoading" class="usage-loading">Loading usage…</div>
-        <div v-else-if="usageError" class="usage-loading">Failed to load usage — refresh the page to try again.</div>
+        <div v-else-if="usageError" class="usage-loading">Failed to load usage — refresh to try again.</div>
 
         <div v-else class="usage-list">
           <div class="usage-item">
             <div class="usage-header">
               <span class="usage-label">Monitors</span>
-              <span class="usage-count" :class="{ 'at-limit': usage.monitors.used >= usage.monitors.limit }">
+              <span class="usage-count">
                 {{ usage.monitors.used }} / {{ usage.monitors.limit }}
               </span>
             </div>
             <div class="usage-bar">
-              <div class="usage-fill" :class="{ 'at-limit': usage.monitors.used >= usage.monitors.limit }" :style="{ width: pct(usage.monitors) + '%' }"></div>
+              <div class="usage-fill" :style="{ width: pct(usage.monitors) + '%' }"></div>
             </div>
           </div>
 
           <div class="usage-item">
             <div class="usage-header">
               <span class="usage-label">Status Pages</span>
-              <span class="usage-count" :class="{ 'at-limit': usage.status_pages.used >= usage.status_pages.limit }">
+              <span class="usage-count">
                 {{ usage.status_pages.used }} / {{ usage.status_pages.limit }}
               </span>
             </div>
             <div class="usage-bar">
-              <div class="usage-fill" :class="{ 'at-limit': usage.status_pages.used >= usage.status_pages.limit }" :style="{ width: pct(usage.status_pages) + '%' }"></div>
+              <div class="usage-fill" :style="{ width: pct(usage.status_pages) + '%' }"></div>
             </div>
           </div>
 
           <div class="usage-item">
             <div class="usage-header">
               <span class="usage-label">Integrations</span>
-              <span class="usage-count" :class="{ 'at-limit': usage.integrations.used >= usage.integrations.limit }">
+              <span class="usage-count">
                 {{ usage.integrations.used }} / {{ usage.integrations.limit }}
               </span>
             </div>
             <div class="usage-bar">
-              <div class="usage-fill" :class="{ 'at-limit': usage.integrations.used >= usage.integrations.limit }" :style="{ width: pct(usage.integrations) + '%' }"></div>
+              <div class="usage-fill" :style="{ width: pct(usage.integrations) + '%' }"></div>
             </div>
           </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- App -->
+    <div v-else-if="activeTab === 'preferences'" class="sections">
+      <section class="section card">
+        <h2 class="section-title">Monitoring Defaults</h2>
+        <p class="section-desc">Applied when adding a new monitor.</p>
+
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label">Default Check Interval</label>
+            <Select v-model="appSettings.defaultInterval" :options="intervalOptions" option-label="label" option-value="value" class="w-full" />
+          </div>
+          <div class="field">
+            <label class="field-label">Default Timeout</label>
+            <Select v-model="appSettings.defaultTimeout" :options="timeoutOptions" option-label="label" option-value="value" class="w-full" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Default Latency Threshold</label>
+          <div class="input-suffix-wrap">
+            <InputText v-model="latencyInput" type="number" min="100" class="w-full" />
+            <span class="input-suffix">ms</span>
+          </div>
+        </div>
+
+        <div class="form-footer">
+          <Button label="Save defaults" @click="saveDefaults" />
+        </div>
+      </section>
+
+      <section class="section card danger-card">
+        <h2 class="section-title danger-title">Data</h2>
+        <div class="danger-row">
+          <div>
+            <div class="danger-label">Clear all health logs</div>
+            <div class="danger-hint">Permanently delete all historical check data. Monitors are not affected.</div>
+          </div>
+          <Button label="Clear logs" severity="danger" outlined @click="clearLogsDialogOpen = true" />
         </div>
       </section>
     </div>
@@ -203,17 +244,27 @@
       <Button label="Delete account" severity="danger" :loading="deleting" :disabled="deleteConfirmInput !== 'DELETE'" @click="confirmDelete" />
     </template>
   </Dialog>
+
+  <Dialog v-model:visible="clearLogsDialogOpen" modal header="Clear Health Logs" :style="{ width: '400px' }">
+    <p class="confirm-text">This will permanently delete all health log history. This cannot be undone.</p>
+    <template #footer>
+      <Button label="Cancel" text @click="clearLogsDialogOpen = false" />
+      <Button label="Clear all logs" severity="danger" @click="confirmClearLogs" />
+    </template>
+  </Dialog>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, watch } from 'vue'
+import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { authApi } from '@/api/auth'
+import { monitorsApi } from '@/api/monitors'
 import { usageApi, type UsageResponse, type QuotaItem } from '@/api/usage'
 import { useToast } from 'primevue/usetoast'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
+import Select from 'primevue/select'
 import ToggleSwitch from 'primevue/toggleswitch'
 import Dialog from 'primevue/dialog'
 
@@ -225,13 +276,18 @@ const toast = useToast()
 const tabs = [
   { id: 'profile', label: 'Profile' },
   { id: 'notifications', label: 'Notifications' },
-  { id: 'plan', label: 'Plan' },
+  { id: 'preferences', label: 'Preferences' },
+  { id: 'subscription', label: 'Subscription' },
 ]
 
 const activeTab = ref((route.query.tab as string) || 'profile')
 
 watch(activeTab, (tab) => {
   router.replace({ query: { ...route.query, tab } })
+})
+
+watch(() => route.query.tab, (tab) => {
+  activeTab.value = (tab as string) || 'profile'
 })
 
 // ── Profile ──
@@ -260,7 +316,7 @@ async function saveProfile() {
 const pw = reactive({ current: '', next: '', confirm: '' })
 const pwErrors = reactive({ current: '', next: '', confirm: '' })
 
-function savePassword() {
+async function savePassword() {
   pwErrors.current = ''
   pwErrors.next = ''
   pwErrors.confirm = ''
@@ -269,10 +325,20 @@ function savePassword() {
   if (!pw.next || pw.next.length < 8) { pwErrors.next = 'Min. 8 characters'; ok = false }
   if (pw.next !== pw.confirm) { pwErrors.confirm = 'Passwords do not match'; ok = false }
   if (!ok) return
-  pw.current = ''
-  pw.next = ''
-  pw.confirm = ''
-  toast.add({ severity: 'success', summary: 'Password updated', detail: 'Your password has been changed', life: 3000 })
+  try {
+    await authApi.changePassword(pw.current, pw.next)
+    pw.current = ''
+    pw.next = ''
+    pw.confirm = ''
+    toast.add({ severity: 'success', summary: 'Password updated', life: 3000 })
+  } catch (err: any) {
+    const msg = err?.response?.data?.message
+    if (typeof msg === 'string' && msg.toLowerCase().includes('incorrect')) {
+      pwErrors.current = 'Current password is incorrect'
+    } else {
+      toast.add({ severity: 'error', summary: 'Update failed', detail: typeof msg === 'string' ? msg : 'Failed to update password', life: 6000 })
+    }
+  }
 }
 
 const deleteDialogOpen = ref(false)
@@ -306,18 +372,27 @@ const notifs = reactive({
   recoveryNotifications: true,
 })
 
-function saveNotifications() {
-  toast.add({ severity: 'success', summary: 'Preferences saved', life: 3000 })
+async function saveNotifications() {
+  try {
+    await authApi.updatePreferences({
+      emailAlerts: notifs.emailAlerts,
+      recoveryNotifications: notifs.recoveryNotifications,
+    })
+    toast.add({ severity: 'success', summary: 'Preferences saved', life: 3000 })
+  } catch {
+    toast.add({ severity: 'error', summary: 'Save failed', detail: 'Failed to save notification preferences', life: 6000 })
+  }
 }
 
 // ── Plan / Usage ──
 const usageLoading = ref(false)
 const usageError = ref(false)
+const usageLoaded = ref(false)
 const usage = ref<UsageResponse>({
   plan: 'free',
   monitors: { used: 0, limit: 5 },
   status_pages: { used: 0, limit: 1 },
-  integrations: { used: 0, limit: 3 },
+  integrations: { used: 0, limit: 2 },
   min_check_interval_seconds: 60,
 })
 
@@ -326,7 +401,7 @@ function pct(q: QuotaItem): number {
 }
 
 watch(activeTab, async (tab) => {
-  if (tab === 'plan' && !usageLoading.value && usage.value.monitors.used === 0) {
+  if (tab === 'subscription' && !usageLoaded.value && !usageLoading.value) {
     await loadUsage()
   }
 })
@@ -336,6 +411,7 @@ async function loadUsage() {
   usageError.value = false
   try {
     usage.value = await usageApi.get()
+    usageLoaded.value = true
   } catch {
     usageError.value = true
   } finally {
@@ -343,25 +419,91 @@ async function loadUsage() {
   }
 }
 
+// ── App settings ──
+const appSettings = reactive({
+  defaultInterval: 60,
+  defaultTimeout: 10,
+  defaultLatencyThreshold: 5000,
+})
+
+const intervalOptions = [
+  { label: '1 minute',  value: 60  },
+  { label: '2 minutes', value: 120 },
+  { label: '5 minutes', value: 300 },
+  { label: '10 minutes', value: 600 },
+]
+
+const timeoutOptions = [
+  { label: '5 seconds',  value: 5  },
+  { label: '10 seconds', value: 10 },
+  { label: '20 seconds', value: 20 },
+  { label: '30 seconds', value: 30 },
+]
+
+const latencyInput = computed({
+  get: () => String(appSettings.defaultLatencyThreshold),
+  set: (v: string) => { appSettings.defaultLatencyThreshold = parseInt(v) || 5000 },
+})
+
+const clearLogsDialogOpen = ref(false)
+
+async function saveDefaults() {
+  try {
+    await authApi.updatePreferences({
+      defaultIntervalSeconds: appSettings.defaultInterval,
+      defaultTimeoutSeconds: appSettings.defaultTimeout,
+      defaultLatencyThresholdMs: appSettings.defaultLatencyThreshold,
+    })
+    toast.add({ severity: 'success', summary: 'Defaults saved', life: 3000 })
+  } catch {
+    toast.add({ severity: 'error', summary: 'Save failed', detail: 'Failed to save monitoring defaults', life: 6000 })
+  }
+}
+
+async function confirmClearLogs() {
+  clearLogsDialogOpen.value = false
+  try {
+    await monitorsApi.clearAllHealthLogs()
+    toast.add({ severity: 'success', summary: 'Logs cleared', detail: 'All health log history has been deleted', life: 4000 })
+  } catch {
+    toast.add({ severity: 'error', summary: 'Clear failed', detail: 'Failed to clear health logs', life: 6000 })
+  }
+}
+
+async function loadPreferences() {
+  try {
+    const p = await authApi.getPreferences()
+    notifs.emailAlerts = p.emailAlerts
+    notifs.recoveryNotifications = p.recoveryNotifications
+    appSettings.defaultInterval = p.defaultIntervalSeconds
+    appSettings.defaultTimeout = p.defaultTimeoutSeconds
+    appSettings.defaultLatencyThreshold = p.defaultLatencyThresholdMs
+  } catch {
+    // leave defaults in place
+  }
+}
+
 onMounted(() => {
-  if (activeTab.value === 'plan') loadUsage()
+  loadPreferences()
+  if (activeTab.value === 'subscription') loadUsage()
 })
 </script>
 
 <style scoped>
 .w-full { width: 100%; }
 
-.account-page { width: 100%; }
+.settings-page { width: 100%; }
 
 .page-header { margin-bottom: 24px; }
 .page-title {
   font-size: 30px;
   font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
 }
 
 /* ── Tabs ── */
-.account-tabs {
+.settings-tabs {
   display: flex;
   gap: 2px;
   border-bottom: 1px solid var(--border);
@@ -417,13 +559,16 @@ onMounted(() => {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
+  margin-bottom: 20px;
 }
 
 .field {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  margin-bottom: 20px;
 }
+.field:last-of-type { margin-bottom: 0; }
 
 .field-label {
   font-size: 13px;
@@ -438,9 +583,8 @@ onMounted(() => {
 
 .form-footer {
   display: flex;
-  align-items: center;
   justify-content: flex-end;
-  gap: 12px;
+  margin-top: 24px;
 }
 
 /* Toggles */
@@ -475,7 +619,6 @@ onMounted(() => {
   justify-content: space-between;
   gap: 16px;
 }
-
 .danger-label {
   font-size: 14px;
   font-weight: 500;
@@ -490,11 +633,26 @@ onMounted(() => {
 .confirm-text {
   font-size: 14px;
   color: var(--text-secondary);
-  margin-bottom: 16px;
   line-height: 1.5;
+  margin-bottom: 16px;
 }
 .confirm-text strong { color: var(--text-primary); }
 .confirm-input { margin-bottom: 8px; }
+
+/* App tab */
+.input-suffix-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.input-suffix-wrap .w-full { padding-right: 40px; }
+.input-suffix {
+  position: absolute;
+  right: 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
 
 /* ── Plan cards ── */
 .plan-cards {
@@ -613,13 +771,11 @@ onMounted(() => {
   border: none;
   cursor: default;
 }
-
 .plan-btn--current {
   background: var(--bg-hover);
   color: var(--text-muted);
   border: 1px solid var(--border);
 }
-
 .plan-btn--upgrade {
   background: var(--accent);
   color: #000;
@@ -656,7 +812,6 @@ onMounted(() => {
   font-weight: 600;
   color: var(--text-muted);
 }
-.usage-count.at-limit { color: var(--danger); }
 
 .usage-bar {
   height: 6px;
@@ -671,7 +826,6 @@ onMounted(() => {
   border-radius: 999px;
   transition: width 0.4s ease;
 }
-.usage-fill.at-limit { background: var(--danger); }
 
 @media (max-width: 640px) {
   .plan-cards { grid-template-columns: 1fr; }

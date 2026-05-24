@@ -3,28 +3,37 @@
     <div class="page-header">
       <div>
         <h1 class="page-title">Incidents</h1>
-        <p class="page-subtitle">Downtime events across all monitors</p>
       </div>
     </div>
 
     <!-- Filters -->
     <div class="filters-bar">
-      <Select
-        v-model="filterServiceId"
-        :options="serviceOptions"
-        option-label="name"
-        option-value="id"
-        placeholder="All Monitors"
-        class="svc-select"
-      />
+      <IconField class="search-wrap">
+        <InputIcon class="pi pi-search" />
+        <InputText
+          v-model="searchQuery"
+          placeholder="Search monitors…"
+          autocomplete="off"
+          class="search-input"
+        />
+      </IconField>
 
-      <Select
-        v-model="filterStatus"
-        :options="statusOptions"
-        option-label="label"
-        option-value="value"
-        class="status-select"
-      />
+      <div class="filters-right">
+        <Select
+          v-model="filterStatus"
+          :options="statusOptions"
+          option-label="label"
+          option-value="value"
+          class="status-select"
+        />
+        <Select
+          v-model="dateFilter"
+          :options="dateOptions"
+          option-label="label"
+          option-value="value"
+          class="date-select"
+        />
+      </div>
     </div>
 
     <!-- Loading skeleton -->
@@ -32,7 +41,7 @@
       <table class="incidents-table">
         <thead>
           <tr>
-            <th>Monitor</th><th>Started</th><th>Recovered</th><th>Duration</th><th>Status</th>
+            <th>Monitor</th><th>Started</th><th>Recovered</th><th>Duration</th><th>Root Cause</th><th>Status</th>
           </tr>
         </thead>
         <tbody>
@@ -41,19 +50,24 @@
             <td><div class="skel" style="width:90px"></div></td>
             <td><div class="skel" style="width:90px"></div></td>
             <td><div class="skel" style="width:60px"></div></td>
+            <td><div class="skel" style="width:180px"></div></td>
             <td><div class="skel" style="width:70px"></div></td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Empty state -->
-    <div v-else-if="incidents.length === 0" class="empty-state">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40" aria-hidden="true">
-        <path d="M12 9v4M12 17h.01" stroke-linecap="round" stroke-linejoin="round" />
-        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
-      <p>No incidents found</p>
+    <!-- Error -->
+    <div v-else-if="loadError" class="table-wrap">
+      <table class="incidents-table">
+        <tbody>
+          <tr>
+            <td colspan="6" class="empty-cell">
+              <div class="empty-state">Failed to load incidents — refresh to try again.</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
     <!-- Table -->
@@ -65,19 +79,32 @@
             <th>Started</th>
             <th>Recovered</th>
             <th>Duration</th>
+            <th>Root Cause</th>
             <th>Status</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="inc in incidents" :key="inc.id">
+          <tr v-if="incidents.length === 0">
+            <td colspan="6" class="empty-cell">
+              <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="36" height="36" class="empty-icon" aria-hidden="true">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <p class="empty-title">No incidents recorded</p>
+                <p class="empty-desc">Incidents open automatically when a monitor stays down for over 5 minutes.</p>
+              </div>
+            </td>
+          </tr>
+          <tr v-else v-for="inc in incidents" :key="inc.id">
             <td>
-              <router-link :to="`/services/${inc.service_id}`" class="svc-link">
+              <router-link :to="`/monitors/${inc.service_id}`" class="svc-link">
                 {{ inc.service_name }}
               </router-link>
             </td>
             <td class="ts-cell">{{ formatDate(inc.started_at) }}</td>
             <td class="ts-cell">{{ inc.recovered_at ? formatDate(inc.recovered_at) : '—' }}</td>
             <td class="dur-cell">{{ inc.duration_seconds ? formatDuration(inc.duration_seconds) : (inc.status === 'open' ? ongoingDuration(inc.started_at) : '—') }}</td>
+            <td class="cause-cell">{{ inc.root_cause || '—' }}</td>
             <td>
               <span :class="['status-badge', inc.status === 'open' ? 'badge-danger' : 'badge-success']">
                 {{ inc.status === 'open' ? 'Open' : 'Resolved' }}
@@ -103,14 +130,8 @@
       </div>
     </div>
 
-    <div class="footer-row" v-if="!loading">
+    <div class="footer-row" v-if="!loading && !loadError">
       <p class="total-count">{{ total }} incident{{ total !== 1 ? 's' : '' }} total</p>
-      <router-link to="/alerts" class="event-log-link">
-        View raw event log
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12">
-          <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </router-link>
     </div>
   </div>
 </template>
@@ -118,19 +139,22 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import { incidentsApi } from '@/api/incidents'
-import { servicesApi } from '@/api/services'
-import type { IncidentSummary, ServiceWithStatus } from '@/types'
+import type { IncidentSummary } from '@/types'
 import Select from 'primevue/select'
+import InputText from 'primevue/inputtext'
+import IconField from 'primevue/iconfield'
+import InputIcon from 'primevue/inputicon'
 
 const PAGE_SIZE = 20
 
 const incidents = ref<IncidentSummary[]>([])
 const total = ref(0)
 const loading = ref(true)
+const loadError = ref(false)
 const page = ref(1)
-const filterServiceId = ref('')
+const searchQuery = ref('')
 const filterStatus = ref<'all' | 'open' | 'resolved'>('all')
-const services = ref<ServiceWithStatus[]>([])
+const dateFilter = ref(0)
 
 const totalPages = computed(() => Math.max(1, Math.ceil(total.value / PAGE_SIZE)))
 
@@ -140,29 +164,41 @@ const statusOptions = [
   { value: 'resolved' as const, label: 'Resolved' },
 ]
 
-const serviceOptions = computed(() => [
-  { id: '', name: 'All Monitors' },
-  ...services.value.map((s) => ({ id: s.id, name: s.name })),
-])
+const dateOptions = [
+  { label: 'All time', value: 0 },
+  { label: 'Today', value: 1 },
+  { label: 'Last 7 days', value: 7 },
+  { label: 'Last 30 days', value: 30 },
+  { label: 'Last 90 days', value: 90 },
+]
 
 async function load() {
   loading.value = true
+  loadError.value = false
   try {
     const params: Parameters<typeof incidentsApi.list>[0] = {
       limit: PAGE_SIZE,
       offset: (page.value - 1) * PAGE_SIZE,
     }
-    if (filterServiceId.value) params.service_id = filterServiceId.value
+    if (searchQuery.value.trim()) params.search = searchQuery.value.trim()
     if (filterStatus.value !== 'all') params.status = filterStatus.value
+    if (dateFilter.value > 0) {
+      const since = new Date()
+      since.setDate(since.getDate() - dateFilter.value)
+      since.setHours(0, 0, 0, 0)
+      params.since = since.toISOString()
+    }
     const data = await incidentsApi.list(params)
     incidents.value = data.items
     total.value = data.total
+  } catch {
+    loadError.value = true
   } finally {
     loading.value = false
   }
 }
 
-watch([filterServiceId, filterStatus], () => { page.value = 1; load() })
+watch([searchQuery, filterStatus, dateFilter], () => { page.value = 1; load() })
 watch(page, load)
 
 function formatDate(ts: string) {
@@ -183,43 +219,57 @@ function ongoingDuration(startedAt: string) {
   return formatDuration(sec) + ' (ongoing)'
 }
 
-onMounted(async () => {
-  const [, svcs] = await Promise.allSettled([load(), servicesApi.list()])
-  if (svcs.status === 'fulfilled') services.value = svcs.value
-})
+onMounted(load)
 </script>
 
 <style scoped>
-.incidents-view { width: 100%; height: 100%; display: flex; flex-direction: column; }
+.incidents-view { width: 100%; }
 
 .page-header {
   margin-bottom: 24px;
 }
-.page-title { font-size: 28px; font-weight: 700; color: var(--text-primary); margin: 0 0 4px; }
-.page-subtitle { font-size: 15px; color: var(--text-muted); margin: 0; }
+.page-title { font-size: 30px; font-weight: 700; color: var(--text-primary); margin: 0 0 4px; }
 
 .filters-bar {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
   margin-bottom: 20px;
   flex-wrap: wrap;
 }
 
-.svc-select { min-width: 180px; }
+.filters-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.search-wrap { flex: 1; min-width: 160px; max-width: 280px; }
+.search-input { width: 100%; }
+.search-wrap :deep(.p-inputtext),
+.search-wrap :deep(.p-iconfield) { height: 36px; }
+.search-wrap :deep(.p-inputtext) { padding-top: 0; padding-bottom: 0; }
+
 .status-select { min-width: 140px; }
+.status-select :deep(.p-select) { height: 36px; }
+.status-select :deep(.p-select-label) { padding-top: 0; padding-bottom: 0; line-height: 36px; }
+
+.date-select { min-width: 140px; }
+.date-select :deep(.p-select) { height: 36px; }
+.date-select :deep(.p-select-label) { padding-top: 0; padding-bottom: 0; line-height: 36px; }
 
 .table-wrap {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 12px;
-  overflow: auto;
-  flex: 1;
-  min-height: 0;
+  overflow-x: auto;
 }
 
 .incidents-table {
   width: 100%;
+  min-height: 100%;
   border-collapse: collapse;
 }
 .incidents-table th {
@@ -239,8 +289,8 @@ onMounted(async () => {
   color: var(--text-primary);
   border-bottom: 1px solid var(--border);
 }
-.incidents-table tbody tr:last-child td { border-bottom: none; }
 .incidents-table tbody tr:hover td { background: var(--bg-hover); }
+.incidents-table tbody tr:has(.empty-cell):hover td { background: transparent; }
 
 .svc-link {
   font-weight: 600;
@@ -249,8 +299,16 @@ onMounted(async () => {
 }
 .svc-link:hover { text-decoration: underline; }
 
-.ts-cell { color: var(--text-secondary); font-size: 15px; white-space: nowrap; }
-.dur-cell { color: var(--text-secondary); font-size: 15px; white-space: nowrap; }
+.ts-cell { color: var(--text-secondary); font-size: 14px; white-space: nowrap; }
+.dur-cell { color: var(--text-secondary); font-size: 14px; white-space: nowrap; }
+.cause-cell {
+  color: var(--text-muted);
+  font-size: 13px;
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .status-badge {
   display: inline-block;
@@ -287,7 +345,7 @@ onMounted(async () => {
 }
 .page-btn:disabled { opacity: 0.35; cursor: default; }
 .page-btn:not(:disabled):hover { background: var(--bg-hover); color: var(--text-primary); }
-.page-info { font-size: 15px; color: var(--text-muted); }
+.page-info { font-size: 14px; color: var(--text-muted); }
 
 .footer-row {
   display: flex;
@@ -296,32 +354,20 @@ onMounted(async () => {
   margin-top: 10px;
   flex-shrink: 0;
 }
-.total-count { font-size: 15px; color: var(--text-muted); }
-.event-log-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  color: var(--text-muted);
-  text-decoration: none;
-  transition: color 0.15s;
-}
-.event-log-link:hover { color: var(--accent); }
+.total-count { font-size: 14px; color: var(--text-muted); }
 
+.empty-cell { padding: 0 !important; border: none !important; vertical-align: middle; }
 .empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: 60px 20px;
-  color: var(--text-muted);
-  font-size: 14px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  flex: 1;
-  min-height: 0;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
 }
+.empty-icon { color: var(--text-muted); opacity: 0.4; }
+.empty-title { font-size: 16px; font-weight: 700; color: var(--text-primary); margin: 0; }
+.empty-desc { font-size: 14px; color: var(--text-muted); margin: 0; max-width: 300px; line-height: 1.6; }
 
 /* Skeleton */
 .skel-row td { padding: 14px 16px; }
