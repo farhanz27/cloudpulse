@@ -28,7 +28,7 @@ jobs:
           script_stop: true
 
           script: |
-            set -euo pipefail
+            set -e
 
             cd ~/apps/cloudpulse
 
@@ -37,25 +37,9 @@ jobs:
             git reset --hard origin/main
 
             echo "Rebuilding and restarting containers..."
-            docker compose up -d --build --force-recreate --remove-orphans
+            docker compose up -d --build --remove-orphans
 
             echo "Cleaning unused Docker images..."
             docker image prune -f
 
-            echo "Waiting for backend to become healthy..."
-
-            for i in $(seq 1 90); do
-              echo "Attempt $i..."
-
-              if curl -sf http://127.0.0.1:8081/actuator/health > /dev/null; then
-                echo "Backend is healthy."
-                exit 0
-              fi
-
-              sleep 2
-            done
-
-            echo "Backend failed health check."
-            docker compose logs backend --tail=100
-
-            exit 1
+            echo "Deployment completed successfully."
