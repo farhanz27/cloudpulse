@@ -1,6 +1,12 @@
 # CloudPulse
 
-A multi-tenant uptime monitoring SaaS. Monitor HTTP endpoints, track SSL and domain expiry, and get notified on downtime and recovery via email, Telegram, Slack, Teams, or webhook — with incident management, per-service metrics, and public status pages.
+An uptime monitoring SaaS. Monitor HTTP endpoints, track SSL and domain expiry, and get notified on downtime and recovery via email, Telegram, Discord, Slack, Teams, or webhook — with incident management, per-service metrics, and public status pages.
+
+
+
+## Live demo
+
+[cloudpulse.farhann.dev](https://cloudpulse.farhann.dev) — login with `demo@cloudpulse.dev` / `demo123`
 
 
 
@@ -9,8 +15,7 @@ A multi-tenant uptime monitoring SaaS. Monitor HTTP endpoints, track SSL and dom
 | Layer | Technology |
 |---|---|
 | Backend | Java 21, Spring Boot 3, Spring Security, Spring Data JPA |
-| App frontend | Vue 3, Vite, PrimeVue 4, Pinia, Vue Router, Axios, Chart.js |
-| Marketing pages | Vue 3, @vueuse/motion (no PrimeVue) |
+| Frontend | Vue 3, Vite, PrimeVue 4, Pinia, Vue Router, Axios, Chart.js |
 | Database | PostgreSQL 16 (Supabase) |
 | Email | Resend |
 | Deploy | Docker, Docker Compose |
@@ -39,24 +44,26 @@ A multi-tenant uptime monitoring SaaS. Monitor HTTP endpoints, track SSL and dom
 
 ## Quick start
 
+Login with `demo@cloudpulse.dev` / `demo123` after setup.
+
 **Environment:**
 ```bash
-cp .env.example .env
 # Fill in your values
+cp .env.example .env
+
+# Initialize the database — creates tables and inserts demo data
+make db-setup
 ```
 
 **Docker:**
 ```bash
 docker compose up --build
 ```
-Opens at `http://localhost` — login with `demo@cloudpulse.dev` / `demo123`
+Opens at `http://localhost`
 
 
 **Local development:**
 ```bash
-# Seed the database (first time only)
-make db-setup
-
 # Backend (port 8081)
 make run
 
