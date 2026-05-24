@@ -11,7 +11,7 @@ const router = createRouter({
       path: '/',
       name: 'landing',
       component: () => import('@/views/LandingView.vue'),
-      meta: { public: true, guestOnly: true },
+      meta: { public: true },
     },
     {
       path: '/sign-in',
@@ -31,9 +31,20 @@ const router = createRouter({
       component: () => import('@/views/DashboardView.vue'),
     },
     {
-      path: '/services/:id',
-      name: 'service-detail',
-      component: () => import('@/views/ServiceDetailView.vue'),
+      path: '/monitors/new',
+      name: 'monitor-add',
+      component: () => import('@/views/AddMonitorView.vue'),
+    },
+    {
+      path: '/monitors/:id/edit',
+      name: 'monitor-edit',
+      component: () => import('@/views/EditMonitorView.vue'),
+      props: true,
+    },
+    {
+      path: '/monitors/:id',
+      name: 'monitor-detail',
+      component: () => import('@/views/MonitorDetailView.vue'),
       props: true,
     },
     {
@@ -64,15 +75,19 @@ const router = createRouter({
       name: 'integrations',
       component: () => import('@/views/IntegrationsView.vue'),
     },
-    {
-      path: '/alerts',
-      name: 'alerts',
-      component: () => import('@/views/AlertsView.vue'),
-    },
+
     {
       path: '/account',
-      name: 'account',
-      component: () => import('@/views/AccountView.vue'),
+      redirect: '/settings',
+    },
+    {
+      path: '/subscription',
+      redirect: '/settings?tab=subscription',
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: () => import('@/views/SettingsView.vue'),
     },
     {
       path: '/contact',
@@ -105,12 +120,6 @@ const router = createRouter({
       meta: { public: true },
     },
     {
-      path: '/about',
-      name: 'about',
-      component: () => import('@/views/AboutView.vue'),
-      meta: { public: true },
-    },
-    {
       path: '/docs',
       name: 'docs',
       component: () => import('@/views/DocsView.vue'),
@@ -140,8 +149,11 @@ const router = createRouter({
 router.beforeEach(async (to) => {
   const auth = useAuthStore()
 
-  // Hydrate session from cookie on first navigation
-  await auth.ensureInitialized()
+  try {
+    await auth.ensureInitialized()
+  } catch {
+    // treat as unauthenticated if session hydration fails
+  }
 
   if (!to.meta.public && !auth.isAuthenticated) {
     return { name: 'sign-in' }

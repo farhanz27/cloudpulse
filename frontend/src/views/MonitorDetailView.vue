@@ -1,5 +1,5 @@
 <template>
-  <div class="service-detail" v-if="service">
+  <div class="monitor-detail" v-if="service">
 
     <!-- ── Section 1: Header ── -->
     <div class="svc-header">
@@ -35,7 +35,7 @@
           <span>{{ testing ? 'Sending…' : 'Test Notification' }}</span>
         </button>
 
-        <button class="action-btn" @click="showEditModal = true" title="Edit service settings">
+        <button class="action-btn" @click="router.push(`/monitors/${props.id}/edit`)" title="Edit service settings">
           <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
             <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke-linecap="round" stroke-linejoin="round" />
             <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke-linecap="round" stroke-linejoin="round" />
@@ -79,12 +79,9 @@
           </button>
           <Transition name="dropdown">
             <div v-if="moreOpen" class="action-dropdown action-dropdown--right">
-              <router-link :to="`/alerts?service_id=${props.id}`" class="dropdown-item" @click="moreOpen = false">
-                View event log
-              </router-link>
-              <div class="dropdown-divider"></div>
-              <button class="dropdown-item dropdown-item--danger" @click="deleteService">
-                Delete service
+
+              <button class="dropdown-item dropdown-item--danger" @click="deleteMonitor">
+                Delete monitor
               </button>
             </div>
           </Transition>
@@ -277,32 +274,24 @@
     </div>
   </div>
 
-  <EditServiceModal
-    :visible="showEditModal"
-    :service="service"
-    @close="showEditModal = false"
-    @updated="onServiceUpdated"
-  />
 </template>
 
 <script setup lang="ts">
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useToast } from 'primevue/usetoast'
-import { servicesApi } from '@/api/services'
+import { monitorsApi } from '@/api/monitors'
 import { metricsApi } from '@/api/metrics'
-import type { ServiceWithStatus, MetricPoint, Incident, ReliabilityMetrics } from '@/types'
+import type { MonitorWithStatus, MetricPoint, Incident, ReliabilityMetrics } from '@/types'
 import { usePolling } from '@/composables/usePolling'
 import StatusBadge from '@/components/common/StatusBadge.vue'
 import UptimeBars from '@/components/common/UptimeBars.vue'
 import LatencyChart from '@/components/charts/LatencyChart.vue'
-import EditServiceModal from '@/components/dashboard/EditServiceModal.vue'
 
 const props = defineProps<{ id: string }>()
 const router = useRouter()
 const toast = useToast()
 
-const showEditModal = ref(false)
 const testing = ref(false)
 const copied = ref(false)
 const muteOpen = ref(false)
@@ -317,7 +306,7 @@ const muteOptions = [
   { label: '24 hours',   minutes: 1440 },
 ]
 
-const service = ref<ServiceWithStatus | null>(null)
+const service = ref<MonitorWithStatus | null>(null)
 const metrics = ref<MetricPoint[]>([])
 const selectedRange = ref(24)
 
@@ -467,7 +456,7 @@ async function loadServiceAndMetrics() {
   const range = selectedRange.value
   try {
     const [svc, metricsData] = await Promise.all([
-      servicesApi.get(props.id),
+      monitorsApi.get(props.id),
       metricsApi.getMetrics(props.id, range, resolutionMinutesForRange(range)),
     ])
     if (seq !== loadServiceSeq) return
@@ -509,7 +498,7 @@ async function loadAll() {
 async function sendTestNotification() {
   testing.value = true
   try {
-    const result = await servicesApi.testNotification(props.id)
+    const result = await monitorsApi.testNotification(props.id)
     if (result.channels_notified > 0) {
       toast.add({ severity: 'success', summary: 'Test sent', detail: `Notified ${result.channels_notified} channel${result.channels_notified !== 1 ? 's' : ''}`, life: 4000 })
     } else {
@@ -531,19 +520,15 @@ async function copyUrl() {
 
 async function applyMute(minutes: number | null) {
   muteOpen.value = false
-  const updated = await servicesApi.mute(props.id, minutes)
+  const updated = await monitorsApi.mute(props.id, minutes)
   service.value = updated
 }
 
-async function deleteService() {
+async function deleteMonitor() {
   moreOpen.value = false
   if (!confirm(`Delete "${service.value?.name}"? This cannot be undone.`)) return
-  await servicesApi.delete(props.id)
+  await monitorsApi.delete(props.id)
   router.push('/')
-}
-
-async function onServiceUpdated() {
-  await loadServiceAndMetrics()
 }
 
 function onClickOutside(e: MouseEvent) {
@@ -564,7 +549,6 @@ watch(selectedRange, () => loadServiceAndMetrics())
 watch(selectedUptimeDays, () => loadUptimeBars())
 
 usePolling(loadAll, 30_000)
-loadAll()
 </script>
 
 <style scoped>
@@ -634,12 +618,12 @@ loadAll()
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 12px;
+  padding: 9px 16px;
   border-radius: 8px;
   border: 1px solid var(--border);
   background: var(--bg-secondary);
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
@@ -648,7 +632,7 @@ loadAll()
 .action-btn:hover:not(:disabled) { color: var(--text-primary); border-color: var(--text-muted); background: var(--bg-hover); }
 .action-btn:disabled { opacity: 0.5; cursor: default; }
 .action-btn--active { color: var(--warning) !important; border-color: rgba(245,158,11,0.4) !important; background: rgba(245,158,11,0.06) !important; }
-.action-btn--icon-only { padding: 7px 9px; }
+.action-btn--icon-only { padding: 9px 11px; }
 .action-icon { flex-shrink: 0; }
 
 .action-wrap { position: relative; }
@@ -696,7 +680,7 @@ loadAll()
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
-  margin-bottom: 14px;
+  margin-bottom: 24px;
 }
 
 .stat-card {
@@ -757,7 +741,7 @@ loadAll()
 
 /* ── Domain & SSL ── */
 .ssl-card {
-  margin-bottom: 14px;
+  margin-bottom: 24px;
 }
 
 .ssl-row {
@@ -814,7 +798,7 @@ loadAll()
 }
 
 /* ── Section 3: Uptime card ── */
-.uptime-card { margin-bottom: 16px; }
+.uptime-card { margin-bottom: 24px; }
 
 .card-section-header {
   display: flex; align-items: center; justify-content: space-between;
@@ -881,7 +865,7 @@ loadAll()
 }
 
 /* ── Section 4: Chart ── */
-.chart-card { margin-bottom: 16px; }
+.chart-card { margin-bottom: 24px; }
 
 /* ── Section 5: Incidents ── */
 .view-all-link {

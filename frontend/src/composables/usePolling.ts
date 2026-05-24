@@ -4,10 +4,9 @@ export function usePolling(fn: () => Promise<void>, intervalMs = 30000) {
   const isPolling = ref(true)
   let timer: ReturnType<typeof setInterval> | null = null
 
-  function start() {
-    fn()
+  function schedule() {
     timer = setInterval(() => {
-      if (isPolling.value) fn()
+      if (isPolling.value && !document.hidden) fn()
     }, intervalMs)
   }
 
@@ -18,8 +17,24 @@ export function usePolling(fn: () => Promise<void>, intervalMs = 30000) {
     }
   }
 
-  onMounted(start)
-  onUnmounted(stop)
+  function onVisibilityChange() {
+    if (!document.hidden) {
+      fn()
+      stop()
+      schedule()
+    }
+  }
+
+  onMounted(() => {
+    fn()
+    schedule()
+    document.addEventListener('visibilitychange', onVisibilityChange)
+  })
+
+  onUnmounted(() => {
+    stop()
+    document.removeEventListener('visibilitychange', onVisibilityChange)
+  })
 
   return { isPolling, stop }
 }

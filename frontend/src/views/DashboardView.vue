@@ -2,10 +2,9 @@
   <div class="dashboard">
     <div class="page-header">
       <div>
-        <h1 class="page-title">Dashboard</h1>
-        <p class="page-subtitle">Monitor your services in real-time</p>
+        <h1 class="page-title">Monitors</h1>
       </div>
-      <Button label="+ Add Monitor" @click="showAddModal = true" />
+      <Button label="Add monitor" icon="pi pi-plus" @click="router.push('/monitors/new')" />
     </div>
 
     <div class="kpi-grid">
@@ -64,260 +63,145 @@
       </div>
     </div>
 
-    <div class="table-section card">
-      <div class="table-toolbar">
-        <div class="search-wrap">
-          <IconField>
-            <InputIcon class="pi pi-search" />
-            <InputText
-              v-model="searchQuery"
-              placeholder="Search by name or URL…"
-              autocomplete="off"
-              aria-label="Search services"
-              class="search-input"
-            />
-          </IconField>
-        </div>
-        <div class="toolbar-right">
-          <Select
-            v-model="statusFilter"
-            :options="statusOptions"
-            option-label="label"
-            option-value="value"
-            aria-label="Filter by status"
-            class="toolbar-select"
+    <div class="filters-bar">
+      <div class="search-wrap">
+        <IconField>
+          <InputIcon class="pi pi-search" />
+          <InputText
+            v-model="searchQuery"
+            placeholder="Search by name or URL…"
+            autocomplete="off"
+            aria-label="Search services"
+            class="search-input"
           />
-          <Select
-            v-model="selectedDays"
-            :options="uptimePeriodOptions"
-            option-label="label"
-            option-value="value"
-            aria-label="Uptime period"
-            class="toolbar-select toolbar-select--narrow"
-          />
-          <div class="view-toggle" role="group" aria-label="View mode">
-            <button
-              type="button"
-              :class="['view-btn', { active: viewMode === 'table' }]"
-              title="Table view"
-              @click="viewMode = 'table'"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-                <path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              :class="['view-btn', { active: viewMode === 'grid' }]"
-              title="Grid view"
-              @click="viewMode = 'grid'"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-                <rect x="3" y="3" width="7" height="7" rx="1" />
-                <rect x="14" y="3" width="7" height="7" rx="1" />
-                <rect x="3" y="14" width="7" height="7" rx="1" />
-                <rect x="14" y="14" width="7" height="7" rx="1" />
-              </svg>
-            </button>
-          </div>
-        </div>
+        </IconField>
       </div>
-
-      <!-- Skeleton loading -->
-      <div v-if="servicesStore.loading" class="skeleton-table">
-        <div v-for="i in 4" :key="i" class="skeleton-row">
-          <div class="skeleton-cell skeleton-cell--wide"><div class="skeleton-line"></div><div class="skeleton-line skeleton-line--short"></div></div>
-          <div class="skeleton-cell"><div class="skeleton-badge"></div></div>
-          <div class="skeleton-cell skeleton-cell--num"><div class="skeleton-line skeleton-line--short"></div></div>
-          <div class="skeleton-cell"><div class="skeleton-bars"></div></div>
-          <div class="skeleton-cell"><div class="skeleton-line skeleton-line--short"></div></div>
-          <div class="skeleton-cell skeleton-cell--narrow"></div>
-        </div>
+      <div class="toolbar-right">
+        <Select
+          v-model="statusFilter"
+          :options="statusOptions"
+          option-label="label"
+          option-value="value"
+          aria-label="Filter by status"
+          class="toolbar-select"
+        />
       </div>
+    </div>
 
-      <div v-else-if="servicesStore.error" class="error">{{ servicesStore.error }}</div>
+    <div class="cards-section">
+      <div v-if="monitorsStore.error" class="error">{{ monitorsStore.error }}</div>
 
-      <!-- Empty state -->
-      <div v-else-if="!servicesStore.services.length" class="empty-state">
-        <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25">
-          <polyline points="1,12 6,12 8,6 10,18 12,8 14,15 16,12 23,12" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-        <p class="empty-title">No monitors yet</p>
-        <p class="empty-sub">Add your first monitor to start tracking uptime and latency.</p>
-        <Button label="+ Add Monitor" @click="showAddModal = true" />
-      </div>
-
-      <!-- Table view -->
-      <div v-else-if="viewMode === 'table'" class="table-scroll">
-        <table class="services-table">
+      <div v-else class="table-wrap">
+        <table class="mon-table">
           <thead>
             <tr>
               <th>Monitor</th>
-              <th>Status</th>
-              <th class="num">Response</th>
-              <th>Uptime ({{ selectedDays }}d)</th>
+              <th>Uptime (24h)</th>
+              <th>Response</th>
               <th>Last check</th>
+              <th>Status</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="svc in filteredServices" :key="svc.id" :class="rowClass(svc)" @click="goDetail(svc.id)">
-              <td class="cell-service">
-                <span class="service-name">
-                  {{ svc.name }}
-                  <span v-if="!svc.is_active" class="pill pill-paused">Paused</span>
-                  <span v-else-if="isMuted(svc)" class="pill pill-muted">Muted</span>
-                </span>
-                <span class="service-url" :title="svc.url">{{ svc.url }}</span>
-                <span v-if="uptimeSinceHint(svc)" class="uptime-since-hint">{{ uptimeSinceHint(svc) }}</span>
-              </td>
-              <td>
-                <StatusBadge :status="svc.is_active ? svc.current_status : null" :animated="svc.is_active" />
-              </td>
-              <td class="num mono">
-                {{ svc.last_response_time_ms != null ? `${Math.round(svc.last_response_time_ms)} ms` : '—' }}
-              </td>
-              <td class="cell-uptime">
-                <UptimeBars :bars="uptimeBars[svc.id] ?? []" :dates="uptimeDates" />
-                <span class="uptime-pct" :class="uptimeClass(svc.uptime_percent)">
-                  {{ svc.uptime_percent != null ? `${svc.uptime_percent}%` : '—' }}
-                </span>
-              </td>
-              <td class="cell-time">{{ formatRelative(svc.last_checked_at) }}</td>
-              <td class="cell-actions" @click.stop>
-                <div class="menu-wrap" :class="{ open: menuService?.id === svc.id }">
-                  <button class="btn-menu" title="Actions" @click="openMenu($event, svc)">
-                    <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true">
-                      <circle cx="12" cy="5" r="1.5" /><circle cx="12" cy="12" r="1.5" /><circle cx="12" cy="19" r="1.5" />
-                    </svg>
-                  </button>
+            <!-- Skeleton -->
+            <template v-if="monitorsStore.loading">
+              <tr v-for="i in 5" :key="i" class="skel-row">
+                <td><div class="skel" style="width:160px;height:13px" /></td>
+                <td><div class="skel" style="width:52px;height:20px;border-radius:20px" /></td>
+                <td><div class="skel" style="width:120px;height:20px" /></td>
+                <td><div class="skel" style="width:48px;height:13px" /></td>
+                <td><div class="skel" style="width:72px;height:13px" /></td>
+                <td></td>
+              </tr>
+            </template>
+
+            <!-- Empty (no monitors at all) -->
+            <tr v-else-if="!monitorsStore.services.length">
+              <td colspan="6" class="empty-cell">
+                <div class="empty-state">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="36" height="36" class="empty-icon">
+                    <polyline points="1,12 6,12 8,6 10,18 12,8 14,15 16,12 23,12" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <p class="empty-title">No monitors yet</p>
+                  <p class="empty-desc">Add your first monitor to start tracking uptime and latency.</p>
+                  <Button label="+ Add monitor" @click="router.push('/monitors/new')" />
                 </div>
               </td>
             </tr>
-            <tr v-if="!filteredServices.length">
-              <td colspan="6" class="empty-cell">No services match your filters.</td>
-            </tr>
+
+            <!-- Rows -->
+            <template v-else>
+              <tr
+                v-for="svc in filteredServices"
+                :key="svc.id"
+                class="mon-row"
+                :class="{ 'row-paused': !svc.is_active }"
+                @click="goDetail(svc.id)"
+              >
+                <td class="td-monitor">
+                  <span class="mon-name">{{ svc.name }}</span>
+                  <span class="mon-url">{{ svc.url }}</span>
+                </td>
+                <td>
+                  <div class="bars-cell">
+                    <UptimeBars :bars="uptimeBars[svc.id] ?? new Array(24).fill(null)" :dates="uptimeDates" size="sm" />
+                    <span class="bars-pct" :class="uptimePctClass(svc)">
+                      {{ svc.uptime_percent != null ? `${svc.uptime_percent}%` : '—' }}
+                    </span>
+                  </div>
+                </td>
+                <td class="td-mono">
+                  {{ svc.last_response_time_ms != null ? `${svc.last_response_time_ms} ms` : '—' }}
+                </td>
+                <td class="td-muted">
+                  {{ svc.last_checked_at ? relativeTime(svc.last_checked_at) : '—' }}
+                </td>
+                <td>
+                  <div class="status-cell">
+                    <StatusBadge :status="svc.is_active ? svc.current_status : null" :animated="svc.is_active" :dot-only="false" />
+                    <span v-if="!svc.is_active" class="pill pill-paused">Paused</span>
+                    <span v-else-if="isMuted(svc)" class="pill pill-muted">Muted</span>
+                  </div>
+                </td>
+                <td class="td-actions" @click.stop>
+                  <button class="btn-menu" @click="openMenu($event, svc)">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15">
+                      <circle cx="12" cy="5" r="1.5" /><circle cx="12" cy="12" r="1.5" /><circle cx="12" cy="19" r="1.5" />
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+              <tr v-if="!filteredServices.length">
+                <td colspan="6" class="empty-filter">No services match your filters.</td>
+              </tr>
+            </template>
           </tbody>
         </table>
       </div>
-
-      <!-- Grid view -->
-      <div v-else class="service-grid">
-        <div
-          v-for="svc in filteredServices"
-          :key="svc.id"
-          :class="['service-card', cardStatusClass(svc)]"
-          @click="goDetail(svc.id)"
-        >
-          <div class="sc-header">
-            <div class="sc-status-wrap">
-              <StatusBadge :status="svc.is_active ? svc.current_status : null" :animated="svc.is_active" />
-            </div>
-            <div class="sc-actions" @click.stop>
-              <button
-                class="btn-icon-action"
-                :title="svc.is_active ? 'Pause' : 'Resume'"
-                @click="toggleActive(svc)"
-              >
-                <svg v-if="svc.is_active" viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
-                  <rect x="6" y="4" width="4" height="16" rx="1" />
-                  <rect x="14" y="4" width="4" height="16" rx="1" />
-                </svg>
-                <svg v-else viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </button>
-              <button class="btn-icon-action" title="Edit" @click="openEdit(svc)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
-                  <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke-linecap="round" stroke-linejoin="round" />
-                  <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <div class="sc-body">
-            <p class="sc-name">
-              {{ svc.name }}
-              <span v-if="!svc.is_active" class="pill pill-paused">Paused</span>
-              <span v-else-if="isMuted(svc)" class="pill pill-muted">Muted</span>
-            </p>
-            <p class="sc-url" :title="svc.url">{{ truncateUrl(svc.url, 40) }}</p>
-            <p v-if="uptimeSinceHint(svc)" class="sc-incident-hint">{{ uptimeSinceHint(svc) }}</p>
-          </div>
-
-          <div class="sc-uptime-bars">
-            <UptimeBars :bars="uptimeBars[svc.id] ?? []" :dates="uptimeDates" />
-          </div>
-          <div class="sc-metrics">
-            <div class="sc-metric">
-              <span class="sc-metric-label">Response</span>
-              <span class="sc-metric-value mono">{{ svc.last_response_time_ms != null ? `${Math.round(svc.last_response_time_ms)}ms` : '—' }}</span>
-            </div>
-            <div class="sc-metric">
-              <span class="sc-metric-label">Uptime {{ selectedDays }}d</span>
-              <span class="sc-metric-value mono" :class="uptimeClass(svc.uptime_percent)">{{ svc.uptime_percent != null ? `${svc.uptime_percent}%` : '—' }}</span>
-            </div>
-            <div class="sc-metric">
-              <span class="sc-metric-label">Last check</span>
-              <span class="sc-metric-value">{{ formatRelative(svc.last_checked_at) }}</span>
-            </div>
-          </div>
-        </div>
-
-        <div v-if="!filteredServices.length" class="empty-cell" style="grid-column: 1/-1; text-align:center; padding: 40px;">
-          No services match your filters.
-        </div>
-      </div>
     </div>
 
-    <Teleport to="body">
-      <div
-        v-if="menuService"
-        class="action-menu"
-        :style="{ top: menuAnchor.top + 'px', right: menuAnchor.right + 'px' }"
-      >
-        <button class="action-item" @click="toggleActive(menuService); menuService = null">
-          <svg v-if="menuService.is_active" viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><rect x="6" y="4" width="4" height="16" rx="1" /><rect x="14" y="4" width="4" height="16" rx="1" /></svg>
-          <svg v-else viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M8 5v14l11-7z" /></svg>
-          {{ menuService.is_active ? 'Pause' : 'Resume' }}
-        </button>
-        <button class="action-item" @click="openEdit(menuService); menuService = null">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke-linecap="round" stroke-linejoin="round" /><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke-linecap="round" stroke-linejoin="round" /></svg>
-          Edit
-        </button>
-        <button class="action-item action-item--detail" @click="goDetail(menuService.id); menuService = null">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
-          View detail
-        </button>
-      </div>
-    </Teleport>
+    <Menu ref="menuRef" :model="menuItems" popup />
 
-    <AddServiceModal
-      :visible="showAddModal"
-      @close="showAddModal = false"
-      @created="onServiceCreated"
-    />
+    <Dialog v-model:visible="showDeleteDialog" modal header="Delete Monitor" :style="{ width: '400px' }" @hide="deleteTarget = null">
+      <p class="delete-text">Delete <strong>{{ deleteTarget?.name }}</strong>? This cannot be undone.</p>
+      <template #footer>
+        <Button label="Cancel" severity="secondary" outlined @click="showDeleteDialog = false" />
+        <Button label="Delete" severity="danger" :loading="deleting" @click="doDelete" />
+      </template>
+    </Dialog>
 
-    <EditServiceModal
-      :visible="showEditModal"
-      :service="editingService"
-      @close="showEditModal = false"
-      @updated="servicesStore.fetchAll()"
-    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useServicesStore } from '@/stores/services'
-import { servicesApi } from '@/api/services'
+import { useMonitorsStore } from '@/stores/monitors'
+import { monitorsApi } from '@/api/monitors'
 import { metricsApi } from '@/api/metrics'
 import { usePolling } from '@/composables/usePolling'
-import type { ServiceWithStatus, LastIncident } from '@/types'
-import AddServiceModal from '@/components/dashboard/AddServiceModal.vue'
-import EditServiceModal from '@/components/dashboard/EditServiceModal.vue'
+import type { MonitorWithStatus, LastIncident } from '@/types'
 import StatusBadge from '@/components/common/StatusBadge.vue'
 import UptimeBars from '@/components/common/UptimeBars.vue'
 import Button from 'primevue/button'
@@ -325,67 +209,83 @@ import InputText from 'primevue/inputtext'
 import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
 import Select from 'primevue/select'
+import Menu from 'primevue/menu'
+import Dialog from 'primevue/dialog'
 
 const router = useRouter()
-const servicesStore = useServicesStore()
-const showAddModal = ref(false)
-const showEditModal = ref(false)
-const editingService = ref<ServiceWithStatus | null>(null)
-const menuService = ref<ServiceWithStatus | null>(null)
-const menuAnchor = ref({ top: 0, right: 0 })
-const viewMode = ref<'table' | 'grid'>(
-  (localStorage.getItem('cp_view') as 'table' | 'grid') ?? 'table'
-)
-
-const dayOptions = [7, 30, 45, 90] as const
-const selectedDays = ref<7 | 30 | 45 | 90>(
-  (parseInt(localStorage.getItem('cp_uptime_days') ?? '45') as 7 | 30 | 45 | 90) || 45
-)
-const uptimePeriodOptions = [
-  { label: '7d', value: 7 },
-  { label: '30d', value: 30 },
-  { label: '45d', value: 45 },
-  { label: '90d', value: 90 },
-]
+const monitorsStore = useMonitorsStore()
+const menuRef = ref()
+const menuService = ref<MonitorWithStatus | null>(null)
+const showDeleteDialog = ref(false)
+const deleteTarget = ref<MonitorWithStatus | null>(null)
+const deleting = ref(false)
 
 const uptimeBars = ref<Record<string, (number | null)[]>>({})
 const uptimeDates = ref<string[]>([])
 const lastIncidents = ref<Record<string, LastIncident>>({})
 
 async function loadUptimeBars() {
-  const data = await metricsApi.getUptimeBars(selectedDays.value)
-  uptimeBars.value = data.services
-  uptimeDates.value = data.dates
+  try {
+    const data = await metricsApi.getUptimeBarsHourly()
+    uptimeBars.value = data.services
+    uptimeDates.value = data.timestamps.map(formatHourLabel)
+  } catch {
+    // bars stay empty if endpoint is unavailable
+  }
+}
+
+function formatHourLabel(iso: string): string {
+  const start = new Date(iso)
+  const end = new Date(start.getTime() + 3_600_000)
+  const day = start.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })
+  const t1 = start.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', hour12: false })
+  const t2 = end.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', hour12: false })
+  return `${day} · ${t1}–${t2}`
 }
 
 async function loadLastIncidents() {
   lastIncidents.value = await metricsApi.getLastIncidents()
 }
 
-function uptimeSinceHint(svc: ServiceWithStatus): string | null {
-  if (svc.current_status === 'DOWN' || !svc.is_active) return null
+function uptimeSinceHint(svc: MonitorWithStatus): string | null {
+  if (!svc.is_active) return null
   const inc = lastIncidents.value[svc.id]
-  if (!inc || inc.duration_seconds === null) return null
-  const recoveredAt = new Date(inc.last_down_at).getTime() + inc.duration_seconds * 1000
-  const upForSec = Math.floor((Date.now() - recoveredAt) / 1000)
-  if (upForSec < 0) return null
-  return `Up for ${formatDuration(upForSec)}`
+
+  if (svc.current_status === 'DOWN') {
+    if (inc && inc.duration_seconds === null) {
+      const downForSec = Math.floor((Date.now() - new Date(inc.last_down_at).getTime()) / 1000)
+      return `Down for ${formatDuration(downForSec)}`
+    }
+    return null
+  }
+
+  if (inc && inc.duration_seconds !== null) {
+    const recoveredAt = new Date(inc.last_down_at).getTime() + inc.duration_seconds * 1000
+    const upForSec = Math.floor((Date.now() - recoveredAt) / 1000)
+    if (upForSec >= 0) return `Up for ${formatDuration(upForSec)}`
+  }
+  if (!inc) {
+    const upForSec = Math.floor((Date.now() - new Date(svc.created_at).getTime()) / 1000)
+    if (upForSec > 0) return `Up for ${formatDuration(upForSec)}`
+  }
+  return null
 }
 
 function formatDuration(seconds: number): string {
   if (seconds < 60) return `${Math.round(seconds)}s`
-  if (seconds < 3600) return `${Math.floor(seconds / 60)}m`
+  if (seconds < 3600) {
+    const m = Math.floor(seconds / 60)
+    const s = Math.round(seconds % 60)
+    return s > 0 ? `${m}m ${s}s` : `${m}m`
+  }
   if (seconds < 86400) {
     const h = Math.floor(seconds / 3600)
     const m = Math.floor((seconds % 3600) / 60)
     return m > 0 ? `${h}h ${m}m` : `${h}h`
   }
-  return `${Math.floor(seconds / 86400)}d`
-}
-
-function openEdit(svc: ServiceWithStatus) {
-  editingService.value = svc
-  showEditModal.value = true
+  const d = Math.floor(seconds / 86400)
+  const h = Math.floor((seconds % 86400) / 3600)
+  return h > 0 ? `${d}d ${h}h` : `${d}d`
 }
 
 const searchQuery = ref('')
@@ -399,56 +299,47 @@ const statusOptions = [
   { value: 'UNKNOWN' as const, label: 'Unknown' },
 ]
 
-watch(viewMode, (v) => localStorage.setItem('cp_view', v))
-watch(selectedDays, (v) => {
-  localStorage.setItem('cp_uptime_days', String(v))
-  loadUptimeBars()
-})
 
-function openMenu(event: MouseEvent, svc: ServiceWithStatus) {
-  if (menuService.value?.id === svc.id) {
-    menuService.value = null
-    return
-  }
-  const rect = (event.currentTarget as HTMLElement).getBoundingClientRect()
-  menuAnchor.value = { top: rect.bottom + 4, right: window.innerWidth - rect.right }
+function openMenu(event: MouseEvent, svc: MonitorWithStatus) {
   menuService.value = svc
+  menuRef.value.toggle(event)
 }
 
-function onDocClick(e: MouseEvent) {
-  if (!(e.target as Element).closest('.menu-wrap') && !(e.target as Element).closest('.action-menu')) {
-    menuService.value = null
-  }
-}
-
-function onDocScroll() {
-  menuService.value = null
-}
-onMounted(() => {
-  document.addEventListener('click', onDocClick, true)
-  document.addEventListener('scroll', onDocScroll, true)
-})
-onUnmounted(() => {
-  document.removeEventListener('click', onDocClick, true)
-  document.removeEventListener('scroll', onDocScroll, true)
-})
+const menuItems = computed(() => [
+  {
+    label: menuService.value?.is_active ? 'Pause' : 'Resume',
+    icon: menuService.value?.is_active ? 'pi pi-pause' : 'pi pi-play',
+    command: () => menuService.value && toggleActive(menuService.value),
+  },
+  {
+    label: 'Edit',
+    icon: 'pi pi-pencil',
+    command: () => menuService.value && router.push(`/monitors/${menuService.value.id}/edit`),
+  },
+  { separator: true },
+  {
+    label: 'Delete',
+    icon: 'pi pi-trash',
+    class: 'menu-item-danger',
+    command: () => menuService.value && removeMonitor(menuService.value),
+  },
+])
 
 async function loadAll() {
-  await Promise.all([servicesStore.fetchAll(), loadUptimeBars(), loadLastIncidents()])
+  await Promise.all([monitorsStore.fetchAll(), loadUptimeBars(), loadLastIncidents()])
 }
 
 usePolling(loadAll, 60000)
-loadAll()
 
-const totalServices = computed(() => servicesStore.services.length)
-const upCount = computed(() => servicesStore.services.filter((s) => s.current_status === 'UP').length)
-const downCount = computed(() => servicesStore.services.filter((s) => s.current_status === 'DOWN').length)
-const degradedCount = computed(() => servicesStore.services.filter((s) => s.current_status === 'DEGRADED').length)
+const totalServices = computed(() => monitorsStore.services.length)
+const upCount = computed(() => monitorsStore.services.filter((s) => s.current_status === 'UP').length)
+const downCount = computed(() => monitorsStore.services.filter((s) => s.current_status === 'DOWN').length)
+const degradedCount = computed(() => monitorsStore.services.filter((s) => s.current_status === 'DEGRADED').length)
 
 const STATUS_ORDER: Record<string, number> = { DOWN: 0, DEGRADED: 1, UNKNOWN: 2, UP: 3 }
 
 const filteredServices = computed(() => {
-  let list: ServiceWithStatus[] = [...servicesStore.services]
+  let list: MonitorWithStatus[] = [...monitorsStore.services]
   const q = searchQuery.value.trim().toLowerCase()
   if (q) list = list.filter((s) => s.name.toLowerCase().includes(q) || s.url.toLowerCase().includes(q))
   if (statusFilter.value !== 'all') {
@@ -465,128 +356,119 @@ const filteredServices = computed(() => {
   return list
 })
 
-function isMuted(svc: ServiceWithStatus) {
-  return svc.muted_until && new Date(svc.muted_until) > new Date()
+async function toggleActive(svc: MonitorWithStatus) {
+  await monitorsApi.toggleActive(svc.id, !svc.is_active)
+  monitorsStore.fetchAll()
 }
 
-function rowClass(svc: ServiceWithStatus) {
-  if (!svc.is_active) return 'row-link row-paused'
-  switch (svc.current_status) {
-    case 'DOWN': return 'row-link row-down'
-    case 'DEGRADED': return 'row-link row-degraded'
-    default: return 'row-link'
-  }
+function removeMonitor(svc: MonitorWithStatus) {
+  deleteTarget.value = svc
+  showDeleteDialog.value = true
 }
 
-function cardStatusClass(svc: ServiceWithStatus) {
-  if (!svc.is_active) return 'card-paused'
-  switch (svc.current_status) {
-    case 'DOWN': return 'card-down'
-    case 'DEGRADED': return 'card-degraded'
-    case 'UP': return 'card-up'
-    default: return ''
-  }
+async function doDelete() {
+  if (!deleteTarget.value) return
+  deleting.value = true
+  await monitorsApi.delete(deleteTarget.value.id)
+  deleting.value = false
+  showDeleteDialog.value = false
+  monitorsStore.fetchAll()
 }
 
-function uptimeClass(pct: number | null) {
+function goDetail(id: string) { router.push(`/monitors/${id}`) }
+
+function isMuted(svc: MonitorWithStatus) {
+  return !!svc.muted_until && new Date(svc.muted_until) > new Date()
+}
+
+function uptimePctClass(svc: MonitorWithStatus) {
+  const pct = svc.uptime_percent
   if (pct === null) return ''
-  if (pct >= 99) return 'uptime-good'
-  if (pct >= 95) return 'uptime-warn'
-  return ''
+  if (pct >= 99) return 'text-success'
+  if (pct >= 95) return 'text-warning'
+  return 'text-danger'
 }
 
-async function toggleActive(svc: ServiceWithStatus) {
-  await servicesApi.toggleActive(svc.id, !svc.is_active)
-  servicesStore.fetchAll()
-}
-
-function goDetail(id: string) { router.push(`/services/${id}`) }
-
-function truncateUrl(url: string, max = 48) {
-  return url.length <= max ? url : `${url.slice(0, max - 1)}…`
-}
-
-function formatRelative(iso: string | null) {
-  if (!iso) return '—'
+function relativeTime(iso: string): string {
   const diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000)
   if (diff < 60) return `${diff}s ago`
   if (diff < 3600) return `${Math.floor(diff / 60)}m ago`
   if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`
-  return new Date(iso).toLocaleDateString()
+  return `${Math.floor(diff / 86400)}d ago`
 }
-
-function onServiceCreated() { servicesStore.fetchAll(); loadLastIncidents() }
 </script>
 
 <style scoped>
+.dashboard { height: 100%; display: flex; flex-direction: column; }
+
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 24px;
+  flex-shrink: 0;
 }
 
-.page-title { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
-.page-subtitle { color: var(--text-muted); font-size: 15px; margin-top: 4px; }
+.page-title { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; }
 
 /* KPI grid */
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  gap: 14px;
   margin-bottom: 28px;
+  flex-shrink: 0;
 }
 @media (max-width: 1024px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 520px)  { .kpi-grid { grid-template-columns: 1fr; } }
 
 .kpi-card {
-  position: relative;
   display: flex;
   align-items: center;
-  gap: 18px;
-  padding: 20px 20px 22px;
+  gap: 16px;
+  padding: 18px 20px;
   border-radius: var(--radius);
+  background: var(--bg-card);
   border: 1px solid var(--border);
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-left: 3px solid var(--border);
+  transition: box-shadow 0.15s;
 }
-.kpi-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0.12;
-  pointer-events: none;
+.kpi-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.28); }
+.kpi-total   { border-left-color: #64748b; }
+.kpi-up      { border-left-color: var(--success); }
+.kpi-down    { border-left-color: var(--danger); }
+.kpi-degraded { border-left-color: var(--warning); }
+
+.kpi-icon {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
 }
-.kpi-total::before  { background: linear-gradient(135deg, #64748b 0%, #3b82f6 100%); }
-.kpi-up::before     { background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); }
-.kpi-down::before   { background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); }
-.kpi-degraded::before { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
-.kpi-card:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,0.35); }
-.kpi-icon { flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-.kpi-icon svg { width: 48px; height: 48px; }
-.kpi-total .kpi-icon   { color: #94a3b8; }
-.kpi-up .kpi-icon      { color: #4ade80; }
-.kpi-down .kpi-icon    { color: #f87171; }
-.kpi-degraded .kpi-icon { color: #fbbf24; }
-.kpi-body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.kpi-label { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); }
-.kpi-value { font-size: 2rem; font-weight: 700; font-family: var(--font-mono); letter-spacing: -0.03em; line-height: 1.1; color: var(--text-primary); }
-.kpi-up .kpi-value      { color: #86efac; }
-.kpi-down .kpi-value    { color: #fca5a5; }
-.kpi-degraded .kpi-value { color: #fcd34d; }
+.kpi-icon svg { width: 22px; height: 22px; }
+.kpi-total .kpi-icon    { background: rgba(100,116,139,0.12); color: #94a3b8; }
+.kpi-up .kpi-icon       { background: rgba(34,197,94,0.12);  color: var(--success); }
+.kpi-down .kpi-icon     { background: rgba(239,68,68,0.12);  color: var(--danger); }
+.kpi-degraded .kpi-icon { background: rgba(245,158,11,0.12); color: var(--warning); }
+
+.kpi-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.kpi-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); }
+.kpi-value { font-size: 26px; font-weight: 700; font-family: var(--font-mono); letter-spacing: -0.03em; line-height: 1.2; color: var(--text-primary); }
+.kpi-up .kpi-value      { color: var(--success); }
+.kpi-down .kpi-value    { color: var(--danger); }
+.kpi-degraded .kpi-value { color: var(--warning); }
 
 /* Table section */
-.table-section { padding: 0; overflow: hidden; }
+.cards-section { flex: 1; min-height: 0; overflow: auto; padding: 4px 0; }
 
-.table-toolbar {
+.filters-bar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg-secondary);
+  margin-bottom: 16px;
+  flex-shrink: 0;
 }
 
 .toolbar-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
@@ -599,188 +481,148 @@ function onServiceCreated() { servicesStore.fetchAll(); loadLastIncidents() }
 
 /* Toolbar dropdowns */
 .toolbar-select { min-width: 140px; height: 36px; }
-.toolbar-select--narrow { min-width: 90px; }
 .toolbar-select :deep(.p-select) { height: 36px; }
 .toolbar-select :deep(.p-select-label) { padding-top: 0; padding-bottom: 0; line-height: 36px; }
 
-/* View toggle */
-.view-toggle { display: flex; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
-.view-btn { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; transition: background 0.15s, color 0.15s; }
-.view-btn:hover { color: var(--text-primary); background: var(--bg-hover); }
-.view-btn.active { color: var(--text-primary); background: var(--bg-hover); }
-.view-btn + .view-btn { border-left: 1px solid var(--border); }
-
-/* Skeleton loader */
-.skeleton-table { padding: 8px 0; }
-.skeleton-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--border);
-}
-.skeleton-cell { flex: 1; }
-.skeleton-cell--wide { flex: 2; }
-.skeleton-cell--num { flex: 0.6; display: flex; justify-content: flex-end; }
-.skeleton-cell--narrow { flex: 0.3; }
-.skeleton-line {
-  height: 12px;
-  border-radius: 6px;
-  background: linear-gradient(90deg, var(--bg-hover) 25%, var(--border) 50%, var(--bg-hover) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  margin-bottom: 6px;
-}
-.skeleton-line--short { width: 55%; margin-bottom: 0; }
-.skeleton-badge { height: 22px; width: 56px; border-radius: 11px; background: linear-gradient(90deg, var(--bg-hover) 25%, var(--border) 50%, var(--bg-hover) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
-.skeleton-bars { height: 20px; width: 120px; border-radius: 4px; background: linear-gradient(90deg, var(--bg-hover) 25%, var(--border) 50%, var(--bg-hover) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
-@keyframes shimmer { to { background-position: -200% 0; } }
-
 /* Table */
-.table-scroll { overflow-x: auto; }
-.services-table { width: 100%; border-collapse: collapse; font-size: 16px; }
-.services-table th { text-align: left; padding: 12px 16px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); border-bottom: 1px solid var(--border); background: var(--bg-secondary); white-space: nowrap; }
-.services-table th.num, .services-table td.num { text-align: right; }
-.services-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); color: var(--text-secondary); vertical-align: middle; }
+.table-wrap {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow-x: auto;
+}
 
-.row-link { cursor: pointer; transition: background 0.12s; }
-.row-link:hover td { background: rgba(51,65,85,0.35); }
-.row-down td:first-child     { box-shadow: inset 3px 0 0 var(--danger); }
-.row-degraded td:first-child  { box-shadow: inset 3px 0 0 var(--warning); }
-.row-paused { opacity: 0.5; }
+.mon-table {
+  width: 100%;
+  min-height: 100%;
+  border-collapse: collapse;
+}
 
-.cell-service { min-width: 180px; }
-.service-name { display: block; font-weight: 600; color: var(--text-primary); }
-.service-url  { display: block; font-family: var(--font-mono); font-size: 14px; color: var(--text-muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px; }
-.uptime-since-hint { display: block; font-size: 13px; color: var(--success); margin-top: 3px; opacity: 0.8; }
+.mon-table th {
+  padding: 11px 16px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  white-space: nowrap;
+}
 
-.cell-uptime { white-space: nowrap; }
-.uptime-pct { font-family: var(--font-mono); font-size: 14px; color: var(--text-muted); margin-left: 6px; vertical-align: middle; }
+.mon-table td {
+  padding: 13px 16px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
 
-.cell-time { font-size: 15px; white-space: nowrap; }
-.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.mon-table tbody tr:last-child td { border-bottom: none; }
 
-/* Uptime colors */
-.uptime-good { color: var(--success) !important; }
-.uptime-warn  { color: var(--warning) !important; }
+.mon-row { cursor: pointer; transition: background 0.1s; }
+.mon-row:hover td { background: var(--bg-hover); }
+tr:has(.empty-cell):hover td { background: transparent; cursor: default; }
+.row-paused { opacity: 0.55; }
+
+.td-monitor { min-width: 180px; }
+.mon-name { display: block; font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.mon-url {
+  display: block;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
+}
+
+.status-cell { display: flex; align-items: center; gap: 8px; }
+
+.bars-cell { display: flex; align-items: center; gap: 8px; }
+.bars-pct { font-size: 11px; font-weight: 700; font-family: var(--font-mono); color: var(--text-secondary); flex-shrink: 0; }
+
+.td-mono { font-family: var(--font-mono); white-space: nowrap; }
+.td-muted { color: var(--text-muted); white-space: nowrap; }
+.td-actions { width: 48px; text-align: right; }
+
+/* Skeleton */
+.skel {
+  border-radius: var(--radius-sm);
+  background: var(--bg-hover);
+  animation: shimmer 1.4s ease-in-out infinite;
+  display: inline-block;
+}
+@keyframes shimmer { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
 /* Pills */
-.pill { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
-.pill-paused { background: rgba(100,116,139,0.2); color: var(--text-muted); margin-left: 6px; vertical-align: middle; }
-.pill-muted  { background: rgba(245,158,11,0.15); color: var(--warning); margin-left: 6px; vertical-align: middle; }
-
-/* ⋮ Action menu */
-.cell-actions { width: 40px; padding: 6px 8px !important; }
-.menu-wrap { display: flex; justify-content: center; }
-
-.btn-menu {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 30px; height: 30px; border-radius: 6px; border: 1px solid transparent;
-  background: transparent; color: var(--text-muted); cursor: pointer;
-  transition: color 0.15s, background 0.15s, border-color 0.15s;
+.pill {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
 }
-.btn-menu:hover,
-.menu-wrap.open .btn-menu {
-  color: var(--text-primary); background: var(--bg-hover); border-color: var(--border);
-}
+.pill-paused { background: rgba(100,116,139,0.2); color: var(--text-muted); }
+.pill-muted  { background: rgba(245,158,11,0.15); color: var(--warning); }
 
-.action-menu {
-  position: fixed;
-  min-width: 148px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  box-shadow: 0 12px 36px rgba(0,0,0,0.45);
-  overflow: hidden;
-  z-index: 9999;
-}
+.text-success { color: var(--success); }
+.text-warning { color: var(--warning); }
+.text-danger  { color: var(--danger); }
 
-.action-item {
-  display: flex; align-items: center; gap: 9px;
-  width: 100%; padding: 9px 14px;
-  font-size: 13px; color: var(--text-secondary);
-  background: transparent; border: none; cursor: pointer; text-align: left;
-  transition: background 0.12s, color 0.12s;
-}
-.action-item:hover { background: var(--bg-hover); color: var(--text-primary); }
-.action-item--detail { border-top: 1px solid var(--border); color: var(--accent); }
-.action-item--detail:hover { background: rgba(212,175,55,0.08); }
+.empty-filter { text-align: center; padding: 32px 16px; color: var(--text-muted); }
 
 /* Empty state */
+.empty-cell { padding: 0 !important; border: none !important; vertical-align: middle; }
 .empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  padding: 64px 24px;
+  padding: 24px;
   text-align: center;
 }
-.empty-icon { width: 64px; height: 64px; color: var(--text-muted); opacity: 0.4; }
-.empty-title { font-size: 18px; font-weight: 600; color: var(--text-primary); }
-.empty-sub { font-size: 15px; color: var(--text-muted); max-width: 320px; }
-.empty-cell { text-align: center; padding: 40px 16px !important; color: var(--text-muted); }
+.empty-icon { color: var(--text-muted); opacity: 0.4; }
+.empty-title { font-size: 16px; font-weight: 700; color: var(--text-primary); margin: 0; }
+.empty-desc { font-size: 14px; color: var(--text-muted); margin: 0; max-width: 300px; line-height: 1.6; }
 
-/* Grid view */
-.service-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
-  padding: 24px;
-}
-
-.service-card {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 16px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--border);
-  background: var(--bg-primary);
+.btn-menu {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
-}
-.service-card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
-.card-up       { border-left-color: var(--success); }
-.card-down     { border-left-color: var(--danger); }
-.card-degraded { border-left-color: var(--warning); }
-.card-paused   { border-left-color: var(--border); opacity: 0.6; }
-
-.sc-header { display: flex; justify-content: space-between; align-items: center; }
-.sc-status-wrap { display: flex; align-items: center; gap: 7px; }
-.sc-actions { display: flex; gap: 4px; }
-
-.sc-body { min-width: 0; }
-.sc-name { font-size: 15px; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sc-url  { font-size: 15px; font-family: var(--font-mono); color: var(--text-muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sc-incident-hint { font-size: 13px; color: var(--text-muted); margin-top: 4px; opacity: 0.75; }
-
-.sc-uptime-bars { padding: 0 2px; }
-.sc-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding-top: 10px; border-top: 1px solid var(--border); }
-.sc-metric { display: flex; flex-direction: column; gap: 3px; }
-.sc-metric-label { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); }
-.sc-metric-value { font-size: 15px; font-weight: 600; color: var(--text-secondary); }
-
-.btn-icon-action {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 28px; height: 28px; border-radius: 6px; border: 1px solid transparent;
-  background: transparent; color: var(--text-muted); cursor: pointer;
   transition: color 0.15s, background 0.15s, border-color 0.15s;
 }
-.btn-icon-action:hover { color: var(--text-primary); background: var(--bg-hover); border-color: var(--border); }
+.btn-menu:hover { color: var(--text-primary); background: var(--bg-hover); border-color: var(--border); }
+
 
 .error { text-align: center; padding: 32px 20px; color: var(--danger); }
+
+.delete-text { margin: 0; font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
 
 /* Mobile responsive */
 @media (max-width: 640px) {
   .page-header { flex-direction: column; gap: 12px; }
-  .table-toolbar { flex-direction: column; align-items: stretch; }
+  .filters-bar { flex-direction: column; align-items: stretch; }
   .search-wrap { max-width: none; }
-  .toolbar-right { flex-wrap: wrap; justify-content: space-between; }
-  .filter-group { order: 2; }
-  .uptime-period { order: 3; }
-  .view-toggle { order: 1; margin-left: auto; }
-  .services-table th:nth-child(5),
-  .services-table td:nth-child(5) { display: none; }
+  .toolbar-right { flex-wrap: wrap; }
+}
+</style>
+
+<style>
+.menu-item-danger .p-menuitem-link .p-menuitem-text,
+.menu-item-danger .p-menuitem-link .p-menuitem-icon {
+  color: var(--danger) !important;
 }
 </style>

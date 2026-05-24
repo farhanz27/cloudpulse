@@ -19,7 +19,7 @@
   --shadow:        0 1px 3px rgba(0, 0, 0, 0.5);
   --shadow-lg:     0 4px 24px rgba(0, 0, 0, 0.6);
   --font-display:  'Marcellus', Georgia, serif;
-  --font-body:     'Josefin Sans', 'Inter', sans-serif;
+  --font-body:     'DM Sans', 'Inter', sans-serif;
   --font-mono:     'JetBrains Mono', 'Fira Code', monospace;
 }
 
@@ -94,6 +94,17 @@
   --p-toast-border-color: rgba(212, 175, 55, 0.2);
   --p-toast-background: #141414;
   --p-toast-color: #F2F0E4;
+
+  /* SelectButton / ToggleButton */
+  --p-togglebutton-background: transparent;
+  --p-togglebutton-border-color: transparent;
+  --p-togglebutton-color: #888888;
+  --p-togglebutton-hover-background: rgba(255, 255, 255, 0.05);
+  --p-togglebutton-hover-border-color: transparent;
+  --p-togglebutton-hover-color: #C0BEB2;
+  --p-togglebutton-checked-background: rgba(212, 175, 55, 0.12);
+  --p-togglebutton-checked-border-color: transparent;
+  --p-togglebutton-checked-color: #D4AF37;
 }
 
 /* ── PrimeVue Button: gold primary ── */
@@ -229,21 +240,9 @@
 }
 
 /* ── PrimeVue Slider ── */
-.p-slider {
-  background: rgba(212, 175, 55, 0.15) !important;
-  border-radius: 3px !important;
-}
-.p-slider-range {
-  background: #D4AF37 !important;
-}
-.p-slider-handle {
-  background: #fff !important;
-  border: 3px solid #D4AF37 !important;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4) !important;
-}
-.p-slider-handle:hover {
-  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.2) !important;
-}
+.p-slider { background: rgba(212, 175, 55, 0.15) !important; }
+.p-slider-range { background: #D4AF37 !important; }
+.p-slider-handle { background: #D4AF37 !important; border-color: #D4AF37 !important; }
 
 /* ── PrimeVue Checkbox ── */
 .p-checkbox .p-checkbox-box {

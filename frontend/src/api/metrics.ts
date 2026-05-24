@@ -23,6 +23,13 @@ export const metricsApi = {
       })
       .then((r) => r.data),
 
+  getUptimeBarsHourly: (serviceId?: string) =>
+    client
+      .get<{ timestamps: string[]; services: Record<string, (number | null)[]> }>('/metrics/uptime-bars-hourly', {
+        params: serviceId ? { service_id: serviceId } : {},
+      })
+      .then((r) => r.data),
+
   getLastIncidents: () =>
     client
       .get<Record<string, LastIncident>>('/metrics/last-incidents')

@@ -26,8 +26,8 @@ function barClass(pct: number | null) {
 }
 
 function tooltip(pct: number | null, i: number) {
-  const date = props.dates?.[i] ?? `Day ${i + 1}`
-  if (pct === null) return `${date}: No data`
+  const date = props.dates?.[i] ?? `Hour ${i + 1}`
+  if (pct === null) return `${date}: No records`
   return `${date}: ${pct}%`
 }
 </script>

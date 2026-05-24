@@ -80,7 +80,7 @@ function formatTime(ts: string) {
 }
 
 .alert-type {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -92,7 +92,7 @@ function formatTime(ts: string) {
 .alert-success .alert-type { color: var(--success); }
 
 .alert-message {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-secondary);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -100,13 +100,13 @@ function formatTime(ts: string) {
 }
 
 .alert-time {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
   white-space: nowrap;
 }
 
 .btn-sm {
   padding: 4px 12px;
-  font-size: 12px;
+  font-size: 13px;
 }
 </style>

@@ -1,4 +1,4 @@
-export interface Service {
+export interface Monitor {
   id: string
   name: string
   url: string
@@ -7,17 +7,17 @@ export interface Service {
   timeout_seconds: number
   expected_status_code: number
   is_active: boolean
-  keep_alive: boolean
   latency_threshold_ms: number
   muted_until: string | null
   consecutive_failures: number
   region: string | null
+  ip_version: string
   integration_ids: number[]
   created_at: string
   updated_at: string
 }
 
-export interface ServiceWithStatus extends Service {
+export interface MonitorWithStatus extends Monitor {
   current_status: string | null
   last_response_time_ms: number | null
   uptime_percent: number | null
@@ -26,7 +26,7 @@ export interface ServiceWithStatus extends Service {
   domain_valid_until?: string | null
 }
 
-export interface ServiceCreate {
+export interface MonitorCreate {
   name: string
   url: string
   notify_email?: string | null
@@ -34,12 +34,12 @@ export interface ServiceCreate {
   timeout_seconds?: number
   expected_status_code?: number
   is_active?: boolean
-  keep_alive?: boolean
   latency_threshold_ms?: number
+  ip_version?: string
   integration_ids?: number[]
 }
 
-export interface ServiceUpdate {
+export interface MonitorUpdate {
   name?: string
   url?: string
   notify_email?: string | null
@@ -47,8 +47,8 @@ export interface ServiceUpdate {
   timeout_seconds?: number
   expected_status_code?: number
   is_active?: boolean
-  keep_alive?: boolean
   latency_threshold_ms?: number
+  ip_version?: string
   integration_ids?: number[]
 }
 
@@ -103,6 +103,7 @@ export interface IncidentSummary {
   recovered_at: string | null
   duration_seconds: number
   status: 'open' | 'resolved'
+  root_cause: string | null
 }
 
 export interface IncidentsPage {

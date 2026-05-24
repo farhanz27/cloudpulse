@@ -10,10 +10,7 @@
         <span></span><span></span><span></span>
       </button>
       <div class="mobile-brand">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true" style="color:#D4AF37">
-          <polyline points="1,12 6,12 8,6 10,18 12,8 14,15 16,12 23,12" />
-        </svg>
-        <span>CloudPulse</span>
+        <CloudPulseWordmark />
       </div>
       <router-link v-if="openIncidentCount > 0" to="/incidents" class="mobile-incident-dot">
         {{ openIncidentCount }}
@@ -26,10 +23,7 @@
     <!-- Sidebar -->
     <aside :class="['sidebar', { 'sidebar--open': sidebarOpen }]">
       <div class="sidebar-brand">
-        <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <polyline points="1,12 6,12 8,6 10,18 12,8 14,15 16,12 23,12" />
-        </svg>
-        <span class="brand-name">CLOUDPULSE</span>
+        <CloudPulseWordmark />
       </div>
 
       <nav class="sidebar-nav">
@@ -66,47 +60,30 @@
           <span>Integrations</span>
         </router-link>
 
-        <router-link to="/alerts" class="nav-item" active-class="nav-item--active" @click="sidebarOpen = false">
+
+        <router-link to="/settings" class="nav-item" active-class="nav-item--active" @click="sidebarOpen = false">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
-            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" />
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
           </svg>
-          <span>Event Log</span>
+          <span>Settings</span>
         </router-link>
       </nav>
 
-      <!-- User account -->
-      <div class="sidebar-account">
-        <button
-          class="account-row"
-          :class="{ 'account-row--open': profileMenuOpen }"
-          @click="profileMenuOpen = !profileMenuOpen"
-          @keydown.escape="profileMenuOpen = false"
-          aria-haspopup="true"
-          :aria-expanded="profileMenuOpen"
-        >
-          <div class="account-avatar" aria-hidden="true">{{ auth.initials }}</div>
-          <div class="account-info">
-            <div class="account-name">{{ auth.user?.name }}</div>
-            <div class="account-email">{{ auth.user?.email }}</div>
-          </div>
-          <svg class="account-chevron" :class="{ 'account-chevron--up': profileMenuOpen }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true">
-            <path d="M6 9l6 6 6-6" />
-          </svg>
-        </button>
-
-        <div v-if="profileMenuOpen" class="profile-menu">
-          <router-link to="/account" class="profile-menu-item" @click="profileMenuOpen = false; sidebarOpen = false">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true">
-              <circle cx="12" cy="8" r="4" />
-              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-            </svg>
-            <span>Account</span>
+      <!-- Sidebar bottom -->
+      <div class="sidebar-bottom">
+        <div class="sidebar-profile">
+          <router-link to="/settings?tab=profile" class="profile-link" @click="sidebarOpen = false">
+            <div class="account-avatar" aria-hidden="true">{{ auth.initials }}</div>
+            <div class="account-info">
+              <div class="account-name">{{ auth.user?.name }}</div>
+              <div class="account-email">{{ auth.user?.email }}</div>
+            </div>
           </router-link>
-          <button class="profile-menu-item profile-menu-item--signout" @click="handleSignOut">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true">
+          <button class="logout-btn" @click="handleSignOut" aria-label="Sign out">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
               <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
             </svg>
-            <span>Sign out</span>
           </button>
         </div>
       </div>
@@ -129,6 +106,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { incidentsApi } from '@/api/incidents'
 import { useAuthStore } from '@/stores/auth'
 import Toast from 'primevue/toast'
+import CloudPulseWordmark from '@/components/CloudPulseWordmark.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -137,7 +115,6 @@ const auth = useAuthStore()
 const isPublicPage = computed(() => !!route.meta.public)
 const routerReady = ref(false)
 const sidebarOpen = ref(false)
-const profileMenuOpen = ref(false)
 const openIncidentCount = ref(0)
 
 async function fetchOpenIncidentCount() {
@@ -156,12 +133,6 @@ async function handleSignOut() {
 
 let pollInterval: ReturnType<typeof setInterval> | null = null
 
-function onDocClick(e: MouseEvent) {
-  if (!(e.target as Element).closest('.sidebar-account')) {
-    profileMenuOpen.value = false
-  }
-}
-
 router.isReady().then(() => {
   routerReady.value = true
 })
@@ -169,12 +140,10 @@ router.isReady().then(() => {
 onMounted(() => {
   fetchOpenIncidentCount()
   pollInterval = setInterval(fetchOpenIncidentCount, 30_000)
-  document.addEventListener('click', onDocClick, true)
 })
 
 onUnmounted(() => {
   if (pollInterval) clearInterval(pollInterval)
-  document.removeEventListener('click', onDocClick, true)
 })
 </script>
 
@@ -203,11 +172,6 @@ onUnmounted(() => {
 .mobile-brand {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-family: var(--font-display);
-  font-size: 14px;
-  letter-spacing: 0.12em;
-  color: var(--text-primary);
   flex: 1;
 }
 
@@ -260,7 +224,7 @@ onUnmounted(() => {
 
 /* ── Sidebar ── */
 .sidebar {
-  width: 220px;
+  width: 276px;
   flex-shrink: 0;
   background: var(--bg-secondary);
   border-right: 1px solid var(--border);
@@ -277,6 +241,7 @@ onUnmounted(() => {
 .sidebar-brand {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   padding: 0 20px;
   height: 64px;
@@ -284,26 +249,13 @@ onUnmounted(() => {
   flex-shrink: 0;
 }
 
-.brand-icon {
-  width: 22px;
-  height: 22px;
-  color: var(--accent);
-  flex-shrink: 0;
-}
-
-.brand-name {
-  font-family: var(--font-display);
-  font-size: 15px;
-  letter-spacing: 0.14em;
-  color: var(--text-primary);
-}
 
 /* Nav */
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  gap: 1px;
-  padding: 12px 8px;
+  gap: 4px;
+  padding: 16px 10px;
   flex: 1;
 }
 
@@ -311,12 +263,11 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 9px 12px;
+  padding: 10px 14px;
   border-radius: var(--radius-sm);
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
   color: var(--text-muted);
   text-decoration: none;
   transition: color 0.15s, background 0.15s;
@@ -349,41 +300,46 @@ onUnmounted(() => {
   font-weight: 700;
 }
 
-/* ── User account ── */
-.sidebar-account {
+/* ── Sidebar bottom ── */
+.sidebar-bottom {
   border-top: 1px solid var(--border);
-  padding: 8px;
+  padding: 10px 10px 12px;
   flex-shrink: 0;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
-.account-row {
+.sidebar-profile {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 0;
+}
+
+.profile-link {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px;
+  flex: 1;
+  min-width: 0;
+  padding: 8px 10px;
   border-radius: var(--radius-sm);
-  border: none;
-  background: transparent;
-  width: 100%;
-  cursor: pointer;
-  text-align: left;
-  font-family: var(--font-body);
+  text-decoration: none;
   transition: background 0.15s;
 }
-.account-row:hover,
-.account-row--open {
+.profile-link:hover {
   background: var(--bg-hover);
 }
 
 .account-avatar {
-  width: 30px;
-  height: 30px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-sm);
   background: rgba(212, 175, 55, 0.15);
   border: 1px solid rgba(212, 175, 55, 0.3);
   color: var(--accent);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -415,56 +371,28 @@ onUnmounted(() => {
   text-overflow: ellipsis;
 }
 
-.account-chevron {
-  flex-shrink: 0;
-  color: var(--text-muted);
-  transition: transform 0.2s;
-}
-.account-chevron--up {
-  transform: rotate(-90deg);
-}
-
-.profile-menu {
-  position: absolute;
-  bottom: 8px;
-  left: calc(100% + 8px);
-  min-width: 160px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-  overflow: hidden;
-  z-index: 200;
-}
-
-.profile-menu-item {
+.logout-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
-  width: 100%;
-  padding: 9px 12px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  font-family: var(--font-body);
-  color: var(--text-muted);
-  background: transparent;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
   border: none;
-  text-decoration: none;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
   cursor: pointer;
   transition: color 0.15s, background 0.15s;
 }
-.profile-menu-item:hover {
-  color: var(--text-primary);
-  background: var(--bg-hover);
-}
-.profile-menu-item--signout:hover {
+.logout-btn:hover {
   color: var(--danger);
+  background: var(--bg-hover);
 }
 
 /* ── Main content ── */
 .app-main {
-  margin-left: 220px;
+  margin-left: 276px;
   flex: 1;
   height: 100vh;
   overflow-y: auto;
