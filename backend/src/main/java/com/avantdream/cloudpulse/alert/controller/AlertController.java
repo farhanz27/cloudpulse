@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import com.avantdream.cloudpulse.alert.dto.AlertResponse;
 import com.avantdream.cloudpulse.alert.service.AlertService;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -23,9 +24,10 @@ public class AlertController {
     public List<AlertResponse> list(
             @RequestParam(required = false) UUID serviceId,
             @RequestParam(required = false) Boolean acknowledged,
+            @RequestParam(required = false) Instant since,
             @RequestParam(defaultValue = "50") int limit,
             @RequestParam(defaultValue = "0") int offset) {
-        return alertService.list(serviceId, acknowledged, limit, offset);
+        return alertService.list(serviceId, acknowledged, since, limit, offset);
     }
 
     @PostMapping("/acknowledge-all")

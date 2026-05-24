@@ -1,17 +1,19 @@
 package com.avantdream.cloudpulse.alert.service;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.avantdream.cloudpulse.alert.dto.AlertResponse;
 import com.avantdream.cloudpulse.alert.entity.Alert;
 import com.avantdream.cloudpulse.alert.repository.AlertRepository;
+import com.avantdream.cloudpulse.monitor.entity.Monitor;
 import com.avantdream.cloudpulse.monitor.repository.MonitorRepository;
 import com.avantdream.cloudpulse.shared.exception.ResourceNotFoundException;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -28,17 +30,14 @@ public class AlertService {
     }
 
     @Transactional(readOnly = true)
-    public List<AlertResponse> list(UUID serviceId, Boolean acknowledged, int limit, int offset) {
-        List<Alert> alerts = alertRepository.findFiltered(serviceId, acknowledged,
-                PageRequest.of(0, offset + limit));
+    public List<AlertResponse> list(UUID serviceId, Boolean acknowledged, Instant since, int limit, int offset) {
+        List<Alert> alerts = alertRepository.findFiltered(serviceId, acknowledged, since, limit, offset);
 
-        // Build service name map
-        Map<UUID, String> names = monitorRepository.findAll().stream()
-                .collect(Collectors.toMap(m -> m.getId(), m -> m.getName()));
+        Set<UUID> serviceIds = alerts.stream().map(Alert::getServiceId).collect(Collectors.toSet());
+        Map<UUID, String> names = monitorRepository.findAllById(serviceIds).stream()
+                .collect(Collectors.toMap(Monitor::getId, Monitor::getName));
 
         return alerts.stream()
-                .skip(offset)
-                .limit(limit)
                 .map(a -> AlertResponse.from(a, names.get(a.getServiceId())))
                 .toList();
     }
