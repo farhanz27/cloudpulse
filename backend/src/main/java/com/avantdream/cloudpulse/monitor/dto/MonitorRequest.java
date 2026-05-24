@@ -13,10 +13,10 @@ public record MonitorRequest(
         @Min(1) int timeoutSeconds,
         int expectedStatusCode,
         boolean isActive,
-        boolean keepAlive,
         @Min(100) int latencyThresholdMs,
         String notifyEmail,
-        List<Integer> integrationIds
+        List<Integer> integrationIds,
+        String ipVersion
 ) {
     public MonitorRequest {
         if (checkIntervalSeconds == 0) checkIntervalSeconds = 60;
@@ -24,5 +24,6 @@ public record MonitorRequest(
         if (expectedStatusCode == 0) expectedStatusCode = 200;
         if (latencyThresholdMs == 0) latencyThresholdMs = 5000;
         if (integrationIds == null) integrationIds = List.of();
+        if (ipVersion == null) ipVersion = "DEFAULT";
     }
 }

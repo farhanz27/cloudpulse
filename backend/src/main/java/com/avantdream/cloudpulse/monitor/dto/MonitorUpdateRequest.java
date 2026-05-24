@@ -9,8 +9,8 @@ public record MonitorUpdateRequest(
         Integer timeoutSeconds,
         Integer expectedStatusCode,
         Boolean isActive,
-        Boolean keepAlive,
         Integer latencyThresholdMs,
         String notifyEmail,
-        List<Integer> integrationIds
+        List<Integer> integrationIds,
+        String ipVersion
 ) {}

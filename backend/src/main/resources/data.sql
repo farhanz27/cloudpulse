@@ -68,6 +68,38 @@ INSERT INTO alerts (service_id, alert_type, message, notified, acknowledged, cre
  now() - interval '6 hours');
 
 -- =========================================================
+-- INCIDENTS (DOWNTIME / RECOVERY pairs — derived by IncidentService)
+-- =========================================================
+
+-- GitHub — resolved ~4 days ago, recovered in 8 min
+INSERT INTO alerts (service_id, alert_type, message, notified, acknowledged, created_at) VALUES
+('b1000000-0000-0000-0000-000000000001', 'DOWNTIME',
+ E'GitHub is unreachable\nURL: https://github.com\nResponse time: 0ms\nError: Connection timed out after 10000ms',
+ TRUE, TRUE, now() - interval '4 days');
+
+INSERT INTO alerts (service_id, alert_type, message, notified, acknowledged, created_at) VALUES
+('b1000000-0000-0000-0000-000000000001', 'RECOVERY',
+ 'GitHub has recovered. Response time: 143ms',
+ TRUE, TRUE, now() - interval '4 days' + interval '8 minutes');
+
+-- Vercel — resolved ~10 days ago, recovered in 23 min
+INSERT INTO alerts (service_id, alert_type, message, notified, acknowledged, created_at) VALUES
+('b1000000-0000-0000-0000-000000000003', 'DOWNTIME',
+ E'Vercel is unreachable\nURL: https://vercel.com\nResponse time: 0ms\nError: HTTP 503 Service Unavailable',
+ TRUE, TRUE, now() - interval '10 days');
+
+INSERT INTO alerts (service_id, alert_type, message, notified, acknowledged, created_at) VALUES
+('b1000000-0000-0000-0000-000000000003', 'RECOVERY',
+ 'Vercel has recovered. Response time: 71ms',
+ TRUE, TRUE, now() - interval '10 days' + interval '23 minutes');
+
+-- Supabase — open, started ~3 hours ago (no RECOVERY = IncidentService marks it "open")
+INSERT INTO alerts (service_id, alert_type, message, notified, acknowledged, created_at) VALUES
+('b1000000-0000-0000-0000-000000000002', 'DOWNTIME',
+ E'Supabase is unreachable\nURL: https://supabase.com\nResponse time: 0ms\nError: HTTP 500 Internal Server Error',
+ TRUE, FALSE, now() - interval '3 hours');
+
+-- =========================================================
 -- STATUS PAGE
 -- =========================================================
 INSERT INTO status_pages (id, name, slug, description) VALUES

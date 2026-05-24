@@ -63,4 +63,10 @@ public class MonitorController {
     public MonitorWithStatusResponse mute(@PathVariable UUID id, @RequestBody MuteRequest req) {
         return monitorService.mute(id, req);
     }
+
+    @DeleteMapping("/health-logs")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void clearAllHealthLogs() {
+        monitorService.clearAllHealthLogs();
+    }
 }

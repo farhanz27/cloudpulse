@@ -18,6 +18,4 @@ public interface MonitorRepository extends JpaRepository<Monitor, UUID> {
     @Query("SELECT m FROM Monitor m LEFT JOIN FETCH m.integrations WHERE m.active = true")
     List<Monitor> findAllActiveWithIntegrations();
 
-    @Query("SELECT m FROM Monitor m WHERE m.active = true AND m.keepAlive = true")
-    List<Monitor> findAllActiveKeepAlive();
 }

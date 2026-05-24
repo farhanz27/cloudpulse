@@ -8,7 +8,9 @@ import com.avantdream.cloudpulse.monitor.entity.Monitor;
 import com.avantdream.cloudpulse.monitor.repository.HealthLogRepository;
 import com.avantdream.cloudpulse.monitor.repository.MonitorRepository;
 import com.avantdream.cloudpulse.shared.exception.ConflictException;
+import com.avantdream.cloudpulse.shared.exception.QuotaExceededException;
 import com.avantdream.cloudpulse.shared.exception.ResourceNotFoundException;
+import com.avantdream.cloudpulse.shared.plan.FreePlan;
 import com.avantdream.cloudpulse.statuspage.dto.*;
 import com.avantdream.cloudpulse.statuspage.entity.StatusPage;
 import com.avantdream.cloudpulse.statuspage.entity.StatusPageEntry;
@@ -86,6 +88,10 @@ public class StatusPageService {
     }
 
     public StatusPageResponse create(StatusPageRequest req) {
+        if (statusPageRepository.count() >= FreePlan.STATUS_PAGE_LIMIT) {
+            throw new QuotaExceededException(
+                "Free plan limit reached: " + FreePlan.STATUS_PAGE_LIMIT + " status page maximum");
+        }
         if (statusPageRepository.existsBySlug(req.slug())) {
             throw new ConflictException("Slug already in use");
         }
@@ -135,25 +141,37 @@ public class StatusPageService {
                 .findTopByServiceIdOrderByCheckedAtDesc(monitor.getId())
                 .orElse(null);
 
-        Instant since24h = Instant.now().minus(24, ChronoUnit.HOURS);
-        long total = healthLogRepository.countByServiceIdSince(monitor.getId(), since24h);
-        long upCount = healthLogRepository.countUpByServiceIdSince(monitor.getId(), since24h);
-        Double uptime24h = total > 0 ? Math.round(upCount * 100.0 / total * 100) / 100.0 : null;
+        Instant since90d = Instant.now().minus(90, ChronoUnit.DAYS);
+        List<Object[]> dailyRows = healthLogRepository.findDailyUptime(monitor.getId(), since90d);
 
-        // 30-day bars
-        Instant since30d = Instant.now().minus(30, ChronoUnit.DAYS);
-        // We'll just return null bars for each missing day
+        Map<String, double[]> dailyMap = new HashMap<>();
+        long totalChecks = 0, totalUp = 0;
+        for (Object[] row : dailyRows) {
+            String day = row[0].toString();
+            long t = ((Number) row[1]).longValue();
+            long u = ((Number) row[2]).longValue();
+            dailyMap.put(day, new double[]{t, u});
+            totalChecks += t;
+            totalUp += u;
+        }
+
         List<String> dates = new ArrayList<>();
         List<Double> bars = new ArrayList<>();
         LocalDate today = LocalDate.now(ZoneOffset.UTC);
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        for (int i = 29; i >= 0; i--) {
-            dates.add(today.minusDays(i).format(fmt));
-            bars.add(null);
+        for (int i = 89; i >= 0; i--) {
+            String dateStr = today.minusDays(i).format(fmt);
+            dates.add(dateStr);
+            double[] d = dailyMap.get(dateStr);
+            bars.add(d != null && d[0] > 0 ? Math.round(d[1] / d[0] * 10000) / 100.0 : null);
         }
 
+        Double uptime90d = totalChecks > 0
+                ? Math.round(totalUp * 100.0 / totalChecks * 100) / 100.0
+                : null;
+
         return new PublicServiceStatus(monitor.getId(), monitor.getName(), monitor.getUrl(),
-                latest != null ? latest.getStatus() : null, uptime24h, bars, dates);
+                latest != null ? latest.getStatus() : null, uptime90d, bars, dates);
     }
 
     private String overallStatus(List<PublicServiceStatus> services) {

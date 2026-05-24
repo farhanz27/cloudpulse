@@ -54,17 +54,6 @@ public class MonitorCheckService {
         }
     }
 
-    public void keepAlivePing(Monitor monitor) {
-        try {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(monitor.getUrl()))
-                    .timeout(Duration.ofSeconds(15))
-                    .GET()
-                    .build();
-            httpClient.send(request, HttpResponse.BodyHandlers.discarding());
-        } catch (Exception ignored) {}
-    }
-
     private String truncate(String s, int max) {
         if (s == null) return null;
         return s.length() <= max ? s : s.substring(0, max);

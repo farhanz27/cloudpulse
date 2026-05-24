@@ -14,7 +14,6 @@ public record MonitorResponse(
         int timeoutSeconds,
         int expectedStatusCode,
         boolean isActive,
-        boolean keepAlive,
         int latencyThresholdMs,
         String notifyEmail,
         Instant sslValidUntil,
@@ -24,16 +23,18 @@ public record MonitorResponse(
         String region,
         List<Integer> integrationIds,
         Instant createdAt,
-        Instant updatedAt
+        Instant updatedAt,
+        String ipVersion
 ) {
     public static MonitorResponse from(Monitor m) {
         return new MonitorResponse(
                 m.getId(), m.getName(), m.getUrl(),
                 m.getCheckIntervalSeconds(), m.getTimeoutSeconds(), m.getExpectedStatusCode(),
-                m.isActive(), m.isKeepAlive(), m.getLatencyThresholdMs(),
+                m.isActive(), m.getLatencyThresholdMs(),
                 m.getNotifyEmail(), m.getSslValidUntil(), m.getDomainValidUntil(),
                 m.getMutedUntil(), m.getConsecutiveFailures(), m.getRegion(),
-                m.getIntegrationIds(), m.getCreatedAt(), m.getUpdatedAt()
+                m.getIntegrationIds(), m.getCreatedAt(), m.getUpdatedAt(),
+                m.getIpVersion()
         );
     }
 }

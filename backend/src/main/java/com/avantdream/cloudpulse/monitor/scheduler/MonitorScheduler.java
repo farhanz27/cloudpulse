@@ -85,16 +85,6 @@ public class MonitorScheduler {
         log.info("Health checks completed for {} monitor(s)", due.size());
     }
 
-    @Scheduled(fixedRate = 300_000)
-    public void runKeepAlivePings() {
-        List<Monitor> monitors = monitorRepository.findAllActiveKeepAlive();
-        if (monitors.isEmpty()) return;
-        for (Monitor monitor : monitors) {
-            checkService.keepAlivePing(monitor);
-        }
-        log.debug("Keep-alive pings sent to {} monitors", monitors.size());
-    }
-
     @Scheduled(fixedRate = 43_200_000)
     @Transactional
     public void runSslChecks() {

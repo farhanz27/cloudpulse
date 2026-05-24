@@ -25,6 +25,11 @@ public class MetricsController {
         return metricsService.getUptimeBars(days, serviceId);
     }
 
+    @GetMapping("/uptime-bars-hourly")
+    public Map<String, Object> uptimeBarsHourly(@RequestParam(required = false) UUID serviceId) {
+        return metricsService.getUptimeBarsHourly(serviceId);
+    }
+
     @GetMapping("/last-incidents")
     public Map<String, Object> lastIncidents() {
         return metricsService.getLastIncidents();

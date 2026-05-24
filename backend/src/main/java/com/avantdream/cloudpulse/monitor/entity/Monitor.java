@@ -37,9 +37,6 @@ public class Monitor {
     @Column(name = "is_active", nullable = false)
     private boolean active = true;
 
-    @Column(name = "keep_alive", nullable = false)
-    private boolean keepAlive = false;
-
     @Column(name = "latency_threshold_ms", nullable = false)
     private int latencyThresholdMs = 5000;
 
@@ -60,6 +57,9 @@ public class Monitor {
 
     @Column(name = "region", length = 255)
     private String region;
+
+    @Column(name = "ip_version", nullable = false, length = 10)
+    private String ipVersion = "DEFAULT";
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -91,8 +91,6 @@ public class Monitor {
     public void setExpectedStatusCode(int v) { this.expectedStatusCode = v; }
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }
-    public boolean isKeepAlive() { return keepAlive; }
-    public void setKeepAlive(boolean keepAlive) { this.keepAlive = keepAlive; }
     public int getLatencyThresholdMs() { return latencyThresholdMs; }
     public void setLatencyThresholdMs(int v) { this.latencyThresholdMs = v; }
     public String getNotifyEmail() { return notifyEmail; }
@@ -107,6 +105,8 @@ public class Monitor {
     public void setConsecutiveFailures(int v) { this.consecutiveFailures = v; }
     public String getRegion() { return region; }
     public void setRegion(String region) { this.region = region; }
+    public String getIpVersion() { return ipVersion; }
+    public void setIpVersion(String ipVersion) { this.ipVersion = ipVersion != null ? ipVersion : "DEFAULT"; }
     public Instant getCreatedAt() { return createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }
     public List<Integration> getIntegrations() { return integrations; }

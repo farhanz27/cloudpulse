@@ -18,7 +18,6 @@ CREATE TABLE IF NOT EXISTS services (
     timeout_seconds         INT NOT NULL DEFAULT 10,
     expected_status_code    INT NOT NULL DEFAULT 200,
     is_active               BOOLEAN NOT NULL DEFAULT TRUE,
-    keep_alive              BOOLEAN NOT NULL DEFAULT FALSE,
     latency_threshold_ms    INT NOT NULL DEFAULT 5000,
     notify_email            VARCHAR(255),
     ssl_valid_until         TIMESTAMPTZ,
@@ -26,8 +25,10 @@ CREATE TABLE IF NOT EXISTS services (
     muted_until             TIMESTAMPTZ,
     consecutive_failures    INT NOT NULL DEFAULT 0,
     region                  VARCHAR(255),
+    ip_version              VARCHAR(10) NOT NULL DEFAULT 'DEFAULT',
     created_at              TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at              TIMESTAMPTZ NOT NULL DEFAULT now()
+    -- Migration for existing DBs: ALTER TABLE services ADD COLUMN ip_version VARCHAR(10) NOT NULL DEFAULT 'DEFAULT';
 );
 
 CREATE TABLE IF NOT EXISTS integrations (
@@ -67,6 +68,12 @@ CREATE TABLE IF NOT EXISTS alerts (
     created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+CREATE INDEX IF NOT EXISTS idx_alerts_service_type_time ON alerts (service_id, alert_type, created_at);
+CREATE INDEX IF NOT EXISTS idx_alerts_type_time ON alerts (alert_type, created_at);
+CREATE INDEX IF NOT EXISTS idx_alerts_unacked ON alerts (service_id, created_at) WHERE acknowledged = false;
+
+CREATE INDEX IF NOT EXISTS idx_monitor_integrations_integration ON monitor_integrations (integration_id);
+
 CREATE TABLE IF NOT EXISTS status_pages (
     id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name        VARCHAR(255) NOT NULL,
@@ -82,6 +89,17 @@ CREATE TABLE IF NOT EXISTS status_page_services (
     PRIMARY KEY (status_page_id, service_id)
 );
 
+CREATE INDEX IF NOT EXISTS idx_status_page_services_service ON status_page_services (service_id);
+
+CREATE TABLE IF NOT EXISTS user_preferences (
+    user_id                      UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    email_alerts                 BOOLEAN NOT NULL DEFAULT TRUE,
+    recovery_notifications       BOOLEAN NOT NULL DEFAULT TRUE,
+    default_interval_seconds     INT NOT NULL DEFAULT 60,
+    default_timeout_seconds      INT NOT NULL DEFAULT 10,
+    default_latency_threshold_ms INT NOT NULL DEFAULT 5000
+);
+
 CREATE TABLE IF NOT EXISTS telegram_pending_links (
     id              SERIAL PRIMARY KEY,
     code            VARCHAR(64) NOT NULL UNIQUE,
@@ -91,4 +109,4 @@ CREATE TABLE IF NOT EXISTS telegram_pending_links (
     created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE INDEX IF NOT EXISTS idx_telegram_pending_links_code ON telegram_pending_links (code);
+CREATE INDEX IF NOT EXISTS idx_telegram_pending_links_integration ON telegram_pending_links (integration_id);

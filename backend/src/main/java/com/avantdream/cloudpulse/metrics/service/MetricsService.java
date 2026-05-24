@@ -80,8 +80,58 @@ public class MetricsService {
         return Map.of("dates", dateList, "services", services);
     }
 
+    public Map<String, Object> getUptimeBarsHourly(UUID serviceId) {
+        long nowEpoch = Instant.now().getEpochSecond();
+        long currentHour = (nowEpoch / 3600) * 3600;
+        Instant since = Instant.ofEpochSecond(currentHour - 23 * 3600);
+
+        String sql = """
+                SELECT service_id::text,
+                       to_char(to_timestamp(floor(extract(epoch from checked_at) / 3600.0) * 3600.0) AT TIME ZONE 'UTC',
+                               'YYYY-MM-DD"T"HH24":00:00Z"') as hour_start,
+                       count(*) as total,
+                       count(*) filter (where status = 'UP') as up_count
+                FROM health_logs
+                WHERE checked_at >= ?
+                """ +
+                (serviceId != null ? " AND service_id = ?" : "") +
+                " GROUP BY service_id, hour_start ORDER BY service_id, hour_start";
+
+        List<Object> params = new ArrayList<>();
+        params.add(java.sql.Timestamp.from(since));
+        if (serviceId != null) params.add(serviceId);
+
+        Map<String, Map<String, Double>> lookup = new HashMap<>();
+        jdbc.query(sql, params.toArray(), rs -> {
+            String sid = rs.getString("service_id");
+            String hour = rs.getString("hour_start");
+            long total = rs.getLong("total");
+            long upCount = rs.getLong("up_count");
+            lookup.computeIfAbsent(sid, k -> new HashMap<>())
+                    .put(hour, total > 0 ? Math.round(upCount * 100.0 / total * 10) / 10.0 : 0.0);
+        });
+
+        DateTimeFormatter isoFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH':00:00Z'")
+                .withZone(ZoneOffset.UTC);
+        List<String> timestamps = new ArrayList<>();
+        for (int i = 23; i >= 0; i--) {
+            timestamps.add(isoFmt.format(Instant.ofEpochSecond(currentHour - (long) i * 3600)));
+        }
+
+        Map<String, List<Double>> services = new LinkedHashMap<>();
+        for (Map.Entry<String, Map<String, Double>> entry : lookup.entrySet()) {
+            List<Double> bars = timestamps.stream()
+                    .map(ts -> entry.getValue().get(ts))
+                    .toList();
+            services.put(entry.getKey(), bars);
+        }
+
+        return Map.of("timestamps", timestamps, "services", services);
+    }
+
     public Map<String, Object> getLastIncidents() {
-        var alerts = alertRepository.findAllDowntimeAndRecovery();
+        Instant since90d = Instant.now().minus(90, ChronoUnit.DAYS);
+        var alerts = alertRepository.findAllDowntimeAndRecovery(since90d);
 
         Map<String, List<Alert>> byService = new LinkedHashMap<>();
         for (var alert : alerts) {
@@ -115,10 +165,10 @@ public class MetricsService {
         monitorRepository.findById(serviceId)
                 .orElseThrow(() -> new ResourceNotFoundException("Monitor not found"));
         long total = healthLogRepository.countByServiceId(serviceId);
+        int pageNum = limit > 0 ? offset / limit : 0;
         var items = healthLogRepository.findByServiceIdOrderByCheckedAtDesc(serviceId,
-                org.springframework.data.domain.PageRequest.of(0, offset + limit));
-        var page = items.stream().skip(offset).toList();
-        return Map.of("total", total, "items", page.stream()
+                org.springframework.data.domain.PageRequest.of(pageNum, limit));
+        return Map.of("total", total, "items", items.stream()
                 .map(h -> Map.of(
                         "id", h.getId(),
                         "service_id", h.getServiceId().toString(),
