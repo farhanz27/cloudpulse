@@ -2,24 +2,19 @@
   <nav class="lnav" :class="{ 'lnav--scrolled': scrolled }">
     <div class="lnav-inner">
       <router-link to="/" class="lnav-brand">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
-          stroke-linecap="round" stroke-linejoin="round" width="22" height="22" aria-hidden="true"
-          style="color: #D4AF37;">
-          <polyline points="1,12 6,12 8,6 10,18 12,8 14,15 16,12 23,12" />
-        </svg>
-        <span class="lnav-name">CLOUDPULSE</span>
+        <CloudPulseWordmark />
       </router-link>
 
       <div class="lnav-center">
-        <router-link class="lnav-link" to="/features">FEATURES</router-link>
-        <router-link class="lnav-link" to="/integrations">INTEGRATIONS</router-link>
-        <router-link class="lnav-link" to="/pricing">PRICING</router-link>
-        <router-link class="lnav-link" to="/contact">CONTACT</router-link>
+        <router-link class="lnav-link" to="/features">Features</router-link>
+        <router-link class="lnav-link" to="/integrations">Integrations</router-link>
+        <router-link class="lnav-link" to="/pricing">Pricing</router-link>
+        <router-link class="lnav-link" to="/contact">Contact</router-link>
       </div>
 
       <div class="lnav-auth">
-        <router-link to="/sign-in" class="lnav-link">SIGN IN</router-link>
-        <router-link to="/sign-up" class="lnav-cta">GET STARTED</router-link>
+        <router-link to="/sign-in" class="lnav-link">Sign in</router-link>
+        <router-link to="/sign-up" class="lnav-cta">Get started</router-link>
       </div>
 
       <button
@@ -39,14 +34,19 @@
     <Transition name="menu">
       <div class="lnav-mobile" v-if="menuOpen" role="dialog" aria-label="Navigation menu">
         <div class="lnav-mobile-links">
-          <router-link class="lnav-mobile-link" to="/features" @click="menuOpen = false">FEATURES</router-link>
-          <router-link class="lnav-mobile-link" to="/integrations" @click="menuOpen = false">INTEGRATIONS</router-link>
-          <router-link class="lnav-mobile-link" to="/pricing" @click="menuOpen = false">PRICING</router-link>
-          <router-link class="lnav-mobile-link" to="/contact" @click="menuOpen = false">CONTACT</router-link>
+          <router-link class="lnav-mobile-link" to="/features" @click="menuOpen = false">Features</router-link>
+          <router-link class="lnav-mobile-link" to="/integrations" @click="menuOpen = false">Integrations</router-link>
+          <router-link class="lnav-mobile-link" to="/pricing" @click="menuOpen = false">Pricing</router-link>
+          <router-link class="lnav-mobile-link" to="/contact" @click="menuOpen = false">Contact</router-link>
         </div>
         <div class="lnav-mobile-ctas">
-          <router-link to="/sign-up" class="lnav-mobile-cta-primary" @click="menuOpen = false">GET STARTED</router-link>
-          <router-link to="/sign-in" class="lnav-mobile-cta-outline" @click="menuOpen = false">SIGN IN</router-link>
+          <template v-if="auth.isAuthenticated">
+            <router-link to="/dashboard" class="lnav-mobile-cta-primary" @click="menuOpen = false">Go to app</router-link>
+          </template>
+          <template v-else>
+            <router-link to="/sign-up" class="lnav-mobile-cta-primary" @click="menuOpen = false">Get started</router-link>
+            <router-link to="/sign-in" class="lnav-mobile-cta-outline" @click="menuOpen = false">Sign in</router-link>
+          </template>
         </div>
       </div>
     </Transition>
@@ -55,6 +55,10 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import CloudPulseWordmark from '@/components/CloudPulseWordmark.vue'
+import { useAuthStore } from '@/stores/auth'
+
+const auth = useAuthStore()
 
 const menuOpen = ref(false)
 const scrolled = ref(false)
@@ -89,7 +93,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 .lnav-inner {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 32px;
+  padding: 0 clamp(1.25rem, 4vw, 2rem);
   height: 64px;
   display: flex;
   align-items: center;
@@ -98,19 +102,9 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 }
 
 .lnav-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
   text-decoration: none;
   flex-shrink: 0;
   z-index: 1;
-}
-
-.lnav-name {
-  font-family: 'Marcellus', Georgia, serif;
-  font-size: 18px;
-  letter-spacing: 0.15em;
-  color: #F2F0E4;
 }
 
 .lnav-center {
@@ -131,9 +125,10 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 }
 
 .lnav-link {
-  font-size: 12px;
+  font-family: 'Josefin Sans', 'Inter', sans-serif;
+  font-size: 0.875rem;
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.03em;
   color: #888;
   text-decoration: none;
   cursor: pointer;
@@ -143,19 +138,21 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 .lnav-link.router-link-active { color: #D4AF37; }
 
 .lnav-cta {
-  font-size: 12px;
+  font-family: 'Josefin Sans', 'Inter', sans-serif;
+  font-size: 0.875rem;
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.03em;
   color: #D4AF37;
   text-decoration: none;
   border: 1px solid #D4AF37;
-  padding: 9px 20px;
+  padding: 0 1.25rem;
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
   transition: background 0.3s, color 0.3s, box-shadow 0.3s;
 }
 .lnav-cta:hover {
-  background: #D4AF37;
-  color: #0A0A0A;
-  box-shadow: 0 0 20px rgba(212,175,55,0.3);
+  background: rgba(212,175,55,0.08);
 }
 
 /* Hamburger button */
@@ -164,12 +161,12 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   flex-direction: column;
   justify-content: center;
   gap: 5px;
-  width: 36px;
-  height: 36px;
+  width: 2.75rem;
+  height: 2.75rem;
   background: transparent;
   border: 1px solid rgba(212,175,55,0.2);
   cursor: pointer;
-  padding: 8px;
+  padding: 0.5rem;
   z-index: 1;
   transition: border-color 0.3s;
 }
@@ -202,8 +199,8 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 48px;
-  padding: 48px 32px;
+  gap: 3rem;
+  padding: 3rem clamp(1.25rem, 4vw, 2rem);
 }
 
 .lnav-mobile-links {
@@ -214,9 +211,9 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 }
 
 .lnav-mobile-link {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 600;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.04em;
   color: #666;
   text-decoration: none;
   transition: color 0.3s;
@@ -238,13 +235,14 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   display: block;
   width: 100%;
   text-align: center;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.03em;
   color: #0A0A0A;
   background: #D4AF37;
   text-decoration: none;
-  padding: 15px;
+  padding: 1rem;
+  min-height: 2.75rem;
   transition: background 0.3s;
 }
 .lnav-mobile-cta-primary:hover { background: #F2E8C4; }
@@ -253,13 +251,14 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   display: block;
   width: 100%;
   text-align: center;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.03em;
   color: #D4AF37;
   border: 1px solid rgba(212,175,55,0.4);
   text-decoration: none;
-  padding: 15px;
+  padding: 1rem;
+  min-height: 2.75rem;
   transition: background 0.3s, border-color 0.3s;
 }
 .lnav-mobile-cta-outline:hover {
@@ -277,6 +276,5 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   .lnav-center { display: none; }
   .lnav-auth { display: none; }
   .lnav-hamburger { display: flex; }
-  .lnav-inner { padding: 0 20px; }
 }
 </style>

@@ -2,285 +2,264 @@
   <div class="landing">
     <LandingNav />
 
-    <!-- Hero -->
-    <section class="hero">
-      <div class="hero-crosshatch" aria-hidden="true"></div>
-      <div class="hero-sunburst" aria-hidden="true"></div>
+    <main>
+      <!-- Hero -->
+      <section class="hero">
+        <div class="hero-crosshatch" aria-hidden="true"></div>
+        <div class="hero-sunburst" aria-hidden="true"></div>
 
-      <div class="hero-content">
-        <div class="hero-eyebrow">
-          <div class="eyebrow-line" aria-hidden="true"></div>
-          <span>CLOUD INFRASTRUCTURE MONITORING</span>
-          <div class="eyebrow-line" aria-hidden="true"></div>
-        </div>
-
-        <h1 class="hero-title">
-          CLOUD<span class="title-gold">PULSE</span>
-        </h1>
-
-        <div class="hero-rule" aria-hidden="true">
-          <div class="rule-line"></div>
-          <div class="rule-diamond"></div>
-          <div class="rule-line"></div>
-        </div>
-
-        <p class="hero-tagline">MONITOR · PROTECT · RESPOND</p>
-        <p class="hero-desc">
-          Real-time uptime monitoring, instant alerts, and incident management
-          for your cloud services — engineered for precision.
-        </p>
-
-        <div class="hero-ctas">
-          <router-link to="/sign-up" class="cta-primary">BEGIN MONITORING</router-link>
-          <router-link to="/sign-in" class="cta-outline">SIGN IN</router-link>
-        </div>
-
-        <p class="hero-note">No credit card required · Free plan available · Setup in minutes</p>
-      </div>
-
-    </section>
-
-    <!-- Stats Bar -->
-    <section class="stats">
-      <div class="stats-inner">
-        <div class="stat-item" v-for="stat in stats" :key="stat.value">
-          <div class="stat-value">{{ stat.value }}</div>
-          <div class="stat-label">{{ stat.label }}</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Features -->
-    <section class="features" id="features">
-      <div class="section-header" v-motion :initial="{ opacity: 0, x: -40 }" :visible="{ opacity: 1, x: 0, transition: { duration: 600, ease: 'easeOut' } }">
-        <div class="sh-line" aria-hidden="true"></div>
-        <div class="sh-text">
-          <span class="sh-label">PLATFORM CAPABILITIES</span>
-        </div>
-        <div class="sh-line" aria-hidden="true"></div>
-      </div>
-      <h2 class="section-title" v-motion :initial="{ opacity: 0, y: 40, scale: 0.97 }" :visible="{ opacity: 1, y: 0, scale: 1, transition: { duration: 600, ease: 'easeOut' } }">Powerful Features<br><span class="title-accent">Built for Scale</span></h2>
-
-      <div class="features-grid">
-        <div class="feat-card" v-for="(feat, i) in features" :key="feat.numeral"
-          v-motion
-          :initial="{ opacity: 0, y: 50, scale: 0.95 }"
-          :visible="{ opacity: 1, y: 0, scale: 1, transition: { duration: 600, ease: 'easeOut', delay: i * 80 } }">
-          <div class="feat-corner feat-corner--tl" aria-hidden="true"></div>
-          <div class="feat-corner feat-corner--br" aria-hidden="true"></div>
-          <div class="feat-numeral">{{ feat.numeral }}</div>
-          <div class="feat-icon-wrap" aria-hidden="true">
-            <div class="feat-diamond">
-              <div class="feat-icon-inner" v-html="feat.icon"></div>
-            </div>
+        <div class="hero-content">
+          <div class="hero-eyebrow">
+            <div class="eyebrow-line" aria-hidden="true"></div>
+            <span>Cloud Infrastructure Monitoring</span>
+            <div class="eyebrow-line" aria-hidden="true"></div>
           </div>
-          <h3 class="feat-title">{{ feat.title }}</h3>
-          <p class="feat-desc">{{ feat.desc }}</p>
+
+          <h1 class="hero-title">
+            Cloud<span class="title-gold">Pulse</span>
+          </h1>
+
+          <div class="hero-rule" aria-hidden="true">
+            <div class="rule-line"></div>
+            <div class="rule-diamond"></div>
+            <div class="rule-line"></div>
+          </div>
+
+          <p class="hero-tagline">Monitor · Protect · Respond</p>
+          <p class="hero-desc">
+            Real-time uptime monitoring, instant alerts, and incident management
+            for your cloud services — engineered for precision.
+          </p>
+
+          <div class="hero-ctas">
+            <router-link to="/sign-up" class="cta-primary">Get started</router-link>
+            <router-link to="/sign-in" class="cta-outline">Sign in</router-link>
+          </div>
+
+          <p class="hero-note">No credit card required · Free plan available · Setup in minutes</p>
         </div>
-      </div>
-    </section>
 
-    <!-- How It Works -->
-    <section class="how-works" id="how-it-works">
-      <div class="section-header" v-motion :initial="{ opacity: 0, x: -40 }" :visible="{ opacity: 1, x: 0, transition: { duration: 600, ease: 'easeOut' } }">
-        <div class="sh-line" aria-hidden="true"></div>
-        <div class="sh-text"><span class="sh-label">HOW IT WORKS</span></div>
-        <div class="sh-line" aria-hidden="true"></div>
-      </div>
-      <h2 class="section-title" v-motion :initial="{ opacity: 0, y: 40, scale: 0.97 }" :visible="{ opacity: 1, y: 0, scale: 1, transition: { duration: 600, ease: 'easeOut' } }">Up and Running<br><span class="title-accent">In Minutes</span></h2>
+      </section>
 
-      <div class="steps-grid">
-        <div class="step-item" v-for="(step, i) in steps" :key="i"
-          v-motion
-          :initial="{ opacity: 0, y: 50 }"
-          :visible="{ opacity: 1, y: 0, transition: { duration: 600, ease: 'easeOut', delay: i * 110 } }">
-          <div class="step-numeral">{{ step.numeral }}</div>
-          <h3 class="step-title">{{ step.title }}</h3>
-          <p class="step-desc">{{ step.desc }}</p>
+      <!-- Stats Bar -->
+      <section class="stats">
+        <div class="stats-inner">
+          <div class="stat-item" v-for="stat in stats" :key="stat.value">
+            <div class="stat-value">{{ stat.value }}</div>
+            <div class="stat-label">{{ stat.label }}</div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Why Choose CloudPulse -->
-    <section class="why-choose" id="why-choose">
-      <div class="section-header" v-motion :initial="{ opacity: 0, x: -40 }" :visible="{ opacity: 1, x: 0, transition: { duration: 600, ease: 'easeOut' } }">
-        <div class="sh-line" aria-hidden="true"></div>
-        <div class="sh-text"><span class="sh-label">WHY CLOUDPULSE</span></div>
-        <div class="sh-line" aria-hidden="true"></div>
-      </div>
-      <h2 class="section-title" v-motion :initial="{ opacity: 0, y: 40, scale: 0.97 }" :visible="{ opacity: 1, y: 0, scale: 1, transition: { duration: 600, ease: 'easeOut' } }">The Standard for<br><span class="title-accent">Serious Teams</span></h2>
+      <!-- Features -->
+      <section class="features" id="features">
+        <SectionHeader label="Platform Capabilities" />
+        <h2 class="section-title" v-motion :initial="{ opacity: 0, y: 40, scale: 0.97 }" :visible="{ opacity: 1, y: 0, scale: 1, transition: { duration: 600, ease: 'easeOut' } }">Powerful Features<br><span class="title-accent">Built for Scale</span></h2>
 
-      <div class="why-grid">
-        <div class="why-card" v-for="(item, i) in whyItems" :key="item.title"
-          v-motion
-          :initial="{ opacity: 0, y: 40, scale: 0.95 }"
-          :visible="{ opacity: 1, y: 0, scale: 1, transition: { duration: 550, ease: 'easeOut', delay: i * 70 } }">
-          <div class="why-icon" v-html="item.icon" aria-hidden="true"></div>
-          <h4 class="why-title">{{ item.title }}</h4>
-          <p class="why-desc">{{ item.desc }}</p>
+        <div class="features-grid">
+          <div class="feat-card" v-for="(feat, i) in features" :key="feat.numeral"
+            v-motion
+            :initial="{ opacity: 0, y: 50, scale: 0.95 }"
+            :visible="{ opacity: 1, y: 0, scale: 1, transition: { duration: 600, ease: 'easeOut', delay: i * 80 } }">
+            <div class="feat-corner feat-corner--tl" aria-hidden="true"></div>
+            <div class="feat-corner feat-corner--br" aria-hidden="true"></div>
+            <div class="feat-numeral">{{ feat.numeral }}</div>
+            <div class="feat-icon-wrap" aria-hidden="true">
+              <div class="feat-diamond">
+                <div class="feat-icon-inner" v-html="feat.icon"></div>
+              </div>
+            </div>
+            <h3 class="feat-title">{{ feat.title }}</h3>
+            <p class="feat-desc">{{ feat.desc }}</p>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Testimonials -->
-    <section class="testimonials-section">
-      <div class="section-header" v-motion :initial="{ opacity: 0, x: -40 }" :visible="{ opacity: 1, x: 0, transition: { duration: 600, ease: 'easeOut' } }">
-        <div class="sh-line" aria-hidden="true"></div>
-        <div class="sh-text"><span class="sh-label">TRUSTED BY TEAMS</span></div>
-        <div class="sh-line" aria-hidden="true"></div>
-      </div>
-      <h2 class="section-title" v-motion :initial="{ opacity: 0, y: 40, scale: 0.97 }" :visible="{ opacity: 1, y: 0, scale: 1, transition: { duration: 600, ease: 'easeOut' } }">Reliability You Can<br><span class="title-accent">Depend On</span></h2>
+      <!-- How It Works -->
+      <section class="how-works" id="how-it-works">
+        <SectionHeader label="How It Works" />
+        <h2 class="section-title" v-motion :initial="{ opacity: 0, y: 40, scale: 0.97 }" :visible="{ opacity: 1, y: 0, scale: 1, transition: { duration: 600, ease: 'easeOut' } }">Up and Running<br><span class="title-accent">In Minutes</span></h2>
 
-      <div class="testimonials-grid">
-        <div class="testimonial-card" v-for="(t, i) in testimonials" :key="t.name"
-          v-motion
-          :initial="{ opacity: 0, y: 50, scale: 0.95 }"
-          :visible="{ opacity: 1, y: 0, scale: 1, transition: { duration: 600, ease: 'easeOut', delay: i * 80 } }">
-          <div class="testimonial-quote-mark" aria-hidden="true">"</div>
-          <p class="testimonial-text">{{ t.quote }}</p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar" aria-hidden="true">{{ t.initials }}</div>
-            <div>
-              <div class="testimonial-name">{{ t.name }}</div>
-              <div class="testimonial-role">{{ t.role }}</div>
+        <div class="steps-grid">
+          <div class="step-item" v-for="(step, i) in steps" :key="i"
+            v-motion
+            :initial="{ opacity: 0, y: 50 }"
+            :visible="{ opacity: 1, y: 0, transition: { duration: 600, ease: 'easeOut', delay: i * 110 } }">
+            <div class="step-numeral">{{ step.numeral }}</div>
+            <h3 class="step-title">{{ step.title }}</h3>
+            <p class="step-desc">{{ step.desc }}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Why Choose CloudPulse -->
+      <section class="why-choose" id="why-choose">
+        <SectionHeader label="Why CloudPulse" />
+        <h2 class="section-title" v-motion :initial="{ opacity: 0, y: 40, scale: 0.97 }" :visible="{ opacity: 1, y: 0, scale: 1, transition: { duration: 600, ease: 'easeOut' } }">The Standard for<br><span class="title-accent">Serious Teams</span></h2>
+
+        <div class="why-grid">
+          <div class="why-card" v-for="(item, i) in whyItems" :key="item.title"
+            v-motion
+            :initial="{ opacity: 0, y: 40, scale: 0.95 }"
+            :visible="{ opacity: 1, y: 0, scale: 1, transition: { duration: 550, ease: 'easeOut', delay: i * 70 } }">
+            <div class="why-icon" v-html="item.icon" aria-hidden="true"></div>
+            <h4 class="why-title">{{ item.title }}</h4>
+            <p class="why-desc">{{ item.desc }}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Testimonials -->
+      <section class="testimonials-section">
+        <SectionHeader label="Trusted by Teams" />
+        <h2 class="section-title" v-motion :initial="{ opacity: 0, y: 40, scale: 0.97 }" :visible="{ opacity: 1, y: 0, scale: 1, transition: { duration: 600, ease: 'easeOut' } }">Reliability You Can<br><span class="title-accent">Depend On</span></h2>
+
+        <div class="testimonials-grid">
+          <div class="testimonial-card" v-for="(t, i) in testimonials" :key="t.name"
+            v-motion
+            :initial="{ opacity: 0, y: 50, scale: 0.95 }"
+            :visible="{ opacity: 1, y: 0, scale: 1, transition: { duration: 600, ease: 'easeOut', delay: i * 80 } }">
+            <div class="testimonial-quote-mark" aria-hidden="true">"</div>
+            <p class="testimonial-text">{{ t.quote }}</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar" aria-hidden="true">{{ t.initials }}</div>
+              <div>
+                <div class="testimonial-name">{{ t.name }}</div>
+                <div class="testimonial-role">{{ t.role }}</div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Use Cases -->
-    <section class="use-cases-section">
-      <div class="section-header" v-motion :initial="{ opacity: 0, x: -40 }" :visible="{ opacity: 1, x: 0, transition: { duration: 600, ease: 'easeOut' } }">
-        <div class="sh-line" aria-hidden="true"></div>
-        <div class="sh-text"><span class="sh-label">WHO IT'S FOR</span></div>
-        <div class="sh-line" aria-hidden="true"></div>
-      </div>
-      <h2 class="section-title" v-motion :initial="{ opacity: 0, y: 40, scale: 0.97 }" :visible="{ opacity: 1, y: 0, scale: 1, transition: { duration: 600, ease: 'easeOut' } }">Built for Every<br><span class="title-accent">Engineering Team</span></h2>
+      <!-- Use Cases -->
+      <section class="use-cases-section">
+        <SectionHeader label="Who It's For" />
+        <h2 class="section-title" v-motion :initial="{ opacity: 0, y: 40, scale: 0.97 }" :visible="{ opacity: 1, y: 0, scale: 1, transition: { duration: 600, ease: 'easeOut' } }">Built for Every<br><span class="title-accent">Engineering Team</span></h2>
 
-      <div class="use-cases-grid">
-        <div class="use-case-card" v-for="(uc, i) in useCases" :key="uc.title"
-          v-motion
-          :initial="{ opacity: 0, y: 50, scale: 0.95 }"
-          :visible="{ opacity: 1, y: 0, scale: 1, transition: { duration: 600, ease: 'easeOut', delay: i * 90 } }">
-          <div class="use-case-icon" v-html="uc.icon" aria-hidden="true"></div>
-          <h3 class="use-case-title">{{ uc.title }}</h3>
-          <p class="use-case-desc">{{ uc.desc }}</p>
-          <ul class="use-case-points">
-            <li v-for="pt in uc.points" :key="pt">
-              <span class="uc-check" aria-hidden="true">◆</span>{{ pt }}
-            </li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- Pricing -->
-    <section class="pricing-section" id="pricing">
-      <div class="section-header" v-motion :initial="{ opacity: 0, x: -40 }" :visible="{ opacity: 1, x: 0, transition: { duration: 600, ease: 'easeOut' } }">
-        <div class="sh-line" aria-hidden="true"></div>
-        <div class="sh-text"><span class="sh-label">PRICING</span></div>
-        <div class="sh-line" aria-hidden="true"></div>
-      </div>
-      <h2 class="section-title" v-motion :initial="{ opacity: 0, y: 40, scale: 0.97 }" :visible="{ opacity: 1, y: 0, scale: 1, transition: { duration: 600, ease: 'easeOut' } }">Transparent Pricing<br><span class="title-accent">No Surprises</span></h2>
-
-      <div class="billing-toggle" v-motion :initial="{ opacity: 0, y: 50 }" :visible="{ opacity: 1, y: 0, transition: { duration: 650, ease: 'easeOut' } }">
-        <button
-          class="toggle-btn"
-          :class="{ 'toggle-btn--active': billing === 'monthly' }"
-          @click="billing = 'monthly'"
-        >MONTHLY</button>
-        <button
-          class="toggle-btn"
-          :class="{ 'toggle-btn--active': billing === 'annually' }"
-          @click="billing = 'annually'"
-        >
-          ANNUALLY
-          <span class="save-badge">SAVE 20%</span>
-        </button>
-      </div>
-
-      <div class="pricing-grid">
-        <div
-          class="plan-card"
-          v-for="(plan, i) in displayPlans"
-          :key="plan.name"
-          :class="{ 'plan-card--featured': plan.featured }"
-          v-motion
-          :initial="i === 0 ? { opacity: 0, x: -30, y: 20 } : i === 1 ? { opacity: 0, y: 55 } : { opacity: 0, x: 30, y: 20 }"
-          :visible="i === 0 ? { opacity: 1, x: 0, y: 0, transition: { duration: 650, ease: 'easeOut' } } : i === 1 ? { opacity: 1, y: 0, transition: { duration: 650, ease: 'easeOut', delay: 80 } } : { opacity: 1, x: 0, y: 0, transition: { duration: 650, ease: 'easeOut', delay: 160 } }"
-        >
-          <div class="plan-badge" v-if="plan.badge">{{ plan.badge }}</div>
-          <div class="plan-corner plan-corner--tl" aria-hidden="true"></div>
-          <div class="plan-corner plan-corner--br" aria-hidden="true"></div>
-          <div class="plan-name">{{ plan.name }}</div>
-          <div class="plan-price">
-            <span class="plan-amount">{{ plan.price }}</span>
-            <span class="plan-period" v-if="plan.period">{{ plan.period }}</span>
+        <div class="use-cases-grid">
+          <div class="use-case-card" v-for="(uc, i) in useCases" :key="uc.title"
+            v-motion
+            :initial="{ opacity: 0, y: 50, scale: 0.95 }"
+            :visible="{ opacity: 1, y: 0, scale: 1, transition: { duration: 600, ease: 'easeOut', delay: i * 90 } }">
+            <div class="use-case-icon" v-html="uc.icon" aria-hidden="true"></div>
+            <h3 class="use-case-title">{{ uc.title }}</h3>
+            <p class="use-case-desc">{{ uc.desc }}</p>
+            <ul class="use-case-points">
+              <li v-for="pt in uc.points" :key="pt">
+                <span class="uc-check" aria-hidden="true">◆</span>{{ pt }}
+              </li>
+            </ul>
           </div>
-          <div class="plan-annual-note" v-if="plan.annualNote">{{ plan.annualNote }}</div>
-          <div class="plan-divider" aria-hidden="true"></div>
-          <ul class="plan-feature-list">
-            <li v-for="f in plan.features" :key="f">
-              <span class="plan-check" aria-hidden="true">◆</span>{{ f }}
-            </li>
-          </ul>
-          <router-link :to="plan.ctaLink" class="plan-cta" :class="{ 'plan-cta--featured': plan.featured }">
-            {{ plan.ctaLabel }}
-          </router-link>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- FAQ -->
-    <section class="faq-section" id="faq">
-      <div class="section-header" v-motion :initial="{ opacity: 0, x: -40 }" :visible="{ opacity: 1, x: 0, transition: { duration: 600, ease: 'easeOut' } }">
-        <div class="sh-line" aria-hidden="true"></div>
-        <div class="sh-text"><span class="sh-label">FREQUENTLY ASKED</span></div>
-        <div class="sh-line" aria-hidden="true"></div>
-      </div>
-      <h2 class="section-title" v-motion :initial="{ opacity: 0, y: 40, scale: 0.97 }" :visible="{ opacity: 1, y: 0, scale: 1, transition: { duration: 600, ease: 'easeOut' } }">Got Questions?<br><span class="title-accent">We Have Answers</span></h2>
+      <!-- Pricing -->
+      <section class="pricing-section" id="pricing">
+        <SectionHeader label="Pricing" />
+        <h2 class="section-title" v-motion :initial="{ opacity: 0, y: 40, scale: 0.97 }" :visible="{ opacity: 1, y: 0, scale: 1, transition: { duration: 600, ease: 'easeOut' } }">Transparent Pricing<br><span class="title-accent">No Surprises</span></h2>
 
-      <div class="faq-list">
-        <div
-          class="faq-item"
-          v-for="(item, i) in faqs"
-          :key="i"
-          v-motion
-          :initial="{ opacity: 0, x: -30 }"
-          :visible="{ opacity: 1, x: 0, transition: { duration: 550, ease: 'easeOut', delay: i * 60 } }"
-          :class="{ 'faq-item--open': openFaq === i }"
-          @click="openFaq = openFaq === i ? null : i"
-        >
-          <div class="faq-question">
-            <span>{{ item.q }}</span>
-            <span class="faq-toggle" aria-hidden="true">+</span>
+        <div class="billing-toggle" v-motion :initial="{ opacity: 0, y: 50 }" :visible="{ opacity: 1, y: 0, transition: { duration: 650, ease: 'easeOut' } }">
+          <button
+            class="toggle-btn"
+            :class="{ 'toggle-btn--active': billing === 'monthly' }"
+            @click="billing = 'monthly'"
+          >Monthly</button>
+          <button
+            class="toggle-btn"
+            :class="{ 'toggle-btn--active': billing === 'annually' }"
+            @click="billing = 'annually'"
+          >
+            Annually
+            <span class="save-badge">SAVE 20%</span>
+          </button>
+        </div>
+
+        <div class="pricing-grid">
+          <div
+            class="plan-card"
+            v-for="(plan, i) in displayPlans"
+            :key="plan.name"
+            :class="{ 'plan-card--featured': plan.featured }"
+            v-motion
+            :initial="i === 0 ? { opacity: 0, x: -30, y: 20 } : i === 1 ? { opacity: 0, y: 55 } : { opacity: 0, x: 30, y: 20 }"
+            :visible="i === 0 ? { opacity: 1, x: 0, y: 0, transition: { duration: 650, ease: 'easeOut' } } : i === 1 ? { opacity: 1, y: 0, transition: { duration: 650, ease: 'easeOut', delay: 80 } } : { opacity: 1, x: 0, y: 0, transition: { duration: 650, ease: 'easeOut', delay: 160 } }"
+          >
+            <div class="plan-badge" v-if="plan.badge">{{ plan.badge }}</div>
+            <div class="plan-corner plan-corner--tl" aria-hidden="true"></div>
+            <div class="plan-corner plan-corner--br" aria-hidden="true"></div>
+            <div class="plan-name">{{ plan.name }}</div>
+            <div class="plan-price">
+              <span class="plan-amount">{{ plan.price }}</span>
+              <span class="plan-period" v-if="plan.period">{{ plan.period }}</span>
+            </div>
+            <div class="plan-annual-note" v-if="plan.annualNote">{{ plan.annualNote }}</div>
+            <div class="plan-divider" aria-hidden="true"></div>
+            <ul class="plan-feature-list">
+              <li v-for="f in plan.features" :key="f">
+                <span class="plan-check" aria-hidden="true">◆</span>{{ f }}
+              </li>
+            </ul>
+            <router-link :to="plan.ctaLink" class="plan-cta" :class="{ 'plan-cta--featured': plan.featured }">
+              {{ plan.ctaLabel }}
+            </router-link>
           </div>
-          <div class="faq-answer">{{ item.a }}</div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Final CTA -->
-    <section class="final-cta-section">
-      <div class="final-cta-inner" v-motion :initial="{ opacity: 0, y: 40, scale: 0.97 }" :visible="{ opacity: 1, y: 0, scale: 1, transition: { duration: 650, ease: 'easeOut' } }">
-        <div class="final-cta-eyebrow">
-          <div class="eyebrow-line" aria-hidden="true"></div>
-          <span>GET STARTED TODAY</span>
-          <div class="eyebrow-line" aria-hidden="true"></div>
+      <!-- FAQ -->
+      <section class="faq-section" id="faq">
+        <SectionHeader label="Frequently Asked" />
+        <h2 class="section-title" v-motion :initial="{ opacity: 0, y: 40, scale: 0.97 }" :visible="{ opacity: 1, y: 0, scale: 1, transition: { duration: 600, ease: 'easeOut' } }">Got Questions?<br><span class="title-accent">We Have Answers</span></h2>
+
+        <div class="faq-list">
+          <div
+            class="faq-item"
+            v-for="(item, i) in faqs"
+            :key="i"
+            v-motion
+            :initial="{ opacity: 0, x: -30 }"
+            :visible="{ opacity: 1, x: 0, transition: { duration: 550, ease: 'easeOut', delay: i * 60 } }"
+            :class="{ 'faq-item--open': openFaq === i }"
+          >
+            <button
+              class="faq-question"
+              :aria-expanded="openFaq === i"
+              @click="openFaq = openFaq === i ? null : i"
+            >
+              <span>{{ item.q }}</span>
+              <span class="faq-toggle" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-collapse" :class="{ 'faq-collapse--open': openFaq === i }">
+              <div class="faq-collapse-inner">
+                <div class="faq-answer">{{ item.a }}</div>
+              </div>
+            </div>
+          </div>
         </div>
-        <h2 class="final-cta-title">Zero Downtime<br><span class="title-gold">Starts Here</span></h2>
-        <p class="final-cta-desc">
-          Join thousands of engineers who trust CloudPulse to keep their services online.
-          Start monitoring in minutes — no credit card required.
-        </p>
-        <div class="final-cta-buttons">
-          <router-link to="/sign-up" class="cta-primary">BEGIN MONITORING</router-link>
-          <router-link to="/sign-in" class="cta-outline">SIGN IN</router-link>
+      </section>
+
+      <!-- Final CTA -->
+      <section class="final-cta-section">
+        <div class="final-cta-inner" v-motion :initial="{ opacity: 0, y: 40, scale: 0.97 }" :visible="{ opacity: 1, y: 0, scale: 1, transition: { duration: 650, ease: 'easeOut' } }">
+          <div class="final-cta-eyebrow">
+            <div class="eyebrow-line" aria-hidden="true"></div>
+            <span>Get Started Today</span>
+            <div class="eyebrow-line" aria-hidden="true"></div>
+          </div>
+          <h2 class="final-cta-title">Zero Downtime<br><span class="title-gold">Starts Here</span></h2>
+          <p class="final-cta-desc">
+            Join thousands of engineers who trust CloudPulse to keep their services online.
+            Start monitoring in minutes — no credit card required.
+          </p>
+          <div class="final-cta-buttons">
+            <router-link to="/sign-up" class="cta-primary">Get started</router-link>
+            <router-link to="/pricing" class="cta-outline">View Pricing</router-link>
+          </div>
+          <p class="final-cta-note">Free plan · No credit card · Cancel anytime</p>
         </div>
-        <p class="final-cta-note">Free plan · No credit card · Cancel anytime</p>
-      </div>
-    </section>
+      </section>
+    </main>
 
     <LandingFooter />
   </div>
@@ -290,21 +269,22 @@
 import { ref, computed } from 'vue'
 import LandingNav from '@/components/landing/LandingNav.vue'
 import LandingFooter from '@/components/landing/LandingFooter.vue'
+import SectionHeader from '@/components/landing/SectionHeader.vue'
 
 const openFaq = ref<number | null>(null)
 const billing = ref<'monthly' | 'annually'>('monthly')
 
 const stats = [
-  { value: '99.99%', label: 'UPTIME SLA' },
-  { value: '15+', label: 'GLOBAL REGIONS' },
-  { value: '24/7', label: 'SUPPORT ACCESS' },
-  { value: '<1s', label: 'DETECTION TIME' },
+  { value: '99.99%', label: 'Uptime SLA' },
+  { value: '15+', label: 'Global Regions' },
+  { value: '24/7', label: 'Support Access' },
+  { value: '<1s', label: 'Detection Time' },
 ]
 
 const features = [
   {
     numeral: 'I',
-    title: 'UPTIME MONITORING',
+    title: 'Uptime Monitoring',
     desc: 'Continuous health checks across HTTP, TCP, and DNS endpoints. Track response times, detect outages in seconds, and maintain a full historical log.',
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
       <path d="M2 12h2M20 12h2M12 2v2M12 20v2"/><circle cx="12" cy="12" r="4"/>
@@ -313,15 +293,15 @@ const features = [
   },
   {
     numeral: 'II',
-    title: 'INSTANT ALERTS',
-    desc: 'Multi-channel notifications via email, Slack, Telegram, and webhooks. Define alert thresholds and escalation rules — know before your users do.',
+    title: 'Instant Alerts',
+    desc: 'Multi-channel notifications via email, Telegram, Discord, and webhooks. Define alert thresholds and escalation rules — know before your users do.',
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
       <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/>
     </svg>`,
   },
   {
     numeral: 'III',
-    title: 'INCIDENT MANAGEMENT',
+    title: 'Incident Management',
     desc: 'Track, escalate, and resolve incidents with a structured workflow. Maintain public-facing status pages to keep stakeholders informed in real time.',
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
       <path d="M12 9v4M12 17h.01"/>
@@ -333,54 +313,54 @@ const features = [
 const steps = [
   {
     numeral: 'I',
-    title: 'CONNECT YOUR SERVICES',
+    title: 'Connect Your Services',
     desc: 'Add any HTTP, TCP, or DNS endpoint in under a minute. No agent required for external monitoring.',
   },
   {
     numeral: 'II',
-    title: '24/7 AUTOMATED CHECKS',
+    title: '24/7 Automated Checks',
     desc: 'Our distributed network runs checks every 30 seconds from multiple global regions, eliminating false positives.',
   },
   {
     numeral: 'III',
-    title: 'INSTANT NOTIFICATIONS',
-    desc: 'The moment a service fails, your team is alerted via Slack, email, Telegram, or webhooks — automatically.',
+    title: 'Instant Notifications',
+    desc: 'The moment a service fails, your team is alerted via email, Telegram, Discord, or webhooks — automatically.',
   },
   {
     numeral: 'IV',
-    title: 'ANALYZE & RESOLVE',
+    title: 'Analyze & Resolve',
     desc: 'Review full incident timelines, response latency trends, and SLA compliance reports to prevent recurrence.',
   },
 ]
 
 const whyItems = [
   {
-    title: 'SUB-SECOND DETECTION',
+    title: 'Sub-Second Detection',
     desc: 'Catch outages before your users do. Our checks detect failures and trigger alerts in under a second.',
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>`,
   },
   {
-    title: 'MULTI-CHANNEL ALERTS',
-    desc: 'Reach your team wherever they are — email, Slack, Telegram, PagerDuty, and custom webhooks.',
+    title: 'Multi-Channel Alerts',
+    desc: 'Reach your team wherever they are — email, Telegram, Discord, Slack, Teams, and custom webhooks.',
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>`,
   },
   {
-    title: 'GLOBAL CHECK NETWORK',
+    title: 'Global Check Network',
     desc: 'Checks run simultaneously from 15+ regions worldwide, catching regional outages and eliminating false positives.',
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>`,
   },
   {
-    title: 'ENTERPRISE SECURITY',
+    title: 'Enterprise Security',
     desc: 'TLS 1.3 in transit, AES-256 at rest. SOC 2 Type II certified infrastructure across all plans.',
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
   },
   {
-    title: 'DEEP ANALYTICS',
+    title: 'Deep Analytics',
     desc: 'Historical uptime data, P95 latency trends, SLA compliance reports, and custom time-range analysis.',
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`,
   },
   {
-    title: 'PUBLIC STATUS PAGES',
+    title: 'Public Status Pages',
     desc: 'Keep customers informed with a branded, real-time status page. Reduce support load during incidents.',
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>`,
   },
@@ -421,25 +401,25 @@ const testimonials = [
 
 const useCases = [
   {
-    title: 'STARTUPS',
+    title: 'Startups',
     desc: 'Build with confidence. Ship without fear of silent failures reaching your users first.',
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>`,
-    points: ['Free plan to start immediately', 'No agent — monitor externally in seconds', 'Email + Slack alerts out of the box'],
+    points: ['Free plan to start immediately', 'No agent — monitor externally in seconds', 'Email, Telegram & Discord alerts out of the box'],
   },
   {
-    title: 'DEVOPS TEAMS',
+    title: 'DevOps Teams',
     desc: 'Give your on-call rotation the precision tooling it deserves — not another alert storm.',
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M8.46 8.46a5 5 0 0 0 0 7.07"/></svg>`,
-    points: ['On-call scheduling & escalation rules', 'PagerDuty and OpsGenie integrations', 'P95 latency trends and SLA tracking'],
+    points: ['On-call scheduling & escalation rules', 'Slack, Teams & webhook integrations', 'P95 latency trends and SLA tracking'],
   },
   {
-    title: 'AGENCIES',
+    title: 'Agencies',
     desc: 'Monitor all client infrastructure from a single dashboard with full transparency.',
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>`,
     points: ['Branded public status pages per client', 'Bulk service management', 'Custom domain status pages (Enterprise)'],
   },
   {
-    title: 'ENTERPRISES',
+    title: 'Enterprises',
     desc: 'Production-grade observability with the security, compliance, and SLAs your organization requires.',
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M3 21h18M9 8h1M9 12h1M9 16h1M14 8h1M14 12h1M14 16h1M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16"/></svg>`,
     points: ['SSO / SAML & audit logs', 'Dedicated SLA with uptime guarantee', 'Private endpoint agent for internal services'],
@@ -448,7 +428,7 @@ const useCases = [
 
 const plans = [
   {
-    name: 'STARTER',
+    name: 'Starter',
     monthlyPrice: 'Free',
     monthlyPeriod: null,
     badge: null,
@@ -456,27 +436,27 @@ const plans = [
     features: [
       '5 monitored services',
       '5-minute check intervals',
-      'Email alerts only',
+      'Email, Telegram & Discord alerts',
       '30-day uptime history',
       '1 public status page',
       'Basic incident tracking',
       'Community support',
     ],
-    ctaLabel: 'START FREE',
+    ctaLabel: 'Start Free',
     ctaLink: '/sign-up',
   },
   {
-    name: 'PROFESSIONAL',
+    name: 'Professional',
     monthlyPrice: 'RM20',
     monthlyPeriod: '/month',
-    badge: 'MOST POPULAR',
+    badge: 'Coming Soon',
     featured: true,
     features: [
       '50 monitored services',
       '1-minute check intervals',
-      'All alert channels (Slack, email, Telegram, webhooks)',
+      'All alert channels (Email, Telegram, Discord, Slack, Teams, Webhooks)',
       '12-month uptime history',
-      'Unlimited status pages',
+      'Up to 10 status pages',
       'Full incident management',
       'On-call scheduling',
       'SSL certificate monitoring',
@@ -484,11 +464,11 @@ const plans = [
       'API access',
       'Priority support',
     ],
-    ctaLabel: 'GET STARTED',
-    ctaLink: '/sign-up',
+    ctaLabel: 'Request Early Access',
+    ctaLink: '/contact',
   },
   {
-    name: 'ENTERPRISE',
+    name: 'Enterprise',
     monthlyPrice: 'Custom',
     monthlyPeriod: null,
     badge: null,
@@ -496,7 +476,7 @@ const plans = [
     features: [
       'Unlimited monitored services',
       '30-second check intervals',
-      'All channels + PagerDuty, OpsGenie, custom integrations',
+      'All channels + custom integrations',
       'Unlimited uptime history',
       'Unlimited status pages with custom domain',
       'Advanced incident workflows & escalations',
@@ -509,7 +489,7 @@ const plans = [
       'Dedicated account manager',
       '24/7 premium support with SLA',
     ],
-    ctaLabel: 'CONTACT US',
+    ctaLabel: 'Contact Us',
     ctaLink: '/contact',
   },
 ]
@@ -521,7 +501,7 @@ const displayPlans = computed(() =>
         ...plan,
         price: 'RM16',
         period: '/month',
-        annualNote: null,
+        annualNote: 'Billed as RM192/year',
       }
     }
     return {
@@ -544,7 +524,7 @@ const faqs = [
   },
   {
     q: 'Which notification channels are supported?',
-    a: 'Email, Slack, Telegram, PagerDuty, and custom webhooks. Enterprise plans include bespoke integration options to fit your existing incident management workflow.',
+    a: 'Email, Telegram, and Discord are available on the free plan. Slack, Microsoft Teams, and custom webhooks are available on Professional and above.',
   },
   {
     q: 'Can I monitor internal or private services?',
@@ -556,7 +536,7 @@ const faqs = [
   },
   {
     q: 'Do you offer a free plan?',
-    a: 'Yes. The Starter plan is free forever with no credit card required. It supports up to 5 services with 5-minute check intervals and email alerts — perfect for personal projects and small teams.',
+    a: 'Yes. The Starter plan is free forever with no credit card required. It supports up to 5 services with 5-minute check intervals, plus email, Telegram, and Discord alerts — perfect for personal projects and small teams.',
   },
   {
     q: 'Can I switch between monthly and annual billing?',
@@ -588,12 +568,12 @@ const faqs = [
 /* ── Hero ── */
 .hero {
   position: relative;
-  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  padding: 120px 32px 80px;
+  padding: clamp(5rem, 10vw, 8rem) clamp(1.25rem, 4vw, 2rem);
 }
 
 .hero-crosshatch {
@@ -625,9 +605,9 @@ const faqs = [
   gap: 16px;
   justify-content: center;
   margin-bottom: 28px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.1em;
   color: #D4AF37;
 }
 .eyebrow-line {
@@ -638,11 +618,10 @@ const faqs = [
 
 .hero-title {
   font-family: var(--font-display);
-  font-size: clamp(56px, 10vw, 100px);
+  font-size: clamp(2.5rem, 10vw, 6.25rem);
   font-weight: 400;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.02em;
   color: #F2F0E4;
-  text-transform: uppercase;
   line-height: 1;
   margin-bottom: 28px;
 }
@@ -668,16 +647,15 @@ const faqs = [
 }
 
 .hero-tagline {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.12em;
   color: #D4AF37;
   margin-bottom: 20px;
-  text-transform: uppercase;
 }
 
 .hero-desc {
-  font-size: 18px;
+  font-size: 1.125rem;
   color: #888;
   line-height: 1.8;
   max-width: 520px;
@@ -695,22 +673,24 @@ const faqs = [
 }
 
 .hero-note {
-  font-size: 14px;
-  color: #444;
+  font-size: 0.875rem;
+  color: #888;
   letter-spacing: 0.1em;
   font-weight: 400;
 }
 
 .cta-primary {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.2em;
   color: #0A0A0A;
   background: #D4AF37;
   text-decoration: none;
-  padding: 14px 36px;
+  padding: 0 2.25rem;
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
   transition: background 0.3s, box-shadow 0.3s;
-  display: inline-block;
 }
 .cta-primary:hover {
   background: #F2E8C4;
@@ -718,15 +698,17 @@ const faqs = [
 }
 
 .cta-outline {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.2em;
   color: #D4AF37;
   border: 1px solid #D4AF37;
   text-decoration: none;
-  padding: 14px 36px;
+  padding: 0 2.25rem;
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
   transition: background 0.3s, color 0.3s;
-  display: inline-block;
 }
 .cta-outline:hover {
   background: rgba(212,175,55,0.08);
@@ -738,7 +720,7 @@ const faqs = [
   background: #141414;
   border-top: 1px solid rgba(212,175,55,0.2);
   border-bottom: 1px solid rgba(212,175,55,0.2);
-  padding: 48px 32px;
+  padding: clamp(2.5rem, 5vw, 4rem) clamp(1.25rem, 4vw, 2rem);
 }
 
 .stats-inner {
@@ -757,48 +739,29 @@ const faqs = [
 
 .stat-value {
   font-family: var(--font-display);
-  font-size: 26px;
+  font-size: 1.625rem;
   color: #D4AF37;
   letter-spacing: 0.06em;
   margin-bottom: 6px;
 }
 
 .stat-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.28em;
-  color: #555;
+  letter-spacing: 0.05em;
+  color: #888;
 }
 
-/* ── Shared section header ── */
-.section-header {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  margin-bottom: 20px;
-}
-.sh-line {
-  flex: 1;
-  height: 1px;
-  background: rgba(212,175,55,0.2);
-}
-.sh-text { flex-shrink: 0; }
-.sh-label {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.3em;
-  color: #D4AF37;
-}
-
+/* ── Shared section styles ── */
 .section-title {
   font-family: var(--font-display);
-  font-size: clamp(36px, 5vw, 60px);
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
   font-weight: 400;
   color: #F2F0E4;
   letter-spacing: 0.04em;
   line-height: 1.15;
   text-align: center;
-  margin: 0 auto 64px;
+  margin: 0 auto clamp(2.5rem, 5vw, 4rem);
   max-width: 700px;
 }
 .title-accent { color: #D4AF37; }
@@ -806,7 +769,7 @@ const faqs = [
 /* ── Features ── */
 .features {
   background: #0E0E0E;
-  padding: 100px 32px;
+  padding: clamp(5rem, 9vw, 8rem) clamp(1.25rem, 4vw, 2rem);
   border-top: 1px solid rgba(212,175,55,0.15);
 }
 
@@ -856,7 +819,7 @@ const faqs = [
 
 .feat-numeral {
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: rgba(212,175,55,0.35);
   letter-spacing: 0.2em;
   margin-bottom: 24px;
@@ -892,17 +855,16 @@ const faqs = [
 
 .feat-title {
   font-family: var(--font-display);
-  font-size: 16px;
-  letter-spacing: 0.12em;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
   color: #F2F0E4;
   margin-bottom: 14px;
-  text-transform: uppercase;
   transition: color 0.4s;
 }
 .feat-card:hover .feat-title { color: #D4AF37; }
 
 .feat-desc {
-  font-size: 17px;
+  font-size: 1.0625rem;
   color: #888;
   line-height: 1.75;
   font-weight: 300;
@@ -911,7 +873,7 @@ const faqs = [
 /* ── How It Works ── */
 .how-works {
   background: #0A0A0A;
-  padding: 100px 32px;
+  padding: clamp(5rem, 9vw, 8rem) clamp(1.25rem, 4vw, 2rem);
   border-top: 1px solid rgba(212,175,55,0.15);
 }
 
@@ -931,7 +893,7 @@ const faqs = [
 
 .step-numeral {
   font-family: var(--font-display);
-  font-size: 52px;
+  font-size: 3.25rem;
   color: rgba(212,175,55,0.12);
   letter-spacing: 0.05em;
   line-height: 1;
@@ -940,16 +902,15 @@ const faqs = [
 
 .step-title {
   font-family: var(--font-display);
-  font-size: 16px;
-  letter-spacing: 0.15em;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
   color: #F2F0E4;
   margin-bottom: 12px;
-  text-transform: uppercase;
 }
 
 .step-desc {
-  font-size: 17px;
-  color: #666;
+  font-size: 1.0625rem;
+  color: #888;
   line-height: 1.8;
   font-weight: 300;
 }
@@ -957,7 +918,7 @@ const faqs = [
 /* ── Why Choose ── */
 .why-choose {
   background: #0E0E0E;
-  padding: 100px 32px;
+  padding: clamp(5rem, 9vw, 8rem) clamp(1.25rem, 4vw, 2rem);
   border-top: 1px solid rgba(212,175,55,0.15);
 }
 
@@ -1004,18 +965,17 @@ const faqs = [
 
 .why-title {
   font-family: var(--font-display);
-  font-size: 15px;
-  letter-spacing: 0.18em;
+  font-size: 0.9375rem;
+  letter-spacing: 0.04em;
   color: #F2F0E4;
   margin-bottom: 10px;
-  text-transform: uppercase;
   transition: color 0.35s;
 }
 .why-card:hover .why-title { color: #D4AF37; }
 
 .why-desc {
-  font-size: 17px;
-  color: #666;
+  font-size: 1.0625rem;
+  color: #888;
   line-height: 1.8;
   font-weight: 300;
 }
@@ -1023,7 +983,7 @@ const faqs = [
 /* ── Testimonials ── */
 .testimonials-section {
   background: #0A0A0A;
-  padding: 100px 32px;
+  padding: clamp(5rem, 9vw, 8rem) clamp(1.25rem, 4vw, 2rem);
   border-top: 1px solid rgba(212,175,55,0.15);
 }
 
@@ -1064,7 +1024,7 @@ const faqs = [
 
 .testimonial-quote-mark {
   font-family: var(--font-display);
-  font-size: 48px;
+  font-size: 3rem;
   color: rgba(212,175,55,0.2);
   line-height: 1;
   margin-bottom: -10px;
@@ -1073,7 +1033,7 @@ const faqs = [
 .testimonial-card:hover .testimonial-quote-mark { color: rgba(212,175,55,0.5); }
 
 .testimonial-text {
-  font-size: 16px;
+  font-size: 1rem;
   color: #999;
   line-height: 1.85;
   font-weight: 300;
@@ -1098,7 +1058,7 @@ const faqs = [
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.05em;
   color: #D4AF37;
@@ -1111,7 +1071,7 @@ const faqs = [
 }
 
 .testimonial-name {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: #F2F0E4;
   letter-spacing: 0.05em;
@@ -1119,15 +1079,15 @@ const faqs = [
 }
 
 .testimonial-role {
-  font-size: 14px;
-  color: #555;
+  font-size: 0.875rem;
+  color: #888;
   font-weight: 300;
 }
 
 /* ── Use Cases ── */
 .use-cases-section {
   background: #0E0E0E;
-  padding: 100px 32px;
+  padding: clamp(5rem, 9vw, 8rem) clamp(1.25rem, 4vw, 2rem);
   border-top: 1px solid rgba(212,175,55,0.15);
 }
 
@@ -1179,17 +1139,16 @@ const faqs = [
 
 .use-case-title {
   font-family: var(--font-display);
-  font-size: 15px;
-  letter-spacing: 0.15em;
+  font-size: 0.9375rem;
+  letter-spacing: 0.04em;
   color: #F2F0E4;
-  text-transform: uppercase;
   transition: color 0.35s;
 }
 .use-case-card:hover .use-case-title { color: #D4AF37; }
 
 .use-case-desc {
-  font-size: 16px;
-  color: #666;
+  font-size: 1rem;
+  color: #888;
   line-height: 1.75;
   font-weight: 300;
 }
@@ -1204,20 +1163,18 @@ const faqs = [
 }
 
 .use-case-points li {
-  font-size: 14px;
-  color: #555;
+  font-size: 0.875rem;
+  color: #888;
   font-weight: 300;
   display: flex;
   align-items: flex-start;
   gap: 8px;
   line-height: 1.5;
-  transition: color 0.35s;
 }
-.use-case-card:hover .use-case-points li { color: #666; }
 
 .uc-check {
   color: #D4AF37;
-  font-size: 10px;
+  font-size: 0.625rem;
   flex-shrink: 0;
   margin-top: 4px;
 }
@@ -1225,7 +1182,7 @@ const faqs = [
 /* ── Pricing ── */
 .pricing-section {
   background: #0A0A0A;
-  padding: 100px 32px;
+  padding: clamp(5rem, 9vw, 8rem) clamp(1.25rem, 4vw, 2rem);
   border-top: 1px solid rgba(212,175,55,0.15);
 }
 
@@ -1239,18 +1196,19 @@ const faqs = [
 
 .toggle-btn {
   font-family: var(--font-body);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
-  letter-spacing: 0.18em;
-  color: #555;
+  letter-spacing: 0.03em;
+  color: #888;
   background: transparent;
   border: 1px solid rgba(212,175,55,0.15);
-  padding: 10px 24px;
+  padding: 0 1.5rem;
+  min-height: 2.75rem;
   cursor: pointer;
   transition: color 0.3s, border-color 0.3s, background 0.3s;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.625rem;
 }
 .toggle-btn:hover { color: #F2F0E4; border-color: rgba(212,175,55,0.4); }
 .toggle-btn--active {
@@ -1260,7 +1218,7 @@ const faqs = [
 }
 
 .save-badge {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   color: #0A0A0A;
@@ -1321,7 +1279,7 @@ const faqs = [
   top: -13px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.25em;
   color: #0A0A0A;
@@ -1332,8 +1290,8 @@ const faqs = [
 
 .plan-name {
   font-family: var(--font-display);
-  font-size: 18px;
-  letter-spacing: 0.15em;
+  font-size: 1.125rem;
+  letter-spacing: 0.04em;
   color: #F2F0E4;
   margin-bottom: 16px;
 }
@@ -1347,20 +1305,20 @@ const faqs = [
 
 .plan-amount {
   font-family: var(--font-display);
-  font-size: 36px;
+  font-size: 2.25rem;
   color: #D4AF37;
   line-height: 1;
 }
 
 .plan-period {
-  font-size: 15px;
-  color: #555;
+  font-size: 0.9375rem;
+  color: #888;
   font-weight: 300;
 }
 
 .plan-annual-note {
-  font-size: 14px;
-  color: #555;
+  font-size: 0.875rem;
+  color: #888;
   font-weight: 300;
   margin-bottom: 18px;
   letter-spacing: 0.05em;
@@ -1384,7 +1342,7 @@ const faqs = [
 }
 
 .plan-feature-list li {
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: #888;
   font-weight: 300;
   display: flex;
@@ -1395,20 +1353,23 @@ const faqs = [
 
 .plan-check {
   color: #D4AF37;
-  font-size: 10px;
+  font-size: 0.625rem;
   flex-shrink: 0;
   margin-top: 4px;
 }
 
 .plan-cta {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.2em;
   color: #D4AF37;
   border: 1px solid rgba(212,175,55,0.4);
-  padding: 13px;
+  min-height: 2.75rem;
+  padding: 0 0.8125rem;
   text-decoration: none;
   transition: background 0.3s, color 0.3s, border-color 0.3s;
   margin-top: auto;
@@ -1431,7 +1392,7 @@ const faqs = [
 /* ── FAQ ── */
 .faq-section {
   background: #0E0E0E;
-  padding: 100px 32px;
+  padding: clamp(5rem, 9vw, 8rem) clamp(1.25rem, 4vw, 2rem);
   border-top: 1px solid rgba(212,175,55,0.15);
 }
 
@@ -1443,28 +1404,37 @@ const faqs = [
 .faq-item {
   border: 1px solid rgba(212,175,55,0.12);
   border-bottom: none;
-  cursor: pointer;
   transition: background 0.3s, border-color 0.3s;
-  user-select: none;
 }
 .faq-item:last-child { border-bottom: 1px solid rgba(212,175,55,0.12); }
 .faq-item:hover { background: rgba(212,175,55,0.02); border-color: rgba(212,175,55,0.22); }
 .faq-item--open { background: rgba(212,175,55,0.04); border-color: rgba(212,175,55,0.22); }
 
 .faq-question {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-body);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
   padding: 22px 24px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
   letter-spacing: 0.04em;
   color: #F2F0E4;
 }
 
+.faq-question:focus-visible {
+  outline: 2px solid #D4AF37;
+  outline-offset: -2px;
+}
+
 .faq-toggle {
-  font-size: 20px;
+  font-size: 1.25rem;
   color: #D4AF37;
   line-height: 1;
   flex-shrink: 0;
@@ -1483,24 +1453,25 @@ const faqs = [
   transform: rotate(45deg);
 }
 
-.faq-answer {
-  max-height: 0;
+.faq-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.faq-collapse--open {
+  grid-template-rows: 1fr;
+}
+.faq-collapse-inner {
   overflow: hidden;
-  padding: 0 24px;
-  font-size: 17px;
+}
+
+.faq-answer {
+  padding: 16px 24px 22px;
+  font-size: 1.0625rem;
   color: #888;
   line-height: 1.8;
   font-weight: 300;
-  border-top: 1px solid transparent;
-  transition:
-    max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1),
-    padding 0.45s cubic-bezier(0.4, 0, 0.2, 1),
-    border-color 0.3s;
-}
-.faq-item--open .faq-answer {
-  max-height: 400px;
-  padding: 16px 24px 22px;
-  border-top-color: rgba(212,175,55,0.1);
+  border-top: 1px solid rgba(212,175,55,0.1);
 }
 
 /* ── Final CTA ── */
@@ -1508,7 +1479,7 @@ const faqs = [
   background: #141414;
   border-top: 1px solid rgba(212,175,55,0.2);
   border-bottom: 1px solid rgba(212,175,55,0.2);
-  padding: 120px 32px;
+  padding: clamp(5rem, 10vw, 8rem) clamp(1.25rem, 4vw, 2rem);
   position: relative;
   overflow: hidden;
 }
@@ -1535,7 +1506,7 @@ const faqs = [
   gap: 16px;
   justify-content: center;
   margin-bottom: 28px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.25em;
   color: #D4AF37;
@@ -1543,7 +1514,7 @@ const faqs = [
 
 .final-cta-title {
   font-family: var(--font-display);
-  font-size: clamp(40px, 6vw, 72px);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
   font-weight: 400;
   letter-spacing: 0.06em;
   color: #F2F0E4;
@@ -1552,8 +1523,8 @@ const faqs = [
 }
 
 .final-cta-desc {
-  font-size: 17px;
-  color: #777;
+  font-size: 1.0625rem;
+  color: #888;
   line-height: 1.8;
   font-weight: 300;
   max-width: 480px;
@@ -1570,8 +1541,8 @@ const faqs = [
 }
 
 .final-cta-note {
-  font-size: 13px;
-  color: #3a3a3a;
+  font-size: 0.8125rem;
+  color: #888;
   letter-spacing: 0.1em;
 }
 
@@ -1597,16 +1568,32 @@ const faqs = [
 }
 
 @media (max-width: 640px) {
-  .hero { padding: 100px 20px 60px; }
   .steps-grid { grid-template-columns: 1fr; }
   .why-grid { grid-template-columns: 1fr; }
   .use-cases-grid { grid-template-columns: 1fr; }
   .testimonials-grid { grid-template-columns: 1fr; }
-  .stats { padding: 40px 20px; }
-  .features, .how-works, .why-choose, .pricing-section, .faq-section,
-  .testimonials-section, .use-cases-section { padding: 72px 20px; }
-  .final-cta-section { padding: 80px 20px; }
-  .section-title { font-size: clamp(28px, 8vw, 40px); }
+  .section-title { font-size: clamp(1.75rem, 8vw, 2.5rem); }
   .billing-toggle { flex-direction: column; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feat-card:hover,
+  .why-card:hover,
+  .use-case-card:hover,
+  .testimonial-card:hover,
+  .plan-card:hover {
+    transform: none;
+  }
+
+  .feat-card::before,
+  .why-card::after,
+  .use-case-card::after,
+  .testimonial-card::before {
+    transition: none;
+  }
+
+  .faq-collapse {
+    transition: none;
+  }
 }
 </style>

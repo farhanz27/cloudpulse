@@ -83,7 +83,7 @@
             <div class="comp-group-header">{{ group.title }}</div>
             <div class="comp-row" v-for="row in group.rows" :key="row.feature">
               <div class="comp-cell comp-cell--feature">{{ row.feature }}</div>
-              <div class="comp-cell" v-for="(val, i) in row.values" :key="i">
+              <div class="comp-cell" :class="{ 'comp-cell--featured': i === 1 }" v-for="(val, i) in row.values" :key="i">
                 <span v-if="val === true" class="comp-yes" aria-label="Included">◆</span>
                 <span v-else-if="val === false" class="comp-no" aria-label="Not included">—</span>
                 <span v-else class="comp-val">{{ val }}</span>
@@ -91,19 +91,6 @@
             </div>
           </template>
 
-          <!-- CTA row -->
-          <div class="comp-row comp-row--cta">
-            <div class="comp-cell comp-cell--feature"></div>
-            <div class="comp-cell">
-              <router-link to="/sign-up" class="comp-cta-btn">START FREE</router-link>
-            </div>
-            <div class="comp-cell comp-cell--featured">
-              <router-link to="/sign-up" class="comp-cta-btn comp-cta-btn--gold">GET STARTED</router-link>
-            </div>
-            <div class="comp-cell">
-              <router-link to="/contact" class="comp-cta-btn">CONTACT US</router-link>
-            </div>
-          </div>
         </div>
       </div>
     </section>
@@ -159,7 +146,7 @@ const openFaq = ref<number | null>(null)
 const plans = [
   {
     name: 'STARTER',
-    tagline: 'Perfect for personal projects and small teams getting started with monitoring.',
+    tagline: 'Perfect for personal projects and small teams.',
     monthlyPrice: 'Free',
     monthlyPeriod: null,
     badge: null,
@@ -167,7 +154,7 @@ const plans = [
     features: [
       '5 monitored services',
       '5-minute check intervals',
-      'Email alerts',
+      'Email, Telegram & Discord alerts',
       '30-day uptime history',
       '1 public status page',
       'Basic incident tracking',
@@ -175,21 +162,21 @@ const plans = [
     ],
     ctaLabel: 'START FREE',
     ctaLink: '/sign-up',
-    note: 'No credit card required',
+    note: null,
   },
   {
     name: 'PROFESSIONAL',
-    tagline: 'For growing teams that need faster checks, more services, and every alert channel.',
+    tagline: 'For growing teams that need faster checks and full alert coverage.',
     monthlyPrice: 'RM20',
     monthlyPeriod: '/month',
-    badge: 'MOST POPULAR',
+    badge: 'COMING SOON',
     featured: true,
     features: [
       '50 monitored services',
       '1-minute check intervals',
-      'All alert channels (Email, Discord, Telegram, Webhooks)',
+      'All alert channels (Email, Telegram, Discord, Slack, Teams, Webhooks)',
       '12-month uptime history',
-      'Unlimited status pages',
+      'Up to 10 status pages',
       'Full incident management',
       'On-call scheduling',
       'SSL certificate monitoring',
@@ -197,13 +184,13 @@ const plans = [
       'API access',
       'Priority support',
     ],
-    ctaLabel: 'GET STARTED',
-    ctaLink: '/sign-up',
+    ctaLabel: 'REQUEST EARLY ACCESS',
+    ctaLink: '/contact',
     note: null,
   },
   {
     name: 'ENTERPRISE',
-    tagline: 'For organisations that need unlimited scale, custom integrations, and dedicated support.',
+    tagline: 'For organisations that need unlimited scale and dedicated support.',
     monthlyPrice: 'Custom',
     monthlyPeriod: null,
     badge: null,
@@ -257,8 +244,10 @@ const comparisonGroups = [
     title: 'ALERTS & NOTIFICATIONS',
     rows: [
       { feature: 'Email alerts', values: [true, true, true] },
-      { feature: 'Discord webhooks', values: [false, true, true] },
-      { feature: 'Telegram alerts', values: [false, true, true] },
+      { feature: 'Telegram alerts', values: [true, true, true] },
+      { feature: 'Discord alerts', values: [true, true, true] },
+      { feature: 'Slack', values: [false, true, true] },
+      { feature: 'Microsoft Teams', values: [false, true, true] },
       { feature: 'Custom webhooks', values: [false, true, true] },
       { feature: 'Alert escalation rules', values: [false, true, true] },
       { feature: 'On-call scheduling', values: [false, true, true] },
@@ -278,7 +267,7 @@ const comparisonGroups = [
   {
     title: 'STATUS PAGES',
     rows: [
-      { feature: 'Public status pages', values: ['1', 'Unlimited', 'Unlimited'] },
+      { feature: 'Public status pages', values: ['1', '10', 'Unlimited'] },
       { feature: 'Real-time incident updates', values: [true, true, true] },
       { feature: 'Maintenance windows', values: [false, true, true] },
       { feature: 'Custom domain', values: [false, false, true] },
@@ -449,14 +438,14 @@ const faqs = [
 }
 
 .plan-name { font-family: 'Marcellus', Georgia, serif; font-size: 18px; letter-spacing: 0.15em; color: #F2F0E4; margin-bottom: 8px; }
-.plan-desc { font-size: 12px; color: #555; font-weight: 300; line-height: 1.6; margin-bottom: 20px; }
+.plan-desc { font-size: 16px; color: #555; font-weight: 300; line-height: 1.6; margin-bottom: 20px; }
 .plan-price { display: flex; align-items: baseline; gap: 4px; margin-bottom: 6px; }
 .plan-amount { font-family: 'Marcellus', Georgia, serif; font-size: 36px; color: #D4AF37; line-height: 1; }
 .plan-period { font-size: 13px; color: #555; font-weight: 300; }
 .plan-annual-note { font-size: 11px; color: #555; font-weight: 300; margin-bottom: 12px; }
 .plan-divider { height: 1px; background: rgba(212,175,55,0.15); margin: 18px 0 24px; }
 .plan-feature-list { list-style: none; padding: 0; margin: 0 0 32px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
-.plan-feature-list li { font-size: 13px; color: #888; font-weight: 300; display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; }
+.plan-feature-list li { font-size: 16px; color: #888; font-weight: 300; display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; }
 .plan-check { color: #D4AF37; font-size: 7px; flex-shrink: 0; margin-top: 4px; }
 .plan-cta {
   display: block; text-align: center; font-size: 11px; font-weight: 600; letter-spacing: 0.2em;
@@ -499,7 +488,7 @@ const faqs = [
 
 .comp-cell {
   padding: 13px 20px;
-  font-size: 13px; color: #777; font-weight: 300;
+  font-size: 16px; color: #777; font-weight: 300;
   border-right: 1px solid rgba(212,175,55,0.07);
   display: flex; align-items: center;
 }
@@ -513,8 +502,8 @@ const faqs = [
 .comp-row--cta .comp-cell { justify-content: center; padding: 20px; }
 
 .comp-yes { color: #D4AF37; font-size: 8px; }
-.comp-no { color: #333; font-size: 14px; }
-.comp-val { color: #888; font-size: 12px; }
+.comp-no { color: #333; font-size: 16px; }
+.comp-val { color: #888; font-size: 16px; }
 
 .comp-cta-btn {
   font-size: 10px; font-weight: 700; letter-spacing: 0.18em;
@@ -538,7 +527,7 @@ const faqs = [
 .faq-item--open { background: rgba(212,175,55,0.04); }
 .faq-question {
   display: flex; align-items: center; justify-content: space-between; gap: 20px;
-  padding: 22px 24px; font-size: 14px; font-weight: 500; letter-spacing: 0.03em; color: #F2F0E4;
+  padding: 22px 24px; font-size: 16px; font-weight: 500; letter-spacing: 0.03em; color: #F2F0E4;
 }
 .faq-toggle {
   font-size: 20px; color: #D4AF37; flex-shrink: 0;
@@ -549,7 +538,7 @@ const faqs = [
 .faq-item--open .faq-toggle { transform: rotate(45deg); }
 .faq-answer {
   max-height: 0; overflow: hidden; padding: 0 24px;
-  font-size: 13px; color: #888; line-height: 1.8; font-weight: 300;
+  font-size: 16px; color: #888; line-height: 1.8; font-weight: 300;
   border-top: 1px solid transparent;
   transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1), padding 0.45s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s;
 }
@@ -559,7 +548,7 @@ const faqs = [
 .cta-section { padding: 100px 32px; text-align: center; background: #141414; border-top: 1px solid rgba(212,175,55,0.15); }
 .cta-inner { max-width: 600px; margin: 0 auto; }
 .cta-title { font-family: 'Marcellus', Georgia, serif; font-size: clamp(28px, 5vw, 52px); font-weight: 400; color: #F2F0E4; letter-spacing: 0.06em; line-height: 1.15; margin-bottom: 16px; }
-.cta-desc { font-size: 14px; color: #666; font-weight: 300; margin-bottom: 36px; }
+.cta-desc { font-size: 16px; color: #666; font-weight: 300; margin-bottom: 36px; }
 .cta-buttons { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
 .cta-note { font-size: 11px; color: #3a3a3a; letter-spacing: 0.1em; }
 
@@ -571,14 +560,14 @@ const faqs = [
 @media (max-width: 900px) {
   .pricing-grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
   .comp-row { grid-template-columns: 1.5fr 1fr 1fr 1fr; }
-  .comp-cell { padding: 11px 12px; font-size: 12px; }
-  .comp-cell--feature { font-size: 12px; }
+  .comp-cell { padding: 11px 12px; font-size: 14px; }
+  .comp-cell--feature { font-size: 14px; }
 }
 @media (max-width: 640px) {
   .page-hero { padding: 120px 20px 72px; }
   .plans-section, .comparison-section, .faq-section, .cta-section { padding: 72px 20px; }
   .comp-row { grid-template-columns: 1.2fr 1fr 1fr 1fr; }
-  .comp-cell { padding: 10px 8px; font-size: 11px; }
+  .comp-cell { padding: 10px 8px; font-size: 13px; }
   .comp-group-header { padding: 10px 12px; }
   .billing-toggle { flex-direction: column; }
 }

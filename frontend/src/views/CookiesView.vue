@@ -179,7 +179,7 @@ const sections = [
 }
 
 .legal-text {
-  font-size: 14px;
+  font-size: 16px;
   color: #777;
   line-height: 1.85;
   font-weight: 300;
@@ -200,7 +200,7 @@ const sections = [
 .cookie-row--header { background: rgba(212,175,55,0.04); }
 .cookie-cell {
   padding: 12px 16px;
-  font-size: 12px;
+  font-size: 16px;
   color: #777;
   font-weight: 300;
   border-right: 1px solid rgba(212,175,55,0.07);

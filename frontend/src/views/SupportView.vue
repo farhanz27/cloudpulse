@@ -226,7 +226,7 @@ const faqs = [
 .channel-card:hover { border-color: rgba(212,175,55,0.35); background: #18160e; }
 .channel-icon { color: #D4AF37; display: flex; margin-bottom: 4px; }
 .channel-title { font-family: 'Marcellus', Georgia, serif; font-size: 16px; letter-spacing: 0.08em; color: #F2F0E4; }
-.channel-desc { font-size: 13px; color: #777; line-height: 1.75; font-weight: 300; flex: 1; }
+.channel-desc { font-size: 16px; color: #777; line-height: 1.75; font-weight: 300; flex: 1; }
 .channel-meta { font-size: 11px; color: #555; letter-spacing: 0.05em; font-weight: 300; }
 .channel-cta {
   display: inline-block; margin-top: 8px;
@@ -249,7 +249,7 @@ const faqs = [
 .sla-header { background: rgba(212,175,55,0.04); }
 .sla-cell {
   padding: 16px 20px;
-  font-size: 13px; color: #777; font-weight: 300;
+  font-size: 16px; color: #777; font-weight: 300;
   border-right: 1px solid rgba(212,175,55,0.08);
   display: flex; align-items: center;
 }
@@ -272,7 +272,7 @@ const faqs = [
 .faq-item--open { background: rgba(212,175,55,0.04); }
 .faq-question {
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  padding: 18px 20px; font-size: 13px; font-weight: 500; letter-spacing: 0.03em; color: #F2F0E4;
+  padding: 18px 20px; font-size: 16px; font-weight: 500; letter-spacing: 0.03em; color: #F2F0E4;
 }
 .faq-toggle {
   font-size: 18px; color: #D4AF37; flex-shrink: 0;
@@ -283,7 +283,7 @@ const faqs = [
 .faq-item--open .faq-toggle { transform: rotate(45deg); }
 .faq-answer {
   max-height: 0; overflow: hidden; padding: 0 20px;
-  font-size: 13px; color: #777; line-height: 1.8; font-weight: 300;
+  font-size: 16px; color: #777; line-height: 1.8; font-weight: 300;
   border-top: 1px solid transparent;
   transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s;
 }
@@ -293,7 +293,7 @@ const faqs = [
 .cta-section { padding: 80px 32px; text-align: center; background: #141414; border-top: 1px solid rgba(212,175,55,0.15); }
 .cta-inner { max-width: 480px; margin: 0 auto; }
 .cta-title { font-family: 'Marcellus', Georgia, serif; font-size: clamp(22px, 3vw, 34px); color: #F2F0E4; letter-spacing: 0.05em; margin-bottom: 12px; }
-.cta-desc { font-size: 14px; color: #666; font-weight: 300; margin-bottom: 32px; }
+.cta-desc { font-size: 16px; color: #666; font-weight: 300; margin-bottom: 32px; }
 .btn-primary {
   font-size: 11px; font-weight: 700; letter-spacing: 0.2em;
   color: #0A0A0A; background: #D4AF37; text-decoration: none;

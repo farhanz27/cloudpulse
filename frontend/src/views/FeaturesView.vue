@@ -502,7 +502,7 @@ const checkTypes = [
 .overview-tile:hover { background: rgba(212,175,55,0.03); }
 .tile-icon { color: #D4AF37; display: flex; }
 .tile-title { font-size: 11px; font-weight: 600; letter-spacing: 0.15em; color: #F2F0E4; }
-.tile-desc { font-size: 12px; color: #555; font-weight: 300; line-height: 1.6; }
+.tile-desc { font-size: 16px; color: #555; font-weight: 300; line-height: 1.6; }
 
 /* Feature sections */
 .feature-section { padding: 100px 32px; border-bottom: 1px solid rgba(212,175,55,0.1); }
@@ -523,11 +523,11 @@ const checkTypes = [
   font-size: clamp(28px, 4vw, 48px);
   font-weight: 400; color: #F2F0E4; letter-spacing: 0.05em; line-height: 1.2; margin-bottom: 20px;
 }
-.feature-desc { font-size: 14px; color: #777; line-height: 1.85; font-weight: 300; margin-bottom: 24px; }
+.feature-desc { font-size: 16px; color: #777; line-height: 1.85; font-weight: 300; margin-bottom: 24px; }
 .feature-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
 .feature-list li {
   display: flex; align-items: flex-start; gap: 10px;
-  font-size: 13px; color: #888; font-weight: 300; line-height: 1.5;
+  font-size: 16px; color: #888; font-weight: 300; line-height: 1.5;
 }
 .list-dot { color: #D4AF37; font-size: 6px; flex-shrink: 0; margin-top: 5px; }
 
@@ -597,8 +597,9 @@ const checkTypes = [
 
 /* Incident timeline */
 .incident-timeline { padding: 16px 20px; display: flex; flex-direction: column; gap: 0; position: relative; }
-.incident-timeline::before {
-  content: ''; position: absolute; left: 32px; top: 20px; bottom: 20px; width: 1px;
+.it-event:not(:last-child)::after {
+  content: ''; position: absolute; left: 4px; width: 1px;
+  top: 18px; bottom: -18px;
   background: rgba(212,175,55,0.1);
 }
 .it-event {
@@ -673,7 +674,7 @@ const checkTypes = [
 .check-type-card { background: #141414; padding: 36px 28px; display: flex; flex-direction: column; gap: 12px; }
 .ct-icon { color: #D4AF37; display: flex; }
 .ct-title { font-family: 'Marcellus', Georgia, serif; font-size: 15px; letter-spacing: 0.1em; color: #F2F0E4; }
-.ct-desc { font-size: 13px; color: #666; line-height: 1.75; font-weight: 300; flex: 1; }
+.ct-desc { font-size: 16px; color: #666; line-height: 1.75; font-weight: 300; flex: 1; }
 .ct-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
 .ct-tag { font-size: 9px; font-weight: 600; letter-spacing: 0.12em; color: #D4AF37; background: rgba(212,175,55,0.08); border: 1px solid rgba(212,175,55,0.15); padding: 3px 8px; }
 
@@ -681,7 +682,7 @@ const checkTypes = [
 .cta-section { padding: 100px 32px; text-align: center; background: #141414; border-top: 1px solid rgba(212,175,55,0.15); }
 .cta-inner { max-width: 600px; margin: 0 auto; }
 .cta-title { font-family: 'Marcellus', Georgia, serif; font-size: clamp(28px, 5vw, 48px); font-weight: 400; color: #F2F0E4; letter-spacing: 0.06em; line-height: 1.2; margin-bottom: 16px; }
-.cta-desc { font-size: 14px; color: #666; font-weight: 300; line-height: 1.75; margin-bottom: 36px; }
+.cta-desc { font-size: 16px; color: #666; font-weight: 300; line-height: 1.75; margin-bottom: 36px; }
 .cta-buttons { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
 
 .btn-primary { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: #0A0A0A; background: #D4AF37; text-decoration: none; padding: 14px 32px; transition: background 0.3s, box-shadow 0.3s; display: inline-block; }

@@ -4,12 +4,7 @@
       <!-- Col 1: Brand -->
       <div class="lfooter-brand-col">
         <router-link to="/" class="lfooter-logo">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
-            stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"
-            style="color: #D4AF37;">
-            <polyline points="1,12 6,12 8,6 10,18 12,8 14,15 16,12 23,12" />
-          </svg>
-          <span class="lfooter-logo-name">CLOUDPULSE</span>
+          <CloudPulseWordmark />
         </router-link>
         <p class="lfooter-desc">
           Uptime monitoring, instant alerts, and incident management
@@ -41,7 +36,7 @@
 
       <!-- Col 2: Product -->
       <div class="lfooter-link-col">
-        <div class="lfooter-col-title">PRODUCT</div>
+        <div class="lfooter-col-title">Product</div>
         <router-link to="/features" class="lfooter-link">Features</router-link>
         <router-link to="/integrations" class="lfooter-link">Integrations</router-link>
         <router-link to="/pricing" class="lfooter-link">Pricing</router-link>
@@ -50,33 +45,23 @@
 
       <!-- Col 3: Resources -->
       <div class="lfooter-link-col">
-        <div class="lfooter-col-title">RESOURCES</div>
-        <router-link to="/docs" class="lfooter-link">Documentation</router-link>
-        <router-link to="/support" class="lfooter-link">Support</router-link>
+        <div class="lfooter-col-title">Resources</div>
         <a href="/#faq" class="lfooter-link" @click="handleSection($event, 'faq')">FAQ</a>
         <router-link to="/contact" class="lfooter-link">Contact Us</router-link>
       </div>
 
-      <!-- Col 4: Company -->
+      <!-- Col 4: Legal -->
       <div class="lfooter-link-col">
-        <div class="lfooter-col-title">COMPANY</div>
-        <router-link to="/about" class="lfooter-link">About</router-link>
+        <div class="lfooter-col-title">Legal</div>
         <router-link to="/privacy" class="lfooter-link">Privacy Policy</router-link>
         <router-link to="/terms" class="lfooter-link">Terms of Service</router-link>
-        <router-link to="/status/overview" class="lfooter-link">Status Page</router-link>
+        <router-link to="/cookies" class="lfooter-link">Cookies</router-link>
       </div>
     </div>
 
     <div class="lfooter-bar">
       <div class="lfooter-bar-inner">
         <p class="lfooter-copy">&copy; {{ year }} CloudPulse. All rights reserved.</p>
-        <div class="lfooter-legal">
-          <router-link to="/terms" class="lfooter-legal-link">Terms</router-link>
-          <span class="lfooter-dot">·</span>
-          <router-link to="/privacy" class="lfooter-legal-link">Privacy</router-link>
-          <span class="lfooter-dot">·</span>
-          <router-link to="/cookies" class="lfooter-legal-link">Cookies</router-link>
-        </div>
       </div>
     </div>
   </footer>
@@ -84,6 +69,7 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import CloudPulseWordmark from '@/components/CloudPulseWordmark.vue'
 
 const year = new Date().getFullYear()
 const router = useRouter()
@@ -110,29 +96,20 @@ function handleSection(e: MouseEvent, id: string) {
 .lfooter-cols {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 64px 32px 48px;
+  padding: clamp(3rem, 6vw, 4rem) clamp(1.25rem, 4vw, 2rem) clamp(2.5rem, 5vw, 3rem);
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 48px;
 }
 
 .lfooter-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  display: inline-block;
   text-decoration: none;
   margin-bottom: 16px;
 }
 
-.lfooter-logo-name {
-  font-family: 'Marcellus', Georgia, serif;
-  font-size: 16px;
-  letter-spacing: 0.15em;
-  color: #F2F0E4;
-}
-
 .lfooter-desc {
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: #666;
   font-weight: 300;
   line-height: 1.75;
@@ -169,15 +146,15 @@ function handleSection(e: MouseEvent, id: string) {
 }
 
 .lfooter-col-title {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.3em;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   color: #D4AF37;
   margin-bottom: 4px;
 }
 
 .lfooter-link {
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: #666;
   text-decoration: none;
   cursor: pointer;
@@ -194,7 +171,7 @@ function handleSection(e: MouseEvent, id: string) {
 .lfooter-bar-inner {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 32px;
+  padding: 0 clamp(1.25rem, 4vw, 2rem);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -202,7 +179,7 @@ function handleSection(e: MouseEvent, id: string) {
 }
 
 .lfooter-copy {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #555;
   letter-spacing: 0.05em;
 }
@@ -214,7 +191,7 @@ function handleSection(e: MouseEvent, id: string) {
 }
 
 .lfooter-legal-link {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #555;
   text-decoration: none;
   transition: color 0.3s;
@@ -222,7 +199,7 @@ function handleSection(e: MouseEvent, id: string) {
 .lfooter-legal-link:hover { color: #F2F0E4; }
 
 .lfooter-dot {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #444;
 }
 
@@ -232,8 +209,8 @@ function handleSection(e: MouseEvent, id: string) {
 }
 
 @media (max-width: 640px) {
-  .lfooter-cols { grid-template-columns: 1fr; gap: 32px; padding: 48px 20px 36px; }
+  .lfooter-cols { grid-template-columns: 1fr; gap: 32px; }
   .lfooter-brand-col { grid-column: auto; }
-  .lfooter-bar-inner { padding: 0 20px; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .lfooter-bar-inner { flex-direction: column; align-items: flex-start; gap: 8px; }
 }
 </style>

@@ -62,87 +62,31 @@ import LandingFooter from '@/components/landing/LandingFooter.vue'
 
 const releases = [
   {
-    version: 'v2.4.0',
+    version: 'v1.1.0',
     date: 'May 2026',
     type: 'feature',
-    title: 'Discord Integration & Integrations Marketplace',
-    summary: 'Discord webhook alerts are now live, and the public integrations page has been redesigned as a full marketplace view with per-integration setup guides.',
+    title: 'Response Time Tracking & Alert Thresholds',
+    summary: 'Service detail pages now show response time history alongside uptime. You can set custom alert thresholds per monitor so you\'re only paged when latency actually matters.',
     changes: [
-      { type: 'new', text: 'Discord webhook integration — send downtime and recovery alerts to any Discord channel' },
-      { type: 'new', text: 'Public integrations marketplace with setup overviews and availability status' },
-      { type: 'new', text: 'Coming soon labels for Slack, PagerDuty, Microsoft Teams, OpsGenie, Datadog, Grafana, and Jira' },
-      { type: 'improvement', text: 'Pricing cards now maintain equal height and display hover effects' },
-      { type: 'fix', text: 'Icon scale animation in the "Who it\'s for" section no longer shifts icons to the left on hover' },
+      { type: 'new', text: 'Response time chart on the service detail page — P50 and P95 latency over the last 24 hours' },
+      { type: 'new', text: 'Custom alert threshold per monitor — trigger alerts only when response time exceeds your defined limit' },
+      { type: 'improvement', text: '30-day uptime percentage now shown on each service card in the dashboard' },
+      { type: 'fix', text: 'Monitor status badge now updates immediately after a manual re-check without requiring a page reload' },
     ],
   },
   {
-    version: 'v2.3.0',
+    version: 'v1.0.0',
     date: 'April 2026',
-    type: 'feature',
-    title: 'Telegram Alerts & Webhook Delivery Logs',
-    summary: 'Telegram bot integration is now available for all plans. Webhook delivery history is now visible in the integrations dashboard with per-event response codes and latency.',
-    changes: [
-      { type: 'new', text: 'Telegram bot integration — send alerts to personal chats or groups via @BotFather token' },
-      { type: 'new', text: 'Webhook delivery logs — inspect response status codes, payloads, and latency per delivery' },
-      { type: 'new', text: 'Webhook retry configuration — set retry count and back-off strategy per endpoint' },
-      { type: 'improvement', text: 'Alert notification history now shows delivery status per channel' },
-      { type: 'fix', text: 'Fixed an edge case where recovery alerts were not sent when a service recovered within a single check cycle' },
-    ],
-  },
-  {
-    version: 'v2.2.0',
-    date: 'March 2026',
-    type: 'feature',
-    title: 'Public Status Pages — Custom Domain Support',
-    summary: 'Enterprise customers can now map a custom domain to their status pages. All plans receive a refreshed status page design with real-time incident updates.',
-    changes: [
-      { type: 'new', text: 'Custom domain support for status pages (Enterprise plan)' },
-      { type: 'new', text: 'Real-time incident timeline visible to status page visitors' },
-      { type: 'new', text: 'Maintenance window scheduling — pre-announce planned downtime on your status page' },
-      { type: 'improvement', text: 'Status page load time reduced by 60% via edge caching' },
-      { type: 'improvement', text: 'Mobile layout for status pages fully redesigned' },
-    ],
-  },
-  {
-    version: 'v2.1.2',
-    date: 'February 2026',
-    type: 'fix',
-    title: 'Alert Deduplication & Dashboard Performance',
-    summary: 'This release addresses duplicate alert notifications and improves dashboard rendering speed for accounts with more than 50 monitored services.',
-    changes: [
-      { type: 'fix', text: 'Duplicate alert notifications no longer sent when multiple check regions detect the same failure simultaneously' },
-      { type: 'fix', text: 'Dashboard uptime bars now render correctly for services with no check history' },
-      { type: 'fix', text: 'Service detail latency chart no longer shows incorrect P95 values after timezone change' },
-      { type: 'improvement', text: 'Dashboard initial load time reduced by 40% for large service lists' },
-    ],
-  },
-  {
-    version: 'v2.1.0',
-    date: 'January 2026',
-    type: 'feature',
-    title: 'On-Call Scheduling & Escalation Rules',
-    summary: 'Professional and Enterprise plans now include on-call rotation management. Define schedules, set escalation rules, and ensure the right person is always paged.',
-    changes: [
-      { type: 'new', text: 'On-call schedule management with weekly and custom rotation support' },
-      { type: 'new', text: 'Escalation rules — automatically re-alert or escalate if an incident is not acknowledged within a threshold' },
-      { type: 'new', text: 'Per-service alert routing — route alerts to different channels or on-call groups by service' },
-      { type: 'new', text: 'Acknowledgement from notification — acknowledge incidents directly from Telegram messages' },
-      { type: 'improvement', text: 'Alert settings UI redesigned with per-channel configuration panels' },
-    ],
-  },
-  {
-    version: 'v2.0.0',
-    date: 'December 2025',
     type: 'major',
-    title: 'Dashboard Redesign & Incident Management v2',
-    summary: 'A full redesign of the monitoring dashboard and a rebuilt incident management workflow, bringing structured incident timelines, richer filtering, and a new black/gold visual identity throughout the app.',
+    title: 'CloudPulse Launch',
+    summary: 'The initial release of CloudPulse — HTTP and HTTPS uptime monitoring with email alerts, a live dashboard, incident tracking, and public status pages.',
     changes: [
-      { type: 'new', text: 'Fully redesigned dashboard with service health cards, latency charts, and uptime history bars' },
-      { type: 'new', text: 'Incident timeline view — see every check result, alert, acknowledgement, and resolution in order' },
-      { type: 'new', text: 'Incident status workflow: Open → Investigating → Identified → Monitoring → Resolved' },
-      { type: 'new', text: 'Service detail page with 30/60/90 day uptime trend and response latency percentiles' },
-      { type: 'improvement', text: 'All app-side modals migrated to PrimeVue Dialog for consistent behaviour' },
-      { type: 'improvement', text: 'Black/gold design system applied consistently across all authenticated views' },
+      { type: 'new', text: 'HTTP and HTTPS monitor creation with configurable check intervals (1, 3, 5, or 10 minutes)' },
+      { type: 'new', text: 'Email alert notifications on downtime and recovery' },
+      { type: 'new', text: 'Dashboard with per-service health status, uptime bars, and last-checked timestamps' },
+      { type: 'new', text: 'Incident log — automatic incident creation on failure with open/resolved state tracking' },
+      { type: 'new', text: 'Public status pages — shareable uptime page per workspace' },
+      { type: 'new', text: 'Webhook integration — send alert payloads to any HTTP endpoint' },
     ],
   },
 ]
@@ -246,7 +190,7 @@ const releases = [
   line-height: 1.3;
 }
 .release-summary {
-  font-size: 14px;
+  font-size: 16px;
   color: #777;
   line-height: 1.8;
   font-weight: 300;
@@ -264,7 +208,7 @@ const releases = [
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  font-size: 13px;
+  font-size: 16px;
   color: #888;
   font-weight: 300;
   line-height: 1.6;

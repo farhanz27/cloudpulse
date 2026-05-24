@@ -56,8 +56,11 @@
               <div class="int-name">{{ integration.name }}</div>
               <div class="int-category">{{ integration.category }}</div>
             </div>
-            <div class="int-status" :class="`int-status--${integration.status}`">
-              {{ integration.status === 'available' ? 'AVAILABLE' : 'COMING SOON' }}
+            <div
+              class="int-status"
+              :class="integration.plan === 'pro' ? 'int-status--pro' : `int-status--${integration.status}`"
+            >
+              {{ integration.plan === 'pro' ? 'PRO' : integration.status === 'available' ? 'FREE' : 'COMING SOON' }}
             </div>
           </div>
 
@@ -150,6 +153,7 @@ const integrations = [
     category: 'Alerts & Notifications',
     categoryId: 'alerts',
     status: 'available',
+    plan: 'pro',
     iconBg: 'rgba(74,21,75,0.15)',
     icon: `<svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28" style="color:#E01E5A">
       <path d="M5.042 15.165a2.528 2.528 0 01-2.52 2.523A2.528 2.528 0 010 15.165a2.527 2.527 0 012.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 012.521-2.52 2.527 2.527 0 012.521 2.52v6.313A2.528 2.528 0 018.834 24a2.528 2.528 0 01-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 01-2.521-2.52A2.528 2.528 0 018.834 0a2.528 2.528 0 012.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 012.521 2.521 2.528 2.528 0 01-2.521 2.521H2.522A2.528 2.528 0 010 8.834a2.528 2.528 0 012.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 012.522-2.521A2.528 2.528 0 0124 8.834a2.528 2.528 0 01-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 01-2.523 2.521 2.527 2.527 0 01-2.52-2.521V2.522A2.527 2.527 0 0115.165 0a2.528 2.528 0 012.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 012.523 2.522A2.528 2.528 0 0115.165 24a2.527 2.527 0 01-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 01-2.52-2.523 2.526 2.526 0 012.52-2.52h6.313A2.527 2.527 0 0124 15.165a2.528 2.528 0 01-2.522 2.523h-6.313z"/>
@@ -193,33 +197,14 @@ const integrations = [
       <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
       <polyline points="22,6 12,13 2,6"/>
     </svg>`,
-    desc: 'Receive detailed downtime and recovery emails to any address. Supports custom SMTP for branded alerts from your own domain.',
+    desc: 'Receive detailed downtime and recovery emails to any address.',
     benefits: [
       'Instant HTML-formatted alert emails',
-      'Custom SMTP relay support for branded delivery',
+      'Downtime and recovery notifications',
       'Alert digest summaries (hourly / daily)',
       'Multiple recipient addresses per service',
     ],
-    setup: 'Email alerts are enabled by default. Add recipients in your service settings or connect a custom SMTP server in your account.',
-  },
-  {
-    id: 'discord',
-    name: 'Discord',
-    category: 'Alerts & Notifications',
-    categoryId: 'alerts',
-    status: 'available',
-    iconBg: 'rgba(88,101,242,0.1)',
-    icon: `<svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28" style="color:#5865F2">
-      <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
-    </svg>`,
-    desc: 'Send downtime alerts and recovery notifications directly to any Discord channel. Perfect for teams already coordinating on Discord.',
-    benefits: [
-      'Instant alerts to any Discord channel via webhook',
-      'Rich embed formatting with service status and details',
-      'Recovery and maintenance window notifications',
-      'No bot installation required — uses Discord webhooks',
-    ],
-    setup: 'Create a webhook in your Discord channel settings, paste the URL into CloudPulse. Ready in under 2 minutes.',
+    setup: 'Email alerts are enabled by default. Add recipients in your monitor settings.',
   },
   {
     id: 'telegram',
@@ -241,11 +226,31 @@ const integrations = [
     setup: 'Create a Telegram bot via @BotFather, enter the bot token and chat ID in CloudPulse settings. Takes under 3 minutes.',
   },
   {
+    id: 'discord',
+    name: 'Discord',
+    category: 'Alerts & Notifications',
+    categoryId: 'alerts',
+    status: 'available',
+    iconBg: 'rgba(88,101,242,0.1)',
+    icon: `<svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28" style="color:#5865F2">
+      <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+    </svg>`,
+    desc: 'Send downtime alerts and recovery notifications directly to any Discord channel. Perfect for teams already coordinating on Discord.',
+    benefits: [
+      'Instant alerts to any Discord channel via webhook',
+      'Rich embed formatting with service status and details',
+      'Recovery and maintenance window notifications',
+      'No bot installation required — uses Discord webhooks',
+    ],
+    setup: 'Create a webhook in your Discord channel settings, paste the URL into CloudPulse. Ready in under 2 minutes.',
+  },
+  {
     id: 'webhooks',
     name: 'Webhooks',
     category: 'Alerts & Notifications',
     categoryId: 'alerts',
     status: 'available',
+    plan: 'pro',
     iconBg: 'rgba(212,175,55,0.08)',
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" style="color:#D4AF37">
       <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/>
@@ -266,6 +271,7 @@ const integrations = [
     category: 'Alerts & Notifications',
     categoryId: 'alerts',
     status: 'available',
+    plan: 'pro',
     iconBg: 'rgba(100,67,200,0.1)',
     icon: `<svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28" style="color:#6264A7">
       <path d="M20.625 7.5h-5.25A.375.375 0 0115 7.125V3.375a.375.375 0 01.375-.375h.75a3.375 3.375 0 013.375 3.375v.75a.375.375 0 01-.375.375zM14.25 8.25H9a.75.75 0 00-.75.75v7.5c0 .414.336.75.75.75h5.25A.75.75 0 0015 16.5V9a.75.75 0 00-.75-.75zM7.5 9.75A.75.75 0 006.75 9H2.625A.375.375 0 002.25 9.375V16.5a.75.75 0 00.75.75H6.75a.75.75 0 00.75-.75V9.75zM9 19.5a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5zM17.25 5.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z"/>
@@ -395,14 +401,17 @@ const integrations = [
   },
 ]
 
+const tierOrder = (i: typeof integrations[number]) => {
+  if (i.status === 'coming-soon') return 2
+  if (i.plan === 'pro') return 1
+  return 0
+}
+
 const filteredIntegrations = computed(() => {
   const list = activeCategory.value === 'all'
     ? integrations
     : integrations.filter(i => i.categoryId === activeCategory.value)
-  return [...list].sort((a, b) => {
-    if (a.status === b.status) return 0
-    return a.status === 'available' ? -1 : 1
-  })
+  return [...list].sort((a, b) => tierOrder(a) - tierOrder(b))
 })
 </script>
 
@@ -629,9 +638,14 @@ const filteredIntegrations = computed(() => {
   background: rgba(136,136,136,0.08);
   border: 1px solid rgba(136,136,136,0.15);
 }
+.int-status--pro {
+  color: #D4AF37;
+  background: rgba(212,175,55,0.1);
+  border: 1px solid rgba(212,175,55,0.35);
+}
 
 .int-desc {
-  font-size: 13px;
+  font-size: 16px;
   color: #777;
   line-height: 1.75;
   font-weight: 300;
@@ -646,7 +660,7 @@ const filteredIntegrations = computed(() => {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  font-size: 12px;
+  font-size: 16px;
   color: #888;
   font-weight: 300;
   line-height: 1.5;
@@ -671,7 +685,7 @@ const filteredIntegrations = computed(() => {
   margin-bottom: 6px;
 }
 .int-setup-text {
-  font-size: 12px;
+  font-size: 16px;
   color: #666;
   font-weight: 300;
   line-height: 1.6;
@@ -739,7 +753,7 @@ const filteredIntegrations = computed(() => {
   margin-bottom: 8px;
 }
 .custom-cta-desc {
-  font-size: 13px;
+  font-size: 16px;
   color: #666;
   font-weight: 300;
   line-height: 1.7;

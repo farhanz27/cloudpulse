@@ -317,7 +317,7 @@ curl -X GET https://api.cloudpulse.io/v1/services \\
   margin-bottom: 48px;
 }
 .body-text {
-  font-size: 14px;
+  font-size: 16px;
   color: #777;
   line-height: 1.85;
   font-weight: 300;
@@ -358,7 +358,7 @@ curl -X GET https://api.cloudpulse.io/v1/services \\
   color: #F2F0E4;
 }
 .step-desc {
-  font-size: 13px;
+  font-size: 16px;
   color: #666;
   line-height: 1.75;
   font-weight: 300;
@@ -421,7 +421,7 @@ curl -X GET https://api.cloudpulse.io/v1/services \\
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
+  font-size: 16px;
   color: #666;
   text-decoration: none;
   font-weight: 300;
@@ -459,7 +459,7 @@ curl -X GET https://api.cloudpulse.io/v1/services \\
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 13px;
+  font-size: 16px;
   color: #777;
   font-weight: 300;
 }
@@ -515,7 +515,7 @@ curl -X GET https://api.cloudpulse.io/v1/services \\
   margin-bottom: 12px;
 }
 .cta-desc {
-  font-size: 14px;
+  font-size: 16px;
   color: #666;
   font-weight: 300;
   margin-bottom: 32px;

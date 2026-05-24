@@ -151,7 +151,7 @@ const sections = [
 }
 
 .legal-text {
-  font-size: 14px;
+  font-size: 16px;
   color: #777;
   line-height: 1.85;
   font-weight: 300;
