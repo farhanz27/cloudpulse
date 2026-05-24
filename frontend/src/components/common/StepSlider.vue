@@ -2,14 +2,14 @@
   <div class="step-slider">
     <Slider v-model="index" :min="0" :max="steps.length - 1" :step="1" class="w-full" />
     <div class="step-labels">
-      <span
-        v-for="(step, i) in steps"
-        v-if="step.label"
-        :key="i"
-        class="step-label"
-        :class="{ active: i === index }"
-        :style="labelStyle(i)"
-      >{{ step.label }}</span>
+      <template v-for="(step, i) in steps" :key="i">
+        <span
+          v-if="step.label"
+          class="step-label"
+          :class="{ active: i === index }"
+          :style="labelStyle(i)"
+        >{{ step.label }}</span>
+      </template>
     </div>
   </div>
 </template>
@@ -19,7 +19,7 @@ import { ref, watch } from 'vue'
 import Slider from 'primevue/slider'
 
 const props = defineProps<{
-  steps: Array<{ label: string; value: number }>
+  steps: Array<{ label?: string; value: number }>
   modelValue: number
 }>()
 
