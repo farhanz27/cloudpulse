@@ -7,7 +7,9 @@ import com.avantdream.cloudpulse.integration.dto.*;
 import com.avantdream.cloudpulse.integration.entity.Integration;
 import com.avantdream.cloudpulse.integration.notify.*;
 import com.avantdream.cloudpulse.integration.repository.IntegrationRepository;
+import com.avantdream.cloudpulse.shared.exception.QuotaExceededException;
 import com.avantdream.cloudpulse.shared.exception.ResourceNotFoundException;
+import com.avantdream.cloudpulse.shared.plan.FreePlan;
 import com.avantdream.cloudpulse.integration.telegram.repository.TelegramPendingLinkRepository;
 
 import java.util.HashMap;
@@ -52,6 +54,10 @@ public class IntegrationService {
     }
 
     public IntegrationResponse create(IntegrationRequest req) {
+        if (integrationRepository.count() >= FreePlan.INTEGRATION_LIMIT) {
+            throw new QuotaExceededException(
+                "Free plan limit reached: " + FreePlan.INTEGRATION_LIMIT + " integrations maximum");
+        }
         Integration intg = new Integration();
         intg.setType(req.type().toUpperCase());
         intg.setName(req.name());
