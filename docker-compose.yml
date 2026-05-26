@@ -1,24 +1,32 @@
 services:
   backend:
     build: ./backend
+    restart: unless-stopped
     environment:
       DB_URL: ${DB_URL}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
+
       JWT_SECRET: ${JWT_SECRET}
+
       RESEND_API_KEY: ${RESEND_API_KEY}
+
       ALERT_EMAIL_FROM: ${ALERT_EMAIL_FROM}
       ALERT_EMAIL_TO: ${ALERT_EMAIL_TO}
+
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
       TELEGRAM_BOT_USERNAME: ${TELEGRAM_BOT_USERNAME}
+
       CORS_ORIGINS: ${CORS_ORIGINS}
+
     ports:
-      - "127.0.0.1:8081:8081"
+      - "127.0.0.1:8080:8080"
 
   frontend:
     build: ./frontend
+    restart: unless-stopped
     ports:
-      - "127.0.0.1:3000:80"
+      - "127.0.0.1:8000:80"
     depends_on:
       - backend
 
