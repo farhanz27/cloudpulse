@@ -1,5 +1,6 @@
 services:
   backend:
+    image: ghcr.io/farhanz27/cloudpulse-backend:${TAG:-latest}
     build: ./backend
     restart: unless-stopped
     environment:
@@ -23,6 +24,7 @@ services:
       - "127.0.0.1:8080:8080"
 
   frontend:
+    image: ghcr.io/farhanz27/cloudpulse-frontend:${TAG:-latest}
     build: ./frontend
     restart: unless-stopped
     ports:
